@@ -111,10 +111,10 @@ parameters:
       pt_BR: Duração (segundos)
       ja_JP: 時間（秒）
     human_description:
-      en_US: "Video duration in seconds"
-      zh_Hans: "视频时长（秒）"
-      pt_BR: "Duração do vídeo em segundos"
-      ja_JP: "ビデオの長さ（秒）"
+      en_US: "Video duration in seconds (sora-2 supports 10, 15; sora-2-pro supports 10, 15, 25)"
+      zh_Hans: "视频时长（秒）（sora-2支持10、15；sora-2-pro支持10、15、25）"
+      pt_BR: "Duração do vídeo em segundos (sora-2 suporta 10, 15; sora-2-pro suporta 10, 15, 25)"
+      ja_JP: "ビデオの長さ（秒）（sora-2は10、15をサポート；sora-2-proは10、15、25をサポート）"
     llm_description: "Video duration in seconds"
     placeholder:
       en_US: "10"
@@ -181,10 +181,10 @@ parameters:
       pt_BR: Tamanho
       ja_JP: サイズ
     human_description:
-      en_US: "Video size"
-      zh_Hans: "视频尺寸"
-      pt_BR: "Tamanho do vídeo"
-      ja_JP: "ビデオサイズ"
+      en_US: "Video size (sora-2 supports 720x1280, 1280x720; sora-2-pro supports all sizes)"
+      zh_Hans: "视频尺寸（sora-2支持720x1280、1280x720；sora-2-pro支持所有尺寸）"
+      pt_BR: "Tamanho do vídeo (sora-2 suporta 720x1280, 1280x720; sora-2-pro suporta todos os tamanhos)"
+      ja_JP: "ビデオサイズ（sora-2は720x1280、1280x720をサポート；sora-2-proはすべてのサイズをサポート）"
     llm_description: "Video size"
     placeholder:
       en_US: "1024x1792"
@@ -192,10 +192,10 @@ parameters:
       pt_BR: "1024x1792"
       ja_JP: "1024x1792"
     help:
-      en_US: "Video size (width x height)"
-      zh_Hans: "视频尺寸（宽 x 高）"
-      pt_BR: "Tamanho do vídeo (largura x altura)"
-      ja_JP: "ビデオサイズ（幅 x 高さ）"
+      en_US: "Video size (width x height). sora-2 supports 720x1280, 1280x720; sora-2-pro supports all sizes"
+      zh_Hans: "视频尺寸（宽 x 高）。sora-2支持720x1280、1280x720；sora-2-pro支持所有尺寸"
+      pt_BR: "Tamanho do vídeo (largura x altura). sora-2 suporta 720x1280, 1280x720; sora-2-pro suporta todos os tamanhos"
+      ja_JP: "ビデオサイズ（幅 x 高さ）。sora-2は720x1280、1280x720をサポート；sora-2-proはすべてのサイズをサポート"
     form: llm
     options:
       - value: 1024x1792

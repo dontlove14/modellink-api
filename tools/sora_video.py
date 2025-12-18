@@ -31,7 +31,41 @@ class SoraVideoTool(Tool):
             character_url = tool_parameters.get('character_url')
             character_timestamps = tool_parameters.get('character_timestamps')
             
+            # 处理参数值为'variable'的情况
+            def process_param(value):
+                if value == 'variable':
+                    return None
+                return value
+            
+            apiKey = process_param(apiKey)
+            model = process_param(model)
+            prompt = process_param(prompt)
+            seconds = process_param(seconds)
+            input_reference = process_param(input_reference)
+            size = process_param(size)
+            watermark = process_param(watermark)
+            private = process_param(private)
+            character_url = process_param(character_url)
+            character_timestamps = process_param(character_timestamps)
+            
             logger.info(f'[Sora Video] 开始生成视频，模型: {model}')
+            
+            # 模型参数兼容性检查
+            # sora-2 支持的尺寸：720x1280, 1280x720
+            # sora-2 支持的时长：10, 15
+            # sora-2-pro 支持所有尺寸和时长
+            if model == 'sora-2':
+                # 验证size参数
+                if size and size not in ['720x1280', '1280x720']:
+                    # 如果尺寸不支持，使用默认值1280x720
+                    logger.warning(f'[Sora Video] sora-2 模型不支持尺寸 {size}，已自动调整为 1280x720')
+                    size = '1280x720'
+                
+                # 验证seconds参数
+                if seconds and seconds not in ['10', '15']:
+                    # 如果时长不支持，使用默认值10
+                    logger.warning(f'[Sora Video] sora-2 模型不支持时长 {seconds} 秒，已自动调整为 10 秒')
+                    seconds = '10'
             
             # 构建请求数据
             request_data = {
@@ -59,12 +93,15 @@ class SoraVideoTool(Tool):
             # 发送请求
             api_url = f"{host}/v1/videos"
             headers = {
-                'Authorization': f'Bearer {apiKey}',
-                'Content-Type': 'multipart/form-data'
+                'Authorization': f'Bearer {apiKey}'
+                # 不手动设置Content-Type，requests会自动处理multipart/form-data
             }
             
             # 使用 requests.post 发送 multipart/form-data 请求
-            response = requests.post(api_url, headers=headers, data=request_data, timeout=60)
+            # 对于multipart/form-data，使用files参数发送
+            # 将request_data转换为files格式，每个字段作为一个元组
+            files = {k: (None, v) for k, v in request_data.items()}
+            response = requests.post(api_url, headers=headers, files=files, timeout=60)
             
             logger.info(f'[Sora Video] 响应状态: {response.status_code}')
             
