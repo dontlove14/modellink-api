@@ -58,6 +58,8 @@ identity:
 tools:
   - tools/banana_gen.yaml
   - tools/openai_chat.yaml
+  - tools/sora_video.yaml
+  - tools/sora_video_query.yaml
 extra:
   python:
     source: provider/api.py

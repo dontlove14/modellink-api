@@ -1,0 +1,328 @@
+identity:
+  name: "sora_video"
+  author: "modellink"
+  label:
+    en_US: "Sora Video Generation"
+    zh_Hans: "Sora 视频生成"
+    pt_BR: "Geração de Vídeo Sora"
+    ja_JP: "Sora ビデオ生成"
+description:
+  human:
+    en_US: "Generate videos using Sora API"
+    zh_Hans: "使用 Sora API 生成视频"
+    pt_BR: "Gerar vídeos usando a API Sora"
+    ja_JP: "Sora API を使用してビデオを生成します"
+  llm: "Sora Video Generation API"
+parameters:
+  - name: apiKey
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+      zh_Hans: API 密钥
+      pt_BR: Chave da API
+      ja_JP: API キー
+    human_description:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    llm_description: "API key for authentication"
+    placeholder:
+      en_US: "sk-..."
+      zh_Hans: "sk-..."
+      pt_BR: "sk-..."
+      ja_JP: "sk-..."
+    help:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    form: llm
+  - name: model
+    type: select
+    required: true
+    label:
+      en_US: Model
+      zh_Hans: 模型
+      pt_BR: Modelo
+      ja_JP: モデル
+    human_description:
+      en_US: "Model name"
+      zh_Hans: "模型名称"
+      pt_BR: "Nome do modelo"
+      ja_JP: "モデル名"
+    llm_description: "Model name"
+    placeholder:
+      en_US: "sora-2"
+      zh_Hans: "sora-2"
+      pt_BR: "sora-2"
+      ja_JP: "sora-2"
+    help:
+      en_US: "Model name"
+      zh_Hans: "模型名称"
+      pt_BR: "Nome do modelo"
+      ja_JP: "モデル名"
+    form: llm
+    options:
+      - value: sora-2
+        label:
+          en_US: sora-2
+          zh_Hans: sora-2
+          pt_BR: sora-2
+          ja_JP: sora-2
+      - value: sora-2-pro
+        label:
+          en_US: sora-2-pro
+          zh_Hans: sora-2-pro
+          pt_BR: sora-2-pro
+          ja_JP: sora-2-pro
+  - name: prompt
+    type: string
+    required: true
+    label:
+      en_US: Prompt
+      zh_Hans: 提示词
+      pt_BR: Prompt
+      ja_JP: プロンプト
+    human_description:
+      en_US: "Video generation prompt"
+      zh_Hans: "视频生成提示词"
+      pt_BR: "Prompt para geração de vídeo"
+      ja_JP: "ビデオ生成プロンプト"
+    llm_description: "Video generation prompt"
+    placeholder:
+      en_US: "A beautiful landscape"
+      zh_Hans: "一个美丽的风景"
+      pt_BR: "Uma paisagem bonita"
+      ja_JP: "美しい風景"
+    help:
+      en_US: "Prompt for video generation"
+      zh_Hans: "用于视频生成的提示词"
+      pt_BR: "Prompt para geração de vídeo"
+      ja_JP: "ビデオ生成のプロンプト"
+    form: llm
+  - name: seconds
+    type: select
+    required: false
+    label:
+      en_US: Duration (seconds)
+      zh_Hans: 时长（秒）
+      pt_BR: Duração (segundos)
+      ja_JP: 時間（秒）
+    human_description:
+      en_US: "Video duration in seconds"
+      zh_Hans: "视频时长（秒）"
+      pt_BR: "Duração do vídeo em segundos"
+      ja_JP: "ビデオの長さ（秒）"
+    llm_description: "Video duration in seconds"
+    placeholder:
+      en_US: "10"
+      zh_Hans: "10"
+      pt_BR: "10"
+      ja_JP: "10"
+    help:
+      en_US: "Video duration in seconds (25 seconds only supported by sora-2-pro)"
+      zh_Hans: "视频时长（秒）（25秒仅sora-2-pro支持）"
+      pt_BR: "Duração do vídeo em segundos (25 segundos só suportado por sora-2-pro)"
+      ja_JP: "ビデオの長さ（秒）（25秒はsora-2-proのみサポート）"
+    form: llm
+    options:
+      - value: '10'
+        label:
+          en_US: '10'
+          zh_Hans: '10'
+          pt_BR: '10'
+          ja_JP: '10'
+      - value: '15'
+        label:
+          en_US: '15'
+          zh_Hans: '15'
+          pt_BR: '15'
+          ja_JP: '15'
+      - value: '25'
+        label:
+          en_US: '25'
+          zh_Hans: '25'
+          pt_BR: '25'
+          ja_JP: '25'
+  - name: input_reference
+    type: string
+    required: false
+    label:
+      en_US: Input Reference
+      zh_Hans: 首帧图
+      pt_BR: Referência de Entrada
+      ja_JP: 最初のフレーム画像
+    human_description:
+      en_US: "First frame image URL"
+      zh_Hans: "首帧图 URL"
+      pt_BR: "URL da imagem do primeiro quadro"
+      ja_JP: "最初のフレーム画像のURL"
+    llm_description: "First frame image URL"
+    placeholder:
+      en_US: "https://example.com/image.png"
+      zh_Hans: "https://example.com/image.png"
+      pt_BR: "https://example.com/image.png"
+      ja_JP: "https://example.com/image.png"
+    help:
+      en_US: "URL of the first frame image"
+      zh_Hans: "首帧图的 URL"
+      pt_BR: "URL da imagem do primeiro quadro"
+      ja_JP: "最初のフレーム画像のURL"
+    form: llm
+    format: uri
+  - name: size
+    type: select
+    required: false
+    label:
+      en_US: Size
+      zh_Hans: 尺寸
+      pt_BR: Tamanho
+      ja_JP: サイズ
+    human_description:
+      en_US: "Video size"
+      zh_Hans: "视频尺寸"
+      pt_BR: "Tamanho do vídeo"
+      ja_JP: "ビデオサイズ"
+    llm_description: "Video size"
+    placeholder:
+      en_US: "1024x1792"
+      zh_Hans: "1024x1792"
+      pt_BR: "1024x1792"
+      ja_JP: "1024x1792"
+    help:
+      en_US: "Video size (width x height)"
+      zh_Hans: "视频尺寸（宽 x 高）"
+      pt_BR: "Tamanho do vídeo (largura x altura)"
+      ja_JP: "ビデオサイズ（幅 x 高さ）"
+    form: llm
+    options:
+      - value: 1024x1792
+        label:
+          en_US: 1024x1792
+          zh_Hans: 1024x1792
+          pt_BR: 1024x1792
+          ja_JP: 1024x1792
+      - value: 1792x1024
+        label:
+          en_US: 1792x1024
+          zh_Hans: 1792x1024
+          pt_BR: 1792x1024
+          ja_JP: 1792x1024
+      - value: 720x1280
+        label:
+          en_US: 720x1280
+          zh_Hans: 720x1280
+          pt_BR: 720x1280
+          ja_JP: 720x1280
+      - value: 1280x720
+        label:
+          en_US: 1280x720
+          zh_Hans: 1280x720
+          pt_BR: 1280x720
+          ja_JP: 1280x720
+  - name: watermark
+    type: boolean
+    required: false
+    label:
+      en_US: Watermark
+      zh_Hans: 水印
+      pt_BR: Marca d'água
+      ja_JP: ウォーターマーク
+    human_description:
+      en_US: "Whether to add watermark"
+      zh_Hans: "是否添加水印"
+      pt_BR: "Se adicionar marca d'água"
+      ja_JP: "ウォーターマークを追加するかどうか"
+    llm_description: "Whether to add watermark"
+    placeholder:
+      en_US: "false"
+      zh_Hans: "false"
+      pt_BR: "false"
+      ja_JP: "false"
+    help:
+      en_US: "Whether to add watermark to the video"
+      zh_Hans: "是否在视频上添加水印"
+      pt_BR: "Se adicionar marca d'água ao vídeo"
+      ja_JP: "ビデオにウォーターマークを追加するかどうか"
+    form: llm
+  - name: private
+    type: boolean
+    required: false
+    label:
+      en_US: Private
+      zh_Hans: 私有
+      pt_BR: Privado
+      ja_JP: プライベート
+    human_description:
+      en_US: "Whether the video is private"
+      zh_Hans: "视频是否私有"
+      pt_BR: "Se o vídeo é privado"
+      ja_JP: "ビデオがプライベートかどうか"
+    llm_description: "Whether the video is private"
+    placeholder:
+      en_US: "false"
+      zh_Hans: "false"
+      pt_BR: "false"
+      ja_JP: "false"
+    help:
+      en_US: "Whether the video is private (true means the video won't be published and can't be remixed)"
+      zh_Hans: "视频是否私有（true 表示视频不会发布，同时无法进行二次编辑）"
+      pt_BR: "Se o vídeo é privado (true significa que o vídeo não será publicado e não pode ser remixado)"
+      ja_JP: "ビデオがプライベートかどうか（true はビデオが公開されず、リミックスもできないことを意味します）"
+    form: llm
+  - name: character_url
+    type: string
+    required: false
+    label:
+      en_US: Character URL
+      zh_Hans: 角色视频链接
+      pt_BR: URL do Personagem
+      ja_JP: キャラクターURL
+    human_description:
+      en_US: "Video URL for character creation"
+      zh_Hans: "创建角色需要的视频链接"
+      pt_BR: "URL do vídeo para criação de personagem"
+      ja_JP: "キャラクター作成用のビデオURL"
+    llm_description: "Video URL for character creation"
+    placeholder:
+      en_US: "https://example.com/character.mp4"
+      zh_Hans: "https://example.com/character.mp4"
+      pt_BR: "https://example.com/character.mp4"
+      ja_JP: "https://example.com/character.mp4"
+    help:
+      en_US: "Video URL for character creation (must not contain real people)"
+      zh_Hans: "创建角色需要的视频链接（视频中一定不能出现真人）"
+      pt_BR: "URL do vídeo para criação de personagem (não deve conter pessoas reais)"
+      ja_JP: "キャラクター作成用のビデオURL（ビデオには実際の人が登場してはならない）"
+    form: llm
+    format: uri
+  - name: character_timestamps
+    type: string
+    required: false
+    label:
+      en_US: Character Timestamps
+      zh_Hans: 角色出现时间
+      pt_BR: Carimbo de Tempo do Personagem
+      ja_JP: キャラクタータイムスタンプ
+    human_description:
+      en_US: "Character appearance time range"
+      zh_Hans: "角色出现的时间范围"
+      pt_BR: "Intervalo de tempo de aparição do personagem"
+      ja_JP: "キャラクターの出現時間範囲"
+    llm_description: "Character appearance time range"
+    placeholder:
+      en_US: "1,3"
+      zh_Hans: "1,3"
+      pt_BR: "1,3"
+      ja_JP: "1,3"
+    help:
+      en_US: "Character appearance time range in format '{start},{end}' (duration 1-3 seconds)"
+      zh_Hans: "视频角色出现的秒数范围，格式 '{start},{end}'（时长 1～3 秒）"
+      pt_BR: "Intervalo de tempo de aparição do personagem no formato '{start},{end}' (duração 1-3 segundos)"
+      ja_JP: "キャラクターの出現時間範囲（形式 '{start},{end}'、期間 1-3 秒）"
+    form: llm
+extra:
+  python:
+    source: tools/sora_video.py
