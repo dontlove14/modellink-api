@@ -1,0 +1,187 @@
+identity:
+  name: "banana_gen"
+  author: "modellink"
+  label:
+    en_US: "Nano Banana Image Generation"
+    zh_Hans: "Nano Banana 图生生成"
+    pt_BR: "Nano Banana Geração de Imagem"
+    ja_JP: "Nano Banana 画像生成"
+description:
+  human:
+    en_US: "Generate images using Nano Banana API"
+    zh_Hans: "使用 Nano Banana API 生成图像"
+    pt_BR: "Gerar imagens usando a API Nano Banana"
+    ja_JP: "Nano Banana API を使用して画像を生成します"
+  llm: "Nano Banana Image Generation API"
+parameters:
+  - name: api_key
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+      zh_Hans: API 密钥
+      pt_BR: Chave da API
+      ja_JP: API キー
+    human_description:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    llm_description: "API key for authentication"
+    placeholder:
+      en_US: "Your API key"
+      zh_Hans: "请输入您的 API 密钥"
+      pt_BR: "Insira sua chave de API"
+      ja_JP: "APIキーを入力してください"
+    help:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    form: llm
+  - name: model
+    type: string
+    required: true
+    label:
+      en_US: Model Name
+      zh_Hans: 模型名称
+      pt_BR: Nome do Modelo
+      ja_JP: モデル名
+    human_description:
+      en_US: "Model name to use"
+      zh_Hans: "要使用的模型名称"
+      pt_BR: "Nome do modelo a ser usado"
+      ja_JP: "使用するモデル名"
+    llm_description: "Model name to use"
+    placeholder:
+      en_US: "Select model"
+      zh_Hans: "请选择模型"
+      pt_BR: "Selecione o modelo"
+      ja_JP: "モデルを選択してください"
+    help:
+      en_US: "Model name to use"
+      zh_Hans: "要使用的模型名称"
+      pt_BR: "Nome do modelo a ser usado"
+      ja_JP: "使用するモデル名"
+    enum:
+      - gemini-2.5-flash-image
+      - gemini-3-pro-image-preview
+    form: llm
+  - name: prompt
+    type: string
+    required: true
+    label:
+      en_US: Prompt
+      zh_Hans: 提示词
+      pt_BR: Prompt
+      ja_JP: プロンプト
+    human_description:
+      en_US: "Prompt for image generation"
+      zh_Hans: "用于图像生成的提示词"
+      pt_BR: "Prompt para geração de imagem"
+      ja_JP: "画像生成のためのプロンプト"
+    llm_description: "Prompt for image generation"
+    placeholder:
+      en_US: "Describe the image you want to generate"
+      zh_Hans: "描述您想要生成的图像"
+      pt_BR: "Descreva a imagem que deseja gerar"
+      ja_JP: "生成したい画像を説明してください"
+    help:
+      en_US: "Prompt for image generation"
+      zh_Hans: "用于图像生成的提示词"
+      pt_BR: "Prompt para geração de imagem"
+      ja_JP: "画像生成のためのプロンプト"
+    form: llm
+  - name: reference_image_url
+    type: array
+    required: false
+    label:
+      en_US: Reference Image URLs
+      zh_Hans: 参考图列表
+      pt_BR: URLs de Imagens de Referência
+      ja_JP: 参照画像URL
+    human_description:
+      en_US: "List of reference image URLs (max 14 images)"
+      zh_Hans: "参考图列表（最多支持 14 张）"
+      pt_BR: "Lista de URLs de imagens de referência (máximo 14 imagens)"
+      ja_JP: "参照画像URLのリスト（最大14枚）"
+    llm_description: "List of reference image URLs (max 14 images)"
+    placeholder:
+      en_US: '["image1.jpg", "image2.jpg"]'
+      zh_Hans: '["图片1.jpg", "图片2.jpg"]'
+      pt_BR: '["imagem1.jpg", "imagem2.jpg"]'
+      ja_JP: '["画像1.jpg", "画像2.jpg"]'
+    help:
+      en_US: "List of reference image URLs (max 14 images)"
+      zh_Hans: "参考图列表（最多支持 14 张）"
+      pt_BR: "Lista de URLs de imagens de referência (máximo 14 imagens)"
+      ja_JP: "参照画像URLのリスト（最大14枚）"
+    form: llm
+  - name: ratio
+    type: string
+    required: false
+    label:
+      en_US: Aspect Ratio
+      zh_Hans: 图像宽高比
+      pt_BR: Proporção
+      ja_JP: アスペクト比
+    human_description:
+      en_US: "Image aspect ratio"
+      zh_Hans: "图像宽高比"
+      pt_BR: "Proporção da imagem"
+      ja_JP: "画像のアスペクト比"
+    llm_description: "Image aspect ratio"
+    placeholder:
+      en_US: "1:1"
+      zh_Hans: "1:1"
+      pt_BR: "1:1"
+      ja_JP: "1:1"
+    help:
+      en_US: "Image aspect ratio"
+      zh_Hans: "图像宽高比"
+      pt_BR: "Proporção da imagem"
+      ja_JP: "画像のアスペクト比"
+    enum:
+      - "1:1"
+      - "2:3"
+      - "3:2"
+      - "3:4"
+      - "4:3"
+      - "4:5"
+      - "5:4"
+      - "9:16"
+      - "16:9"
+      - "21:9"
+    form: llm
+  - name: size
+    type: string
+    required: false
+    label:
+      en_US: Image Size
+      zh_Hans: 图像分辨率
+      pt_BR: Tamanho da Imagem
+      ja_JP: 画像サイズ
+    human_description:
+      en_US: "Image resolution (only supported by gemini-3-pro-image-preview)"
+      zh_Hans: "图像分辨率（仅 gemini-3-pro-image-preview 支持）"
+      pt_BR: "Resolução da imagem (apenas suportada por gemini-3-pro-image-preview)"
+      ja_JP: "画像解像度（gemini-3-pro-image-preview でのみサポート）"
+    llm_description: "Image resolution (only supported by gemini-3-pro-image-preview)"
+    placeholder:
+      en_US: "1K"
+      zh_Hans: "1K"
+      pt_BR: "1K"
+      ja_JP: "1K"
+    help:
+      en_US: "Image resolution (only supported by gemini-3-pro-image-preview)"
+      zh_Hans: "图像分辨率（仅 gemini-3-pro-image-preview 支持）"
+      pt_BR: "Resolução da imagem (apenas suportada por gemini-3-pro-image-preview)"
+      ja_JP: "画像解像度（gemini-3-pro-image-preview でのみサポート）"
+    enum:
+      - "1K"
+      - "2K"
+      - "4K"
+    form: llm
+extra:
+  python:
+    source: tools/banana_gen.py
