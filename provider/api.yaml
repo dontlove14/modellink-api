@@ -1,16 +1,16 @@
 identity:
   author: "modellink"
-  name: "api"
+  name: "ai_media_gen"
   label:
-    en_US: "api"
-    zh_Hans: "api"
-    pt_BR: "api"
-    ja_JP: "api"
+    en_US: "Ai Media Generation"
+    zh_Hans: "Ai媒体生成"
+    pt_BR: "Geração de Mídia AI"
+    ja_JP: "AIメディア生成"
   description:
-    en_US: "Model Link 官方 API 插件"
-    zh_Hans: "Model Link 官方 API 插件"
-    pt_BR: "Model Link 官方 API 插件"
-    ja_JP: "Model Link 官方 API 插件"
+    en_US: "Model Link Official AI Media Generation API Plugin"
+    zh_Hans: "Model Link 官方 AI 媒体生成 API 插件"
+    pt_BR: "Plugin de API Oficial de Geração de Mídia AI do Model Link"
+    ja_JP: "Model Link 公式 AI メディア生成 API プラグイン"
   icon: "icon.svg"
 
 #########################################################################################
@@ -60,6 +60,12 @@ tools:
   - tools/openai_chat.yaml
   - tools/sora_video.yaml
   - tools/sora_video_query.yaml
+  - tools/klingus_text2video.yaml
+  - tools/klingus_image2video.yaml
+  - tools/klingus_multi_image2video.yaml
+  - tools/klingus_text2video_query.yaml
+  - tools/klingus_image2video_query.yaml
+  - tools/klingus_multi_image2video_query.yaml
 extra:
   python:
     source: provider/api.py

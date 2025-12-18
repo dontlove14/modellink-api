@@ -4,6 +4,7 @@
 1. 当前项目仅服务于 Model Link。这意味着 api host 固定就是：`https://api.modellink.online` 。当用户给你的参考的方法中存在 api host 这个参数的时候你需要替换为 `https://api.modellink.online` 。
 2. 当前项目是一个dify 插件。在开发功能是需要严格遵守 dify 插件开发规范以及范式。
 3. 在处理工具参数时，需要检查参数值是否为字符串'variable'，如果是则将其设置为None。这是因为当页面元素默认设置为引用变量时，系统会传递字符串'variable'而不是实际值，导致Pydantic验证错误。
+4. 所有工具插件必须在 `provider/api.yaml` 文件的 `tools` 列表中接入，而不是在 `manifest.yaml` 文件中直接添加。manifest.yaml 文件只需要包含提供者配置文件即可。
 
 ## 通用规范
 

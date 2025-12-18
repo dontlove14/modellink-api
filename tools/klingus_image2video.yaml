@@ -1,0 +1,429 @@
+identity:
+  name: "klingus_image2video"
+  author: "modellink"
+  label:
+    en_US: "Klingus Image to Video"
+    zh_Hans: "可灵 首尾帧生成视频"
+    pt_BR: "Klingus Imagem para Vídeo"
+    ja_JP: "Klingus 画像からビデオ"
+description:
+  human:
+    en_US: "Generate videos from start and end images using Klingus API"
+    zh_Hans: "使用可灵 API 从首帧和尾帧生成视频"
+    pt_BR: "Gerar vídeos de imagens de início e fim usando a API Klingus"
+    ja_JP: "Klingus API を使用して最初と最後の画像からビデオを生成します"
+  llm: "Klingus Image to Video Generation API"
+parameters:
+  - name: api_key
+    type: secret-input
+    required: true
+    label:
+      en_US: "API Key"
+      zh_Hans: "API 密钥"
+      pt_BR: "Chave da API"
+      ja_JP: "API キー"
+    human_description:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    llm_description: "API key for authentication"
+    placeholder:
+      en_US: "sk-..."
+      zh_Hans: "sk-..."
+      pt_BR: "sk-..."
+      ja_JP: "sk-..."
+    help:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    form: llm
+  - name: model_name
+    type: select
+    required: true
+    label:
+      en_US: "Model Name"
+      zh_Hans: "模型名称"
+      pt_BR: "Nome do Modelo"
+      ja_JP: "モデル名"
+    human_description:
+      en_US: "Model name for video generation"
+      zh_Hans: "用于视频生成的模型名称"
+      pt_BR: "Nome do modelo para geração de vídeo"
+      ja_JP: "ビデオ生成のモデル名"
+    llm_description: "Model name for video generation"
+    placeholder:
+      en_US: "kling-v1"
+      zh_Hans: "kling-v1"
+      pt_BR: "kling-v1"
+      ja_JP: "kling-v1"
+    help:
+      en_US: "Model name for video generation"
+      zh_Hans: "用于视频生成的模型名称"
+      pt_BR: "Nome do modelo para geração de vídeo"
+      ja_JP: "ビデオ生成のモデル名"
+    form: llm
+    options:
+      - value: "kling-v1"
+        label:
+          en_US: "kling-v1"
+          zh_Hans: "kling-v1"
+          pt_BR: "kling-v1"
+          ja_JP: "kling-v1"
+      - value: "kling-v1-6"
+        label:
+          en_US: "kling-v1-6"
+          zh_Hans: "kling-v1-6"
+          pt_BR: "kling-v1-6"
+          ja_JP: "kling-v1-6"
+      - value: "kling-v2-master"
+        label:
+          en_US: "kling-v2-master"
+          zh_Hans: "kling-v2-master"
+          pt_BR: "kling-v2-master"
+          ja_JP: "kling-v2-master"
+      - value: "kling-v2-1-master"
+        label:
+          en_US: "kling-v2-1-master"
+          zh_Hans: "kling-v2-1-master"
+          pt_BR: "kling-v2-1-master"
+          ja_JP: "kling-v2-1-master"
+      - value: "kling-v2-5-turbo"
+        label:
+          en_US: "kling-v2-5-turbo"
+          zh_Hans: "kling-v2-5-turbo"
+          pt_BR: "kling-v2-5-turbo"
+          ja_JP: "kling-v2-5-turbo"
+      - value: "kling-v2-6"
+        label:
+          en_US: "kling-v2-6"
+          zh_Hans: "kling-v2-6"
+          pt_BR: "kling-v2-6"
+          ja_JP: "kling-v2-6"
+  - name: prompt
+    type: string
+    required: true
+    label:
+      en_US: "Prompt"
+      zh_Hans: "提示词"
+      pt_BR: "Prompt"
+      ja_JP: "プロンプト"
+    human_description:
+      en_US: "Video generation prompt"
+      zh_Hans: "视频生成提示词"
+      pt_BR: "Prompt para geração de vídeo"
+      ja_JP: "ビデオ生成プロンプト"
+    llm_description: "Video generation prompt"
+    placeholder:
+      en_US: "A beautiful landscape transition"
+      zh_Hans: "一个美丽的风景过渡"
+      pt_BR: "Uma bela transição de paisagem"
+      ja_JP: "美しい風景のトランジション"
+    help:
+      en_US: "Prompt for video generation"
+      zh_Hans: "用于视频生成的提示词"
+      pt_BR: "Prompt para geração de vídeo"
+      ja_JP: "ビデオ生成のプロンプト"
+    form: llm
+  - name: negative_prompt
+    type: string
+    required: false
+    label:
+      en_US: "Negative Prompt"
+      zh_Hans: "反向提示词"
+      pt_BR: "Prompt Negativo"
+      ja_JP: "ネガティブプロンプト"
+    human_description:
+      en_US: "Negative prompt for video generation"
+      zh_Hans: "视频生成反向提示词"
+      pt_BR: "Prompt negativo para geração de vídeo"
+      ja_JP: "ビデオ生成のネガティブプロンプト"
+    llm_description: "Negative prompt for video generation"
+    placeholder:
+      en_US: "low quality, blurry"
+      zh_Hans: "低质量，模糊"
+      pt_BR: "baixa qualidade, borrado"
+      ja_JP: "低品質、ぼやけた"
+    help:
+      en_US: "Negative prompt to exclude certain elements from the video"
+      zh_Hans: "用于排除视频中某些元素的反向提示词"
+      pt_BR: "Prompt negativo para excluir certos elementos do vídeo"
+      ja_JP: "ビデオから特定の要素を除外するためのネガティブプロンプト"
+    form: llm
+  - name: image
+    type: string
+    required: true
+    label:
+      en_US: "Start Image URL"
+      zh_Hans: "首帧图 URL"
+      pt_BR: "URL da Imagem de Início"
+      ja_JP: "開始画像URL"
+    human_description:
+      en_US: "URL of the start image for video generation"
+      zh_Hans: "用于视频生成的首帧图 URL"
+      pt_BR: "URL da imagem de início para geração de vídeo"
+      ja_JP: "ビデオ生成の開始画像のURL"
+    llm_description: "URL of the start image for video generation"
+    placeholder:
+      en_US: "https://example.com/start.png"
+      zh_Hans: "https://example.com/start.png"
+      pt_BR: "https://example.com/start.png"
+      ja_JP: "https://example.com/start.png"
+    help:
+      en_US: "URL of the first frame image"
+      zh_Hans: "首帧图的 URL"
+      pt_BR: "URL da imagem do primeiro quadro"
+      ja_JP: "最初のフレーム画像のURL"
+    form: llm
+    format: uri
+  - name: image_tail
+    type: string
+    required: true
+    label:
+      en_US: "End Image URL"
+      zh_Hans: "尾帧图 URL"
+      pt_BR: "URL da Imagem de Fim"
+      ja_JP: "終了画像URL"
+    human_description:
+      en_US: "URL of the end image for video generation"
+      zh_Hans: "用于视频生成的尾帧图 URL"
+      pt_BR: "URL da imagem de fim para geração de vídeo"
+      ja_JP: "ビデオ生成の終了画像のURL"
+    llm_description: "URL of the end image for video generation"
+    placeholder:
+      en_US: "https://example.com/end.png"
+      zh_Hans: "https://example.com/end.png"
+      pt_BR: "https://example.com/end.png"
+      ja_JP: "https://example.com/end.png"
+    help:
+      en_US: "URL of the last frame image"
+      zh_Hans: "尾帧图的 URL"
+      pt_BR: "URL da imagem do último quadro"
+      ja_JP: "最後のフレーム画像のURL"
+    form: llm
+    format: uri
+  - name: cfg_scale
+    type: number
+    required: false
+    label:
+      en_US: "CFG Scale"
+      zh_Hans: "CFG 缩放比例"
+      pt_BR: "Escala CFG"
+      ja_JP: "CFG スケール"
+    human_description:
+      en_US: "Classifier-free guidance scale (higher values = more adherence to prompt)"
+      zh_Hans: "无分类器指导缩放比例（值越高，越符合提示词）"
+      pt_BR: "Escala de orientação sem classificador (valores mais altos = mais adesão ao prompt)"
+      ja_JP: "分類器なしガイダンススケール（値が高いほどプロンプトへの準拠度が高くなります）"
+    llm_description: "Classifier-free guidance scale"
+    placeholder:
+      en_US: "7"
+      zh_Hans: "7"
+      pt_BR: "7"
+      ja_JP: "7"
+    help:
+      en_US: "Classifier-free guidance scale (typically 1-20)"
+      zh_Hans: "无分类器指导缩放比例（通常为 1-20）"
+      pt_BR: "Escala de orientação sem classificador (normalmente 1-20)"
+      ja_JP: "分類器なしガイダンススケール（通常は 1-20）"
+    form: llm
+  - name: mode
+    type: select
+    required: false
+    label:
+      en_US: "Mode"
+      zh_Hans: "模式"
+      pt_BR: "Modo"
+      ja_JP: "モード"
+    human_description:
+      en_US: "Generation mode"
+      zh_Hans: "生成模式"
+      pt_BR: "Modo de geração"
+      ja_JP: "生成モード"
+    llm_description: "Generation mode"
+    placeholder:
+      en_US: "std"
+      zh_Hans: "std"
+      pt_BR: "std"
+      ja_JP: "std"
+    help:
+      en_US: "Generation mode (standard)"
+      zh_Hans: "生成模式（标准）"
+      pt_BR: "Modo de geração (padrão)"
+      ja_JP: "生成モード（標準）"
+    form: llm
+    options:
+      - value: "std"
+        label:
+          en_US: "Standard"
+          zh_Hans: "标准"
+          pt_BR: "Padrão"
+          ja_JP: "標準"
+      - value: "pro"
+        label:
+          en_US: "Pro"
+          zh_Hans: "专家模式"
+          pt_BR: "Pro"
+          ja_JP: "プロ"
+  - name: aspect_ratio
+    type: select
+    required: false
+    label:
+      en_US: "Aspect Ratio"
+      zh_Hans: "宽高比"
+      pt_BR: "Razão de Aspecto"
+      ja_JP: "アスペクト比"
+    human_description:
+      en_US: "Video aspect ratio"
+      zh_Hans: "视频宽高比"
+      pt_BR: "Razão de aspecto do vídeo"
+      ja_JP: "ビデオのアスペクト比"
+    llm_description: "Video aspect ratio"
+    placeholder:
+      en_US: "1:1"
+      zh_Hans: "1:1"
+      pt_BR: "1:1"
+      ja_JP: "1:1"
+    help:
+      en_US: "Aspect ratio of the generated video"
+      zh_Hans: "生成视频的宽高比"
+      pt_BR: "Razão de aspecto do vídeo gerado"
+      ja_JP: "生成されたビデオのアスペクト比"
+    form: llm
+    options:
+      - value: "1:1"
+        label:
+          en_US: "1:1"
+          zh_Hans: "1:1"
+          pt_BR: "1:1"
+          ja_JP: "1:1"
+      - value: "9:16"
+        label:
+          en_US: "9:16"
+          zh_Hans: "9:16"
+          pt_BR: "9:16"
+          ja_JP: "9:16"
+      - value: "16:9"
+        label:
+          en_US: "16:9"
+          zh_Hans: "16:9"
+          pt_BR: "16:9"
+          ja_JP: "16:9"
+  - name: duration
+    type: select
+    required: false
+    label:
+      en_US: "Duration (seconds)"
+      zh_Hans: "时长（秒）"
+      pt_BR: "Duração (segundos)"
+      ja_JP: "時間（秒）"
+    human_description:
+      en_US: "Video duration in seconds"
+      zh_Hans: "视频时长（秒）"
+      pt_BR: "Duração do vídeo em segundos"
+      ja_JP: "ビデオの長さ（秒）"
+    llm_description: "Video duration in seconds"
+    placeholder:
+      en_US: 5
+      zh_Hans: 5
+      pt_BR: 5
+      ja_JP: 5
+    help:
+      en_US: "Duration of the generated video in seconds"
+      zh_Hans: "生成视频的时长（秒）"
+      pt_BR: "Duração do vídeo gerado em segundos"
+      ja_JP: "生成されたビデオの長さ（秒）"
+    form: llm
+    options:
+      - value: 5
+        label:
+          en_US: "5"
+          zh_Hans: "5"
+          pt_BR: "5"
+          ja_JP: "5"
+      - value: 10
+        label:
+          en_US: "10"
+          zh_Hans: "10"
+          pt_BR: "10"
+          ja_JP: "10"
+  - name: callback_url
+    type: string
+    required: false
+    label:
+      en_US: "Callback URL"
+      zh_Hans: "回调 URL"
+      pt_BR: "URL de Callback"
+      ja_JP: "コールバックURL"
+    human_description:
+      en_US: "URL to receive generation status updates"
+      zh_Hans: "接收生成状态更新的 URL"
+      pt_BR: "URL para receber atualizações de status de geração"
+      ja_JP: "生成ステータス更新を受信するURL"
+    llm_description: "URL to receive generation status updates"
+    placeholder:
+      en_US: "https://example.com/callback"
+      zh_Hans: "https://example.com/callback"
+      pt_BR: "https://example.com/callback"
+      ja_JP: "https://example.com/callback"
+    help:
+      en_US: "Webhook URL to receive video generation status updates"
+      zh_Hans: "接收视频生成状态更新的 Webhook URL"
+      pt_BR: "URL do webhook para receber atualizações de status de geração de vídeo"
+      ja_JP: "ビデオ生成ステータス更新を受信するWebhook URL"
+    form: llm
+    format: uri
+  - name: external_task_id
+    type: string
+    required: false
+    label:
+      en_US: "External Task ID"
+      zh_Hans: "外部任务 ID"
+      pt_BR: "ID da Tarefa Externa"
+      ja_JP: "外部タスクID"
+    human_description:
+      en_US: "Custom external task identifier"
+      zh_Hans: "自定义外部任务标识符"
+      pt_BR: "Identificador personalizado de tarefa externa"
+      ja_JP: "カスタム外部タスク識別子"
+    llm_description: "Custom external task identifier"
+    placeholder:
+      en_US: "task-123"
+      zh_Hans: "task-123"
+      pt_BR: "task-123"
+      ja_JP: "task-123"
+    help:
+      en_US: "Custom identifier to track the task in your system"
+      zh_Hans: "在您的系统中跟踪任务的自定义标识符"
+      pt_BR: "Identificador personalizado para rastrear a tarefa no seu sistema"
+      ja_JP: "システム内でタスクを追跡するためのカスタム識別子"
+    form: llm
+  - name: enable_audio
+    type: boolean
+    required: false
+    label:
+      en_US: "Enable Audio"
+      zh_Hans: "启用音频"
+      pt_BR: "Habilitar Áudio"
+      ja_JP: "オーディオを有効にする"
+    human_description:
+      en_US: "Whether to generate audio for the video"
+      zh_Hans: "是否为视频生成音频"
+      pt_BR: "Se gerar áudio para o vídeo"
+      ja_JP: "ビデオにオーディオを生成するかどうか"
+    llm_description: "Whether to generate audio for the video"
+    placeholder:
+      en_US: "true"
+      zh_Hans: "true"
+      pt_BR: "true"
+      ja_JP: "true"
+    help:
+      en_US: "Enable audio generation for the video"
+      zh_Hans: "为视频启用音频生成"
+      pt_BR: "Habilitar geração de áudio para o vídeo"
+      ja_JP: "ビデオのオーディオ生成を有効にする"
+    form: llm
+extra:
+  python:
+    source: tools/klingus_image2video.py

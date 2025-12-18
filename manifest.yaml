@@ -1,17 +1,17 @@
 version: 0.0.1
 type: plugin
 author: modellink
-name: api
+name: ai-media-generation
 label:
-  en_US: api
-  ja_JP: api
-  zh_Hans: api
-  pt_BR: api
+  en_US: Ai Media Generation
+  ja_JP: AI メディア生成
+  zh_Hans: Ai 媒体生成
+  pt_BR: Geração de Mídia AI
 description:
-  en_US: Model Link 官方 API 插件
-  ja_JP: Model Link 官方 API 插件
-  zh_Hans: Model Link 官方 API 插件
-  pt_BR: Model Link 官方 API 插件
+  en_US: Model Link Official AI Media Generation API Plugin
+  ja_JP: Model Link 公式 AI メディア生成 API プラグイン
+  zh_Hans: Model Link 官方 AI 媒体生成 API 插件
+  pt_BR: Plugin de API Oficial de Geração de Mídia AI do Model Link
 icon: icon.svg
 icon_dark: icon-dark.svg
 resource:

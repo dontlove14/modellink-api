@@ -1,0 +1,69 @@
+identity:
+  name: "klingus_text2video_query"
+  author: "modellink"
+  label:
+    en_US: "Klingus Text to Video Query"
+    zh_Hans: "可灵 文生视频查询"
+    pt_BR: "Klingus Texto para Vídeo Consulta"
+    ja_JP: "Klingus テキストからビデオクエリ"
+description:
+  human:
+    en_US: "Query the status and result of text to video generation task using Klingus API"
+    zh_Hans: "使用可灵 API 查询文生视频生成任务的状态和结果"
+    pt_BR: "Consultar o status e o resultado da tarefa de geração de texto para vídeo usando a API Klingus"
+    ja_JP: "Klingus API を使用してテキストからビデオ生成タスクのステータスと結果を照会します"
+  llm: "Klingus Text to Video Query API"
+parameters:
+  - name: api_key
+    type: secret-input
+    required: true
+    label:
+      en_US: "API Key"
+      zh_Hans: "API 密钥"
+      pt_BR: "Chave da API"
+      ja_JP: "API キー"
+    human_description:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    llm_description: "API key for authentication"
+    placeholder:
+      en_US: "sk-..."
+      zh_Hans: "sk-..."
+      pt_BR: "sk-..."
+      ja_JP: "sk-..."
+    help:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    form: llm
+  - name: task_id
+    type: string
+    required: true
+    label:
+      en_US: "Task ID"
+      zh_Hans: "任务 ID"
+      pt_BR: "ID da Tarefa"
+      ja_JP: "タスクID"
+    human_description:
+      en_US: "Task ID returned by the text to video generation API"
+      zh_Hans: "文生视频生成 API 返回的任务 ID"
+      pt_BR: "ID da tarefa retornado pela API de geração de texto para vídeo"
+      ja_JP: "テキストからビデオ生成APIによって返されるタスクID"
+    llm_description: "Task ID returned by the text to video generation API"
+    placeholder:
+      en_US: "task-123"
+      zh_Hans: "task-123"
+      pt_BR: "task-123"
+      ja_JP: "task-123"
+    help:
+      en_US: "The unique identifier of the video generation task"
+      zh_Hans: "视频生成任务的唯一标识符"
+      pt_BR: "O identificador único da tarefa de geração de vídeo"
+      ja_JP: "ビデオ生成タスクの一意の識別子"
+    form: llm
+extra:
+  python:
+    source: tools/klingus_text2video_query.py
