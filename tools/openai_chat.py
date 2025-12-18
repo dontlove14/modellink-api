@@ -25,19 +25,21 @@ class OpenAIChatTool(Tool):
             messages = tool_parameters.get('messages', [])
             prompt = tool_parameters.get('prompt')
             model = tool_parameters.get('model', 'gpt-4o')
-            temperature = tool_parameters.get('temperature')
-            maxCompletionTokens = tool_parameters.get('maxCompletionTokens')
-            topP = tool_parameters.get('topP')
-            frequencyPenalty = tool_parameters.get('frequencyPenalty')
-            presencePenalty = tool_parameters.get('presencePenalty')
-            n = tool_parameters.get('n')
-            stop = tool_parameters.get('stop')
-            responseFormat = tool_parameters.get('responseFormat')
-            reasoningEffort = tool_parameters.get('reasoningEffort')
-            seed = tool_parameters.get('seed')
-            logitBias = tool_parameters.get('logitBias')
-            logprobs = tool_parameters.get('logprobs')
-            topLogprobs = tool_parameters.get('topLogprobs')
+            
+            # 处理参数，跳过值为'variable'的参数
+            temperature = tool_parameters.get('temperature') if tool_parameters.get('temperature') != 'variable' else None
+            maxCompletionTokens = tool_parameters.get('maxCompletionTokens') if tool_parameters.get('maxCompletionTokens') != 'variable' else None
+            topP = tool_parameters.get('topP') if tool_parameters.get('topP') != 'variable' else None
+            frequencyPenalty = tool_parameters.get('frequencyPenalty') if tool_parameters.get('frequencyPenalty') != 'variable' else None
+            presencePenalty = tool_parameters.get('presencePenalty') if tool_parameters.get('presencePenalty') != 'variable' else None
+            n = tool_parameters.get('n') if tool_parameters.get('n') != 'variable' else None
+            stop = tool_parameters.get('stop') if tool_parameters.get('stop') != 'variable' else None
+            responseFormat = tool_parameters.get('responseFormat') if tool_parameters.get('responseFormat') != 'variable' else None
+            reasoningEffort = tool_parameters.get('reasoningEffort') if tool_parameters.get('reasoningEffort') != 'variable' else None
+            seed = tool_parameters.get('seed') if tool_parameters.get('seed') != 'variable' else None
+            logitBias = tool_parameters.get('logitBias') if tool_parameters.get('logitBias') != 'variable' else None
+            logprobs = tool_parameters.get('logprobs') if tool_parameters.get('logprobs') != 'variable' else None
+            topLogprobs = tool_parameters.get('topLogprobs') if tool_parameters.get('topLogprobs') != 'variable' else None
             
             logger.info(f'[OpenAI Chat] 开始对话，模型: {model}')
             

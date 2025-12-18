@@ -58,7 +58,7 @@ class BananaGenTool(Tool):
             api_key = tool_parameters.get('api_key')
             model = tool_parameters.get('model')
             prompt = tool_parameters.get('prompt')
-            reference_image_url = tool_parameters.get('reference_image_url', [])
+            reference_image_urls = tool_parameters.get('reference_image_urls', '')
             ratio = tool_parameters.get('ratio')
             size = tool_parameters.get('size')
             
@@ -76,13 +76,42 @@ class BananaGenTool(Tool):
                 parts.append({'text': prompt})
             
             # 处理参考图片（最多14张）
-            if reference_image_url and isinstance(reference_image_url, list):
-                max_images = min(len(reference_image_url), 14)
+            urls_to_process = []
+            
+            # 处理不同类型的 reference_image_urls 参数
+            if reference_image_urls:
+                if isinstance(reference_image_urls, str):
+                    # 旧格式：CSV 字符串
+                    urls_to_process = [url.strip() for url in reference_image_urls.split(',') if url.strip()]
+                elif isinstance(reference_image_urls, list):
+                    # 新格式：文件对象列表
+                    for item in reference_image_urls:
+                        if isinstance(item, dict):
+                            # 从文件对象中提取 URL
+                            image_url = item.get('url') or item.get('remote_url')
+                            if image_url:
+                                urls_to_process.append(image_url)
+                elif isinstance(reference_image_urls, dict):
+                    # 单文件对象
+                    image_url = reference_image_urls.get('url') or reference_image_urls.get('remote_url')
+                    if image_url:
+                        urls_to_process = [image_url]
+            
+            max_images = min(len(urls_to_process), 14)
+            if max_images > 0:
                 logger.info(f'[BananaGen] 处理 {max_images} 张参考图片')
                 
                 for i in range(max_images):
-                    image_url = reference_image_url[i]
+                    image_url = urls_to_process[i]
                     try:
+                        # 确保 URL 是完整的，添加 API host 前缀
+                        if not image_url.startswith('http'):
+                            # 处理相对路径，添加完整的 API host
+                            if image_url.startswith('/'):
+                                image_url = f"https://api.modellink.online{image_url}"
+                            else:
+                                image_url = f"https://api.modellink.online/{image_url}"
+                        
                         # 下载图片并转换为 base64
                         image_data = self._download_image_as_base64(image_url)
                         

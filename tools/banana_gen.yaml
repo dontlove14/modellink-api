@@ -40,7 +40,7 @@ parameters:
       ja_JP: "認証用のAPIキー"
     form: llm
   - name: model
-    type: string
+    type: select
     required: true
     label:
       en_US: Model Name
@@ -63,9 +63,19 @@ parameters:
       zh_Hans: "要使用的模型名称"
       pt_BR: "Nome do modelo a ser usado"
       ja_JP: "使用するモデル名"
-    enum:
-      - gemini-2.5-flash-image
-      - gemini-3-pro-image-preview
+    options:
+      - value: gemini-2.5-flash-image
+        label:
+          en_US: gemini-2.5-flash-image
+          zh_Hans: gemini-2.5-flash-image
+          pt_BR: gemini-2.5-flash-image
+          ja_JP: gemini-2.5-flash-image
+      - value: gemini-3-pro-image-preview
+        label:
+          en_US: gemini-3-pro-image-preview
+          zh_Hans: gemini-3-pro-image-preview
+          pt_BR: gemini-3-pro-image-preview
+          ja_JP: gemini-3-pro-image-preview
     form: llm
   - name: prompt
     type: string
@@ -92,8 +102,8 @@ parameters:
       pt_BR: "Prompt para geração de imagem"
       ja_JP: "画像生成のためのプロンプト"
     form: llm
-  - name: reference_image_url
-    type: array
+  - name: reference_image_urls
+    type: string
     required: false
     label:
       en_US: Reference Image URLs
@@ -101,24 +111,24 @@ parameters:
       pt_BR: URLs de Imagens de Referência
       ja_JP: 参照画像URL
     human_description:
-      en_US: "List of reference image URLs (max 14 images)"
-      zh_Hans: "参考图列表（最多支持 14 张）"
-      pt_BR: "Lista de URLs de imagens de referência (máximo 14 imagens)"
-      ja_JP: "参照画像URLのリスト（最大14枚）"
-    llm_description: "List of reference image URLs (max 14 images)"
+      en_US: "List of reference image URLs separated by English commas (max 14 images), delimiter: English comma"
+      zh_Hans: "参考图URL列表，使用英文逗号分隔（最多支持 14 张），分隔符：英文逗号"
+      pt_BR: "Lista de URLs de imagens de referência separadas por vírgulas em inglês (máximo 14 imagens), delimitador: vírgula em inglês"
+      ja_JP: "参照画像URLのリスト（最大14枚）、英語のカンマで区切り、区切り文字：英語のカンマ"
+    llm_description: "Comma-separated list of reference image URLs (max 14 images)"
     placeholder:
-      en_US: '["image1.jpg", "image2.jpg"]'
-      zh_Hans: '["图片1.jpg", "图片2.jpg"]'
-      pt_BR: '["imagem1.jpg", "imagem2.jpg"]'
-      ja_JP: '["画像1.jpg", "画像2.jpg"]'
+      en_US: "image1.jpg, image2.jpg"
+      zh_Hans: "图片1.jpg, 图片2.jpg"
+      pt_BR: "imagem1.jpg, imagem2.jpg"
+      ja_JP: "画像1.jpg, 画像2.jpg"
     help:
-      en_US: "List of reference image URLs (max 14 images)"
-      zh_Hans: "参考图列表（最多支持 14 张）"
-      pt_BR: "Lista de URLs de imagens de referência (máximo 14 imagens)"
-      ja_JP: "参照画像URLのリスト（最大14枚）"
+      en_US: "List of reference image URLs separated by English commas (max 14 images), e.g.: image1.jpg, image2.jpg, delimiter: English comma"
+      zh_Hans: "参考图URL列表，使用英文逗号分隔（最多支持 14 张），例如：图片1.jpg, 图片2.jpg，分隔符：英文逗号"
+      pt_BR: "Lista de URLs de imagens de referência separadas por vírgulas em inglês (máximo 14 imagens), ex.: imagem1.jpg, imagem2.jpg, delimitador: vírgula em inglês"
+      ja_JP: "参照画像URLのリスト（最大14枚）、英語のカンマで区切り、例：画像1.jpg, 画像2.jpg、区切り文字：英語のカンマ"
     form: llm
   - name: ratio
-    type: string
+    type: select
     required: false
     label:
       en_US: Aspect Ratio
@@ -141,20 +151,70 @@ parameters:
       zh_Hans: "图像宽高比"
       pt_BR: "Proporção da imagem"
       ja_JP: "画像のアスペクト比"
-    enum:
-      - "1:1"
-      - "2:3"
-      - "3:2"
-      - "3:4"
-      - "4:3"
-      - "4:5"
-      - "5:4"
-      - "9:16"
-      - "16:9"
-      - "21:9"
+    options:
+      - value: "1:1"
+        label:
+          en_US: "1:1"
+          zh_Hans: "1:1"
+          pt_BR: "1:1"
+          ja_JP: "1:1"
+      - value: "2:3"
+        label:
+          en_US: "2:3"
+          zh_Hans: "2:3"
+          pt_BR: "2:3"
+          ja_JP: "2:3"
+      - value: "3:2"
+        label:
+          en_US: "3:2"
+          zh_Hans: "3:2"
+          pt_BR: "3:2"
+          ja_JP: "3:2"
+      - value: "3:4"
+        label:
+          en_US: "3:4"
+          zh_Hans: "3:4"
+          pt_BR: "3:4"
+          ja_JP: "3:4"
+      - value: "4:3"
+        label:
+          en_US: "4:3"
+          zh_Hans: "4:3"
+          pt_BR: "4:3"
+          ja_JP: "4:3"
+      - value: "4:5"
+        label:
+          en_US: "4:5"
+          zh_Hans: "4:5"
+          pt_BR: "4:5"
+          ja_JP: "4:5"
+      - value: "5:4"
+        label:
+          en_US: "5:4"
+          zh_Hans: "5:4"
+          pt_BR: "5:4"
+          ja_JP: "5:4"
+      - value: "9:16"
+        label:
+          en_US: "9:16"
+          zh_Hans: "9:16"
+          pt_BR: "9:16"
+          ja_JP: "9:16"
+      - value: "16:9"
+        label:
+          en_US: "16:9"
+          zh_Hans: "16:9"
+          pt_BR: "16:9"
+          ja_JP: "16:9"
+      - value: "21:9"
+        label:
+          en_US: "21:9"
+          zh_Hans: "21:9"
+          pt_BR: "21:9"
+          ja_JP: "21:9"
     form: llm
   - name: size
-    type: string
+    type: select
     required: false
     label:
       en_US: Image Size
@@ -177,10 +237,25 @@ parameters:
       zh_Hans: "图像分辨率（仅 gemini-3-pro-image-preview 支持）"
       pt_BR: "Resolução da imagem (apenas suportada por gemini-3-pro-image-preview)"
       ja_JP: "画像解像度（gemini-3-pro-image-preview でのみサポート）"
-    enum:
-      - "1K"
-      - "2K"
-      - "4K"
+    options:
+      - value: "1K"
+        label:
+          en_US: "1K"
+          zh_Hans: "1K"
+          pt_BR: "1K"
+          ja_JP: "1K"
+      - value: "2K"
+        label:
+          en_US: "2K"
+          zh_Hans: "2K"
+          pt_BR: "2K"
+          ja_JP: "2K"
+      - value: "4K"
+        label:
+          en_US: "4K"
+          zh_Hans: "4K"
+          pt_BR: "4K"
+          ja_JP: "4K"
     form: llm
 extra:
   python:

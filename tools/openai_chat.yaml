@@ -41,29 +41,83 @@ parameters:
     form: llm
   - name: messages
     type: array
-    required: false
+    required: true
     label:
       en_US: Messages
       zh_Hans: 对话消息
       pt_BR: Mensagens
       ja_JP: メッセージ
     human_description:
-      en_US: "List of conversation messages"
-      zh_Hans: "对话消息列表"
-      pt_BR: "Lista de mensagens de conversa"
-      ja_JP: "会話メッセージのリスト"
-    llm_description: "List of conversation messages"
+      en_US: "List of conversation messages, each with role and content"
+      zh_Hans: "对话消息列表，每条消息包含角色和内容"
+      pt_BR: "Lista de mensagens de conversa, cada uma com papel e conteúdo"
+      ja_JP: "会話メッセージのリスト，各メッセージにはロールとコンテンツが含まれます"
+    llm_description: "List of conversation messages, each with role and content"
     placeholder:
       en_US: '[{"role": "user", "content": "Hello"}]'
       zh_Hans: '[{"role": "user", "content": "你好"}]'
       pt_BR: '[{"role": "user", "content": "Olá"}]'
       ja_JP: '[{"role": "user", "content": "こんにちは"}]'
     help:
-      en_US: "List of conversation messages"
-      zh_Hans: "对话消息列表"
-      pt_BR: "Lista de mensagens de conversa"
-      ja_JP: "会話メッセージのリスト"
+      en_US: "Array of message objects, each with role (system, user, assistant, tool) and content"
+      zh_Hans: "消息对象数组，每个对象包含角色（system、user、assistant、tool）和内容"
+      pt_BR: "Array de objetos de mensagem, cada um com papel (system, user, assistant, tool) e conteúdo"
+      ja_JP: "メッセージオブジェクトの配列、各オブジェクトにはロール（system、user、assistant、tool）とコンテンツが含まれます"
     form: llm
+    items:
+      type: object
+      properties:
+        role:
+          type: string
+          required: true
+          enum: [system, user, assistant, tool]
+          description: "The role of the message sender"
+        content:
+          oneOf:
+            - type: string
+              description: "Text content of the message"
+            - type: array
+              description: "Multi-modal content array"
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [text, image_url]
+                    description: "Type of content item"
+                  text:
+                    type: string
+                    description: "Text content"
+                  image_url:
+                    type: object
+                    description: "Image URL object"
+                    properties:
+                      url:
+                        type: string
+                        description: "URL of the image"
+                        format: uri
+                      detail:
+                        type: string
+                        enum: [auto, low, high]
+                        description: "Image detail level"
+                    required: [url]
+                required: [type]
+            - type: object
+              description: "Single content object"
+              properties:
+                type:
+                  type: string
+                  enum: [text]
+                  description: "Type of content"
+                text:
+                  type: string
+                  description: "Text content"
+                content:
+                  type: string
+                  description: "Alternative text content field"
+              required: [type]
+          required: true
+          description: "The content of the message, can be text, multi-modal array, or single content object"
   - name: prompt
     type: string
     required: false
@@ -91,15 +145,15 @@ parameters:
     form: llm
   - name: model
     type: string
-    required: false
+    required: true
     label:
       en_US: Model
       zh_Hans: 模型
       pt_BR: Modelo
       ja_JP: モデル
     human_description:
-      en_US: "Model name (default: gpt-4o)"
-      zh_Hans: "模型名称（默认：gpt-4o）"
+      en_US: "Model name"
+      zh_Hans: "模型名称"
       pt_BR: "Nome do modelo (padrão: gpt-4o)"
       ja_JP: "モデル名（デフォルト：gpt-4o）"
     llm_description: "Model name (default: gpt-4o)"
@@ -109,10 +163,10 @@ parameters:
       pt_BR: "gpt-4o"
       ja_JP: "gpt-4o"
     help:
-      en_US: "Model name (default: gpt-4o)"
-      zh_Hans: "模型名称（默认：gpt-4o）"
-      pt_BR: "Nome do modelo (padrão: gpt-4o)"
-      ja_JP: "モデル名（デフォルト：gpt-4o）"
+      en_US: "Model name"
+      zh_Hans: "模型名称"
+      pt_BR: "Nome do model"
+      ja_JP: "モデル名"
     form: llm
   - name: temperature
     type: number
@@ -123,22 +177,25 @@ parameters:
       pt_BR: Temperatura
       ja_JP: 温度
     human_description:
-      en_US: "Temperature for sampling"
-      zh_Hans: "采样温度"
-      pt_BR: "Temperatura para amostragem"
-      ja_JP: "サンプリングの温度"
-    llm_description: "Temperature for sampling"
+      en_US: "Temperature for sampling (0 to 2)"
+      zh_Hans: "采样温度（0 到 2）"
+      pt_BR: "Temperatura para amostragem (0 a 2)"
+      ja_JP: "サンプリングの温度（0 から 2）"
+    llm_description: "Temperature for sampling (0 to 2)"
     placeholder:
       en_US: "0.7"
       zh_Hans: "0.7"
       pt_BR: "0.7"
       ja_JP: "0.7"
     help:
-      en_US: "Temperature for sampling"
-      zh_Hans: "采样温度"
-      pt_BR: "Temperatura para amostragem"
-      ja_JP: "サンプリングの温度"
+      en_US: "Controls randomness: lower values make output more deterministic, higher values more random (0-2)"
+      zh_Hans: "控制随机性：值越低输出越确定，值越高越随机（0-2）"
+      pt_BR: "Controla a aleatoriedade: valores mais baixos tornam a saída mais determinística, valores mais altos mais aleatória (0-2)"
+      ja_JP: "ランダム性を制御します：値が低いほど出力は決定的になり、値が高いほどランダムになります（0-2）"
     form: llm
+    minimum: 0
+    maximum: 2
+    step: 0.1
   - name: maxCompletionTokens
     type: number
     required: false
@@ -159,11 +216,12 @@ parameters:
       pt_BR: "4096"
       ja_JP: "4096"
     help:
-      en_US: "Maximum completion tokens"
-      zh_Hans: "最大完成 tokens"
-      pt_BR: "Número máximo de tokens de conclusão"
-      ja_JP: "最大完了トークン数"
+      en_US: "The maximum number of tokens to generate in the completion"
+      zh_Hans: "生成的完成内容的最大 tokens 数"
+      pt_BR: "O número máximo de tokens a serem gerados na conclusão"
+      ja_JP: "完了で生成されるトークンの最大数"
     form: llm
+    minimum: 1
   - name: topP
     type: number
     required: false
@@ -173,22 +231,25 @@ parameters:
       pt_BR: Top P
       ja_JP: Top P
     human_description:
-      en_US: "Top P sampling"
-      zh_Hans: "Top P 采样"
-      pt_BR: "Amostragem Top P"
-      ja_JP: "Top P サンプリング"
-    llm_description: "Top P sampling"
+      en_US: "Top P sampling (0 to 1)"
+      zh_Hans: "Top P 采样（0 到 1）"
+      pt_BR: "Amostragem Top P (0 a 1)"
+      ja_JP: "Top P サンプリング（0 から 1）"
+    llm_description: "Top P sampling (0 to 1)"
     placeholder:
       en_US: "1.0"
       zh_Hans: "1.0"
       pt_BR: "1.0"
       ja_JP: "1.0"
     help:
-      en_US: "Top P sampling"
-      zh_Hans: "Top P 采样"
-      pt_BR: "Amostragem Top P"
-      ja_JP: "Top P サンプリング"
+      en_US: "Nucleus sampling: only consider tokens with cumulative probability <= this value (0-1)"
+      zh_Hans: "核采样：只考虑累积概率 <= 此值的 tokens（0-1）"
+      pt_BR: "Amostragem de núcleo: considere apenas tokens com probabilidade cumulativa <= este valor (0-1)"
+      ja_JP: "ヌクレウスサンプリング：累積確率がこの値以下のトークンのみを考慮します（0-1）"
     form: llm
+    minimum: 0
+    maximum: 1
+    step: 0.1
   - name: frequencyPenalty
     type: number
     required: false
@@ -198,22 +259,25 @@ parameters:
       pt_BR: Penalidade de Frequência
       ja_JP: 頻度ペナルティ
     human_description:
-      en_US: "Frequency penalty"
-      zh_Hans: "频率惩罚"
-      pt_BR: "Penalidade de frequência"
-      ja_JP: "頻度ペナルティ"
-    llm_description: "Frequency penalty"
+      en_US: "Frequency penalty (-2 to 2)"
+      zh_Hans: "频率惩罚（-2 到 2）"
+      pt_BR: "Penalidade de frequência (-2 a 2)"
+      ja_JP: "頻度ペナルティ（-2 から 2）"
+    llm_description: "Frequency penalty (-2 to 2)"
     placeholder:
       en_US: "0.0"
       zh_Hans: "0.0"
       pt_BR: "0.0"
       ja_JP: "0.0"
     help:
-      en_US: "Frequency penalty"
-      zh_Hans: "频率惩罚"
-      pt_BR: "Penalidade de frequência"
-      ja_JP: "頻度ペナルティ"
+      en_US: "Decreases the likelihood of repeating the same line of text (-2 to 2)"
+      zh_Hans: "降低重复相同文本行的可能性（-2 到 2）"
+      pt_BR: "Diminui a probabilidade de repetir a mesma linha de texto (-2 a 2)"
+      ja_JP: "同じテキスト行を繰り返す可能性を減少させます（-2 から 2）"
     form: llm
+    minimum: -2
+    maximum: 2
+    step: 0.1
   - name: presencePenalty
     type: number
     required: false
@@ -223,22 +287,25 @@ parameters:
       pt_BR: Penalidade de Presença
       ja_JP: 存在ペナルティ
     human_description:
-      en_US: "Presence penalty"
-      zh_Hans: "存在惩罚"
-      pt_BR: "Penalidade de presença"
-      ja_JP: "存在ペナルティ"
-    llm_description: "Presence penalty"
+      en_US: "Presence penalty (-2 to 2)"
+      zh_Hans: "存在惩罚（-2 到 2）"
+      pt_BR: "Penalidade de presença (-2 a 2)"
+      ja_JP: "存在ペナルティ（-2 から 2）"
+    llm_description: "Presence penalty (-2 to 2)"
     placeholder:
       en_US: "0.0"
       zh_Hans: "0.0"
       pt_BR: "0.0"
       ja_JP: "0.0"
     help:
-      en_US: "Presence penalty"
-      zh_Hans: "存在惩罚"
-      pt_BR: "Penalidade de presença"
-      ja_JP: "存在ペナルティ"
+      en_US: "Increases the likelihood of introducing new topics (-2 to 2)"
+      zh_Hans: "增加引入新主题的可能性（-2 到 2）"
+      pt_BR: "Aumenta a probabilidade de introduzir novos tópicos (-2 a 2)"
+      ja_JP: "新しいトピックを導入する可能性を高めます（-2 から 2）"
     form: llm
+    minimum: -2
+    maximum: 2
+    step: 0.1
   - name: n
     type: number
     required: false
@@ -248,24 +315,26 @@ parameters:
       pt_BR: N
       ja_JP: N
     human_description:
-      en_US: "Number of completions"
-      zh_Hans: "完成数量"
-      pt_BR: "Número de conclusões"
-      ja_JP: "完了数"
-    llm_description: "Number of completions"
+      en_US: "Number of completions (1 to 128)"
+      zh_Hans: "完成数量（1 到 128）"
+      pt_BR: "Número de conclusões (1 a 128)"
+      ja_JP: "完了数（1 から 128）"
+    llm_description: "Number of completions (1 to 128)"
     placeholder:
       en_US: "1"
       zh_Hans: "1"
       pt_BR: "1"
       ja_JP: "1"
     help:
-      en_US: "Number of completions"
-      zh_Hans: "完成数量"
-      pt_BR: "Número de conclusões"
-      ja_JP: "完了数"
+      en_US: "Number of chat completion choices to generate for each input message"
+      zh_Hans: "为每条输入消息生成的聊天完成选项数量"
+      pt_BR: "Número de opções de conclusão de chat a serem geradas para cada mensagem de entrada"
+      ja_JP: "各入力メッセージに対して生成するチャット完了オプションの数"
     form: llm
+    minimum: 1
+    maximum: 128
   - name: stop
-    type: any
+    type: array
     required: false
     label:
       en_US: Stop
@@ -273,22 +342,24 @@ parameters:
       pt_BR: Parar
       ja_JP: ストップシーケンス
     human_description:
-      en_US: "Stop sequences"
-      zh_Hans: "停止序列"
-      pt_BR: "Sequências de parada"
-      ja_JP: "ストップシーケンス"
-    llm_description: "Stop sequences"
+      en_US: "Stop sequences (array of strings)"
+      zh_Hans: "停止序列（字符串数组）"
+      pt_BR: "Sequências de parada (array de strings)"
+      ja_JP: "ストップシーケンス（文字列配列）"
+    llm_description: "Stop sequences (array of strings)"
     placeholder:
       en_US: '["\n", "User:"]'
       zh_Hans: '["\n", "用户："]'
       pt_BR: '["\n", "Usuário:"]'
       ja_JP: '["\n", "ユーザー："]'
     help:
-      en_US: "Stop sequences"
-      zh_Hans: "停止序列"
-      pt_BR: "Sequências de parada"
-      ja_JP: "ストップシーケンス"
+      en_US: "Array of strings where the model will stop generating further tokens"
+      zh_Hans: "模型停止生成更多 tokens 的字符串数组"
+      pt_BR: "Array de strings onde o modelo irá parar de gerar mais tokens"
+      ja_JP: "モデルがこれ以上トークンを生成するのを停止する文字列の配列"
     form: llm
+    items:
+      type: string
   - name: responseFormat
     type: object
     required: false
@@ -298,24 +369,30 @@ parameters:
       pt_BR: Formato de Resposta
       ja_JP: レスポンスフォーマット
     human_description:
-      en_US: "Response format"
-      zh_Hans: "响应格式"
-      pt_BR: "Formato de resposta"
-      ja_JP: "レスポンスフォーマット"
-    llm_description: "Response format"
+      en_US: "Response format configuration"
+      zh_Hans: "响应格式配置"
+      pt_BR: "Configuração de formato de resposta"
+      ja_JP: "レスポンスフォーマットの設定"
+    llm_description: "Response format configuration"
     placeholder:
       en_US: '{"type": "json_object"}'
       zh_Hans: '{"type": "json_object"}'
       pt_BR: '{"type": "json_object"}'
       ja_JP: '{"type": "json_object"}'
     help:
-      en_US: "Response format"
-      zh_Hans: "响应格式"
-      pt_BR: "Formato de resposta"
-      ja_JP: "レスポンスフォーマット"
+      en_US: "Specifies the format of the response, either 'text' or 'json_object'"
+      zh_Hans: "指定响应的格式，可选 'text' 或 'json_object'"
+      pt_BR: "Especifica o formato da resposta, 'text' ou 'json_object'"
+      ja_JP: "レスポンスの形式を指定します。'text' または 'json_object' のいずれか"
     form: llm
+    properties:
+      type:
+        type: string
+        required: true
+        enum: [text, json_object]
+        description: "The format type, either 'text' or 'json_object'"
   - name: reasoningEffort
-    type: string
+    type: select
     required: false
     label:
       en_US: Reasoning Effort
@@ -323,22 +400,41 @@ parameters:
       pt_BR: Esforço de Raciocínio
       ja_JP: 推論の努力
     human_description:
-      en_US: "Reasoning effort"
-      zh_Hans: "推理努力"
-      pt_BR: "Esforço de raciocínio"
-      ja_JP: "推論の努力"
-    llm_description: "Reasoning effort"
+      en_US: "Reasoning effort level"
+      zh_Hans: "推理努力程度"
+      pt_BR: "Nível de esforço de raciocínio"
+      ja_JP: "推論の努力レベル"
+    llm_description: "Reasoning effort level"
     placeholder:
       en_US: "medium"
       zh_Hans: "medium"
       pt_BR: "medium"
       ja_JP: "medium"
     help:
-      en_US: "Reasoning effort"
-      zh_Hans: "推理努力"
-      pt_BR: "Esforço de raciocínio"
-      ja_JP: "推論の努力"
+      en_US: "Specifies the level of reasoning effort, affecting response quality and speed"
+      zh_Hans: "指定推理努力程度，影响响应质量和速度"
+      pt_BR: "Especifica o nível de esforço de raciocínio, afetando a qualidade e velocidade da resposta"
+      ja_JP: "推論の努力レベルを指定します。応答の品質と速度に影響します"
     form: llm
+    options:
+      - value: low
+        label:
+          en_US: Low
+          zh_Hans: 低
+          pt_BR: Baixo
+          ja_JP: 低
+      - value: medium
+        label:
+          en_US: Medium
+          zh_Hans: 中
+          pt_BR: Médio
+          ja_JP: 中
+      - value: high
+        label:
+          en_US: High
+          zh_Hans: 高
+          pt_BR: Alto
+          ja_JP: 高
   - name: seed
     type: number
     required: false
@@ -359,10 +455,10 @@ parameters:
       pt_BR: "12345"
       ja_JP: "12345"
     help:
-      en_US: "Seed for reproducibility"
-      zh_Hans: "用于重现性的种子"
-      pt_BR: "Semente para reprodutibilidade"
-      ja_JP: "再現性のためのシード"
+      en_US: "If specified, the system will make a best effort to produce the same result for the same seed and parameters"
+      zh_Hans: "如果指定，系统将尽力为相同的种子和参数产生相同的结果"
+      pt_BR: "Se especificado, o sistema fará o máximo esforço para produzir o mesmo resultado para a mesma semente e parâmetros"
+      ja_JP: "指定された場合、システムは同じシードとパラメーターに対して同じ結果を生成するよう努めます"
     form: llm
   - name: logitBias
     type: object
@@ -373,21 +469,21 @@ parameters:
       pt_BR: Viés Logit
       ja_JP: Logit バイアス
     human_description:
-      en_US: "Logit bias"
-      zh_Hans: "Logit 偏差"
-      pt_BR: "Viés logit"
-      ja_JP: "Logit バイアス"
-    llm_description: "Logit bias"
+      en_US: "Logit bias configuration"
+      zh_Hans: "Logit 偏差配置"
+      pt_BR: "Configuração de viés logit"
+      ja_JP: "Logit バイアスの設定"
+    llm_description: "Logit bias configuration"
     placeholder:
       en_US: '{"1000": -100}'
       zh_Hans: '{"1000": -100}'
       pt_BR: '{"1000": -100}'
       ja_JP: '{"1000": -100}'
     help:
-      en_US: "Logit bias"
-      zh_Hans: "Logit 偏差"
-      pt_BR: "Viés logit"
-      ja_JP: "Logit バイアス"
+      en_US: "Modify the likelihood of specified tokens appearing in the completion. Maps token IDs to bias values (-100 to 100)"
+      zh_Hans: "修改指定 tokens 在完成中出现的可能性。将 token IDs 映射到偏差值（-100 到 100）"
+      pt_BR: "Modifique a probabilidade de tokens específicos aparecerem na conclusão. Mapeia IDs de tokens para valores de viés (-100 a 100)"
+      ja_JP: "完成に特定のトークンが出現する可能性を変更します。トークン ID をバイアス値（-100 から 100）にマッピングします"
     form: llm
   - name: logprobs
     type: boolean
@@ -423,22 +519,24 @@ parameters:
       pt_BR: Top Logprobs
       ja_JP: Top Logprobs
     human_description:
-      en_US: "Top logprobs to return"
-      zh_Hans: "要返回的 Top logprobs"
-      pt_BR: "Top logprobs para retornar"
-      ja_JP: "返す Top logprobs"
-    llm_description: "Top logprobs to return"
+      en_US: "Top logprobs to return (0 to 20)"
+      zh_Hans: "要返回的 Top logprobs（0 到 20）"
+      pt_BR: "Top logprobs para retornar (0 a 20)"
+      ja_JP: "返す Top logprobs（0 から 20）"
+    llm_description: "Top logprobs to return (0 to 20)"
     placeholder:
       en_US: "0"
       zh_Hans: "0"
       pt_BR: "0"
       ja_JP: "0"
     help:
-      en_US: "Top logprobs to return"
-      zh_Hans: "要返回的 Top logprobs"
-      pt_BR: "Top logprobs para retornar"
-      ja_JP: "返す Top logprobs"
+      en_US: "An integer between 0 and 20 specifying the number of most likely tokens to return at each token position"
+      zh_Hans: "介于 0 和 20 之间的整数，指定在每个 token 位置返回的最可能 token 数量"
+      pt_BR: "Um inteiro entre 0 e 20 especificando o número de tokens mais prováveis a serem retornados em cada posição de token"
+      ja_JP: "各トークン位置で返される最も可能性の高いトークンの数を指定する、0 から 20 までの整数"
     form: llm
+    minimum: 0
+    maximum: 20
 extra:
   python:
     source: tools/openai_chat.py
