@@ -162,7 +162,7 @@ class BananaGenTool(Tool):
                 'x-goog-api-key': api_key
             }
             
-            response = requests.post(endpoint, headers=headers, json=request_body, timeout=60)
+            response = requests.post(endpoint, headers=headers, json=request_body, timeout=120)
             
             if not response.ok:
                 error_message = f'HTTP {response.status_code}: {response.reason}'
