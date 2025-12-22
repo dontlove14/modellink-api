@@ -132,7 +132,7 @@ class OpenAIChatTool(Tool):
                 'Authorization': f'Bearer {apiKey}'
             }
             
-            response = requests.post(api_url, headers=headers, json=request_body, timeout=60)
+            response = requests.post(api_url, headers=headers, json=request_body, timeout=600)
             
             logger.info(f'[OpenAI Chat] 响应状态: {response.status_code}')
             
