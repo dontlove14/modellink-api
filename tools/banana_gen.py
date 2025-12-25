@@ -162,7 +162,21 @@ class BananaGenTool(Tool):
                 'x-goog-api-key': api_key
             }
             
-            response = requests.post(endpoint, headers=headers, json=request_body, timeout=600)
+            # 使用 Session 和重试机制来处理网络不稳定的情况
+            from requests.adapters import HTTPAdapter
+            from urllib3.util.retry import Retry
+
+            session = requests.Session()
+            retry_strategy = Retry(
+                total=3,  # 最多重试3次
+                backoff_factor=1,  # 重试间隔：1s, 2s, 4s
+                status_forcelist=[500, 502, 503, 504],  # 这些状态码会触发重试
+            )
+            adapter = HTTPAdapter(max_retries=retry_strategy)
+            session.mount("https://", adapter)
+            session.mount("http://", adapter)
+
+            response = session.post(endpoint, headers=headers, json=request_body, timeout=600)
             
             if not response.ok:
                 error_message = f'HTTP {response.status_code}: {response.reason}'
