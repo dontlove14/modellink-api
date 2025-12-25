@@ -176,8 +176,15 @@ class BananaGenTool(Tool):
             session.mount("https://", adapter)
             session.mount("http://", adapter)
 
-            response = session.post(endpoint, headers=headers, json=request_body, timeout=600)
-            
+            # 使用流式读取来处理大响应（图片 base64 数据很大）
+            response = session.post(
+                endpoint,
+                headers=headers,
+                json=request_body,
+                timeout=(30, 600),  # (连接超时, 读取超时)
+                stream=True  # 启用流式读取
+            )
+
             if not response.ok:
                 error_message = f'HTTP {response.status_code}: {response.reason}'
                 try:
@@ -195,8 +202,18 @@ class BananaGenTool(Tool):
                     # 无法解析 JSON，使用默认错误信息
                     pass
                 raise Exception(f'API 请求失败: {error_message}')
-            
-            result = response.json()
+
+            # 流式分块读取响应内容，避免 IncompleteRead 错误
+            chunks = []
+            try:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        chunks.append(chunk)
+                response_content = b''.join(chunks)
+                result = json.loads(response_content.decode('utf-8'))
+            except Exception as e:
+                logger.error(f'[BananaGen] 读取响应失败: {str(e)}')
+                raise Exception(f'读取 API 响应失败: {str(e)}')
             logger.debug(f'[BananaGen] API 响应: {json.dumps(result, indent=2)}')
             
             # 提取所有生成的图片数据（支持多张图片）
