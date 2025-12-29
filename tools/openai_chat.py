@@ -15,6 +15,87 @@ logger.setLevel(logging.INFO)
 logger.addHandler(plugin_logger_handler)
 
 class OpenAIChatTool(Tool):
+    def _stream_chat_completion(self, api_url: str, headers: Dict[str, Any], request_body: Dict[str, Any]) -> Dict[str, Any]:
+        """使用流式读取完成 Chat Completions，并在方法内部聚合为完整结果后返回"""
+        accumulated_text = ""
+        finish_reason: Optional[str] = None
+        model_id: Optional[str] = None
+        completion_id: Optional[str] = None
+        created_ts: Optional[int] = None
+
+        response = requests.post(api_url, headers=headers, json=request_body, timeout=600, stream=True)
+
+        logger.info(f'[OpenAI Chat] 响应状态: {response.status_code}')
+        if not response.ok:
+            error_text = response.text
+            logger.error(f'[OpenAI Chat] 错误响应: {error_text}')
+            raise Exception(f'API 请求失败: {response.status_code} - {error_text}')
+
+        content_type = response.headers.get('Content-Type', '') or response.headers.get('content-type', '')
+        charset = 'utf-8'
+        if 'charset=' in content_type:
+            try:
+                charset = content_type.split('charset=')[-1].split(';')[0].strip()
+            except Exception:
+                charset = 'utf-8'
+        if not response.encoding:
+            response.encoding = charset
+
+        for raw_line in response.iter_lines(decode_unicode=False):
+            if raw_line is None:
+                continue
+            try:
+                line = raw_line.decode(charset, errors='replace').lstrip('\ufeff').strip()
+            except Exception:
+                line = raw_line.decode('utf-8', errors='replace').lstrip('\ufeff').strip()
+            if not line:
+                continue
+            if line.startswith('data:'):
+                payload = line[len('data:'):].strip()
+                if payload == '[DONE]':
+                    break
+                try:
+                    chunk = json.loads(payload)
+                except Exception:
+                    continue
+
+                model_id = chunk.get('model') or model_id
+                completion_id = chunk.get('id') or completion_id
+                created_ts = chunk.get('created') or created_ts
+
+                choices = chunk.get('choices') or []
+                if choices:
+                    c0 = choices[0]
+                    finish_reason = c0.get('finish_reason') or finish_reason
+                    delta = c0.get('delta') or {}
+                    if isinstance(delta, dict):
+                        piece = delta.get('content')
+                        if piece:
+                            accumulated_text += piece
+                    else:
+                        msg = c0.get('message') or {}
+                        if isinstance(msg, dict):
+                            piece2 = msg.get('content')
+                            if piece2:
+                                accumulated_text += piece2
+
+        result: Dict[str, Any] = {
+            'success': True,
+            'message': '对话成功',
+            'data': {
+                'content': accumulated_text,
+                'role': 'assistant',
+                'finishReason': finish_reason
+            },
+            'metadata': {
+                'model': model_id,
+                'id': completion_id,
+                'created': created_ts,
+                'finishReason': finish_reason,
+                'serviceTier': None
+            }
+        }
+        return result
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
         """OpenAI Chat Completions API 封装，支持标准 OpenAI API 格式"""
         try:
@@ -122,6 +203,7 @@ class OpenAIChatTool(Tool):
             if topLogprobs is not None:
                 request_body['top_logprobs'] = topLogprobs
             
+            request_body['stream'] = True
             request_body_string = json.dumps(request_body)
             logger.info(f'[OpenAI Chat] 请求体: {request_body_string}')
             
@@ -132,63 +214,7 @@ class OpenAIChatTool(Tool):
                 'Authorization': f'Bearer {apiKey}'
             }
             
-            response = requests.post(api_url, headers=headers, json=request_body, timeout=600)
-            
-            logger.info(f'[OpenAI Chat] 响应状态: {response.status_code}')
-            
-            if not response.ok:
-                error_text = response.text
-                logger.error(f'[OpenAI Chat] 错误响应: {error_text}')
-                raise Exception(f'API 请求失败: {response.status_code} - {error_text}')
-            
-            completion = response.json()
-            logger.info(f'[OpenAI Chat] 请求成功')
-            
-            choice = completion.get('choices', [])[0]
-            if not choice:
-                raise Exception('API 响应中未找到回复内容')
-            
-            assistant_message = choice.get('message')
-            if not assistant_message:
-                raise Exception('API 响应中未找到回复消息')
-            
-            response_content = assistant_message.get('content', '')
-            
-            # 处理响应 content
-            if isinstance(response_content, dict) and 'text' in response_content:
-                response_content = response_content['text']
-            elif not isinstance(response_content, str):
-                response_content = json.dumps(response_content)
-            
-            # 构建返回结果
-            result = {
-                'success': True,
-                'message': '对话成功',
-                'data': {
-                    'content': response_content,
-                    'role': assistant_message.get('role', 'assistant'),
-                    'finishReason': choice.get('finish_reason')
-                },
-                'metadata': {
-                    'model': completion.get('model'),
-                    'id': completion.get('id'),
-                    'created': completion.get('created'),
-                    'finishReason': choice.get('finish_reason'),
-                    'serviceTier': completion.get('service_tier')
-                }
-            }
-            
-            # 添加 usage 信息
-            if completion.get('usage'):
-                usage = completion['usage']
-                result['data']['usage'] = {
-                    'promptTokens': usage.get('prompt_tokens'),
-                    'completionTokens': usage.get('completion_tokens'),
-                    'totalTokens': usage.get('total_tokens'),
-                    'promptTokensDetails': usage.get('prompt_tokens_details'),
-                    'completionTokensDetails': usage.get('completion_tokens_details')
-                }
-            
+            result = self._stream_chat_completion(api_url, headers, request_body)
             yield self.create_json_message(result)
             
         except Exception as e:
