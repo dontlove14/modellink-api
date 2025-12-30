@@ -57,7 +57,10 @@ identity:
 
 tools:
   - tools/banana_gen.yaml
-  - tools/openai_chat.yaml
+  - tools/openai_completions.yaml
+  - tools/openai_responses.yaml
+  - tools/suno_submit_music.yaml
+  - tools/suno_fetch_music.yaml
   - tools/sora_video.yaml
   - tools/sora_video_query.yaml
   - tools/klingus_text2video.yaml

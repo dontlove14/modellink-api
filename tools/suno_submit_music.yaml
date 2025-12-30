@@ -1,0 +1,166 @@
+identity:
+  name: "suno_submit_music"
+  author: "modellink"
+  label:
+    en_US: "Suno Submit Music"
+    zh_Hans: "Suno 提交音乐"
+    pt_BR: "Suno Enviar Música"
+    ja_JP: "Suno 音楽生成の送信"
+description:
+  human:
+    en_US: "Submit a Suno music generation task (new or extend)"
+    zh_Hans: "提交 Suno 音乐生成任务（新歌或扩展）"
+    pt_BR: "Enviar tarefa de geração de música Suno (novo ou estender)"
+    ja_JP: "Suno 音楽生成タスクを送信（新規または拡張）"
+  llm: "Suno music submit"
+parameters:
+  - name: apiKey
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+      zh_Hans: API 密钥
+      pt_BR: Chave da API
+      ja_JP: API キー
+    human_description:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    llm_description: "API key for authentication"
+    form: llm
+  - name: prompt
+    type: string
+    required: true
+    label:
+      en_US: Prompt/Lyrics
+      zh_Hans: 提示词/歌词
+      pt_BR: Prompt/Letras
+      ja_JP: プロンプト/歌詞
+    human_description:
+      en_US: "Song lyrics or prompt, supports multi-section with tags"
+      zh_Hans: "歌曲歌词或提示词，支持多段歌词及标签"
+      pt_BR: "Letras ou prompt, suporta múltiplas seções com tags"
+      ja_JP: "歌詞またはプロンプト、タグ付きの複数セクション対応"
+    llm_description: "Song lyrics or prompt"
+    form: llm
+  - name: mv
+    type: select
+    required: true
+    label:
+      en_US: Model Version
+      zh_Hans: 模型版本
+      pt_BR: Versão do Modelo
+      ja_JP: モデルバージョン
+    human_description:
+      en_US: "Music model version"
+      zh_Hans: "音乐生成模型版本"
+      pt_BR: "Versão do modelo de música"
+      ja_JP: "音楽生成モデルバージョン"
+    llm_description: "Music model version"
+    form: llm
+    options:
+      - value: chirp-v3-5
+        label:
+          en_US: chirp-v3-5
+          zh_Hans: chirp-v3-5
+          pt_BR: chirp-v3-5
+          ja_JP: chirp-v3-5
+      - value: chirp-v4
+        label:
+          en_US: chirp-v4
+          zh_Hans: chirp-v4
+          pt_BR: chirp-v4
+          ja_JP: chirp-v4
+  - name: title
+    type: string
+    required: true
+    label:
+      en_US: Title
+      zh_Hans: 标题
+      pt_BR: Título
+      ja_JP: タイトル
+    human_description:
+      en_US: "Song title"
+      zh_Hans: "歌曲标题"
+      pt_BR: "Título da música"
+      ja_JP: "曲名"
+    llm_description: "Song title"
+    form: llm
+  - name: tags
+    type: string
+    required: false
+    label:
+      en_US: Tags
+      zh_Hans: 标签
+      pt_BR: Tags
+      ja_JP: タグ
+    human_description:
+      en_US: "Comma-separated tags like genre or style"
+      zh_Hans: "逗号分隔的标签，如流派或风格"
+      pt_BR: "Tags separadas por vírgulas, como gênero ou estilo"
+      ja_JP: "ジャンルやスタイルなどのカンマ区切りタグ"
+    llm_description: "Comma-separated tags"
+    form: llm
+  - name: task
+    type: select
+    required: false
+    label:
+      en_US: Task Type
+      zh_Hans: 任务类型
+      pt_BR: Tipo de Tarefa
+      ja_JP: タスク種別
+    human_description:
+      en_US: "Task type: gen (new) or extend"
+      zh_Hans: "任务类型：gen（生成新歌）或 extend（扩展）"
+      pt_BR: "Tipo: gen (novo) ou extend"
+      ja_JP: "種別：gen（新規）または extend（拡張）"
+    llm_description: "Task type"
+    form: llm
+    options:
+      - value: gen
+        label:
+          en_US: gen
+          zh_Hans: gen
+          pt_BR: gen
+          ja_JP: gen
+      - value: extend
+        label:
+          en_US: extend
+          zh_Hans: extend
+          pt_BR: extend
+          ja_JP: extend
+  - name: continue_at
+    type: number
+    required: false
+    label:
+      en_US: Continue At (sec)
+      zh_Hans: 续写起点（秒）
+      pt_BR: Continuar em (seg)
+      ja_JP: 続き開始（秒）
+    human_description:
+      en_US: "Start time in seconds when extending"
+      zh_Hans: "扩展时的起始时间（秒）"
+      pt_BR: "Tempo inicial em segundos ao estender"
+      ja_JP: "拡張時の開始秒"
+    llm_description: "Extend start time"
+    form: llm
+  - name: continue_clip_id
+    type: string
+    required: false
+    label:
+      en_US: Continue Clip Id
+      zh_Hans: 待扩展 Clip Id
+      pt_BR: ID do Clipe a Estender
+      ja_JP: 既存クリップID
+    human_description:
+      en_US: "Clip id to extend"
+      zh_Hans: "需要扩展的 clip_id"
+      pt_BR: "ID do clipe a ser estendido"
+      ja_JP: "拡張対象の clip_id"
+    llm_description: "Clip id to extend"
+    form: llm
+extra:
+  python:
+    source: tools/suno_submit_music.py
+

@@ -1,0 +1,50 @@
+identity:
+  name: "suno_fetch_music"
+  author: "modellink"
+  label:
+    en_US: "Suno Fetch Music"
+    zh_Hans: "Suno 查询歌曲"
+    pt_BR: "Suno Consultar Música"
+    ja_JP: "Suno 楽曲の取得"
+description:
+  human:
+    en_US: "Fetch Suno music generation result by task id"
+    zh_Hans: "根据任务 ID 查询音乐生成结果"
+    pt_BR: "Consultar resultado de geração de música Suno pelo ID"
+    ja_JP: "タスクIDで音楽生成結果を取得"
+  llm: "Suno music fetch"
+parameters:
+  - name: apiKey
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+      zh_Hans: API 密钥
+      pt_BR: Chave da API
+      ja_JP: API キー
+    human_description:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    llm_description: "API key for authentication"
+    form: llm
+  - name: task_id
+    type: string
+    required: true
+    label:
+      en_US: Task Id
+      zh_Hans: 任务 ID
+      pt_BR: ID da Tarefa
+      ja_JP: タスクID
+    human_description:
+      en_US: "Task id returned by submit API"
+      zh_Hans: "提交接口返回的任务 ID"
+      pt_BR: "ID de tarefa retornado pelo envio"
+      ja_JP: "送信APIから返るタスクID"
+    llm_description: "Task id"
+    form: llm
+extra:
+  python:
+    source: tools/suno_fetch_music.py
+

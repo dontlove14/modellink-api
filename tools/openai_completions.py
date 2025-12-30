@@ -1,22 +1,20 @@
 from collections.abc import Generator
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 import json
 import logging
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 import requests
 
-# 导入 logging 和自定义处理器
 from dify_plugin.config.logger_format import plugin_logger_handler
 
-# 使用自定义处理器设置日志
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(plugin_logger_handler)
 
-class OpenAIChatTool(Tool):
+class OpenAICompletionsTool(Tool):
     def _stream_chat_completion(self, api_url: str, headers: Dict[str, Any], request_body: Dict[str, Any]) -> Dict[str, Any]:
-        """使用流式读取完成 Chat Completions，并在方法内部聚合为完整结果后返回"""
+        """以流式方式调用 Chat Completions 并在方法内部聚合完整文本后返回结果"""
         accumulated_text = ""
         finish_reason: Optional[str] = None
         model_id: Optional[str] = None
@@ -25,10 +23,10 @@ class OpenAIChatTool(Tool):
 
         response = requests.post(api_url, headers=headers, json=request_body, timeout=600, stream=True)
 
-        logger.info(f'[OpenAI Chat] 响应状态: {response.status_code}')
+        logger.info(f'[OpenAI Completions] 响应状态: {response.status_code}')
         if not response.ok:
             error_text = response.text
-            logger.error(f'[OpenAI Chat] 错误响应: {error_text}')
+            logger.error(f'[OpenAI Completions] 错误响应: {error_text}')
             raise Exception(f'API 请求失败: {response.status_code} - {error_text}')
 
         content_type = response.headers.get('Content-Type', '') or response.headers.get('content-type', '')
@@ -96,18 +94,17 @@ class OpenAIChatTool(Tool):
             }
         }
         return result
-    def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
-        """OpenAI Chat Completions API 封装，支持标准 OpenAI API 格式"""
+
+
+    def _invoke(self, tool_parameters: Dict[str, Any]) -> Generator[ToolInvokeMessage, None, None]:
+        """调用 Chat Completions 接口，支持标准 OpenAI API 格式与流式聚合"""
         try:
-            # 提取参数
-            # 使用固定的 API host
             host = "https://api.modellink.online"
             apiKey = tool_parameters.get('apiKey')
             messages = tool_parameters.get('messages', [])
             prompt = tool_parameters.get('prompt')
             model = tool_parameters.get('model', 'gpt-4o')
-            
-            # 处理参数，跳过值为'variable'的参数
+
             temperature = tool_parameters.get('temperature') if tool_parameters.get('temperature') != 'variable' else None
             maxCompletionTokens = tool_parameters.get('maxCompletionTokens') if tool_parameters.get('maxCompletionTokens') != 'variable' else None
             topP = tool_parameters.get('topP') if tool_parameters.get('topP') != 'variable' else None
@@ -121,29 +118,20 @@ class OpenAIChatTool(Tool):
             logitBias = tool_parameters.get('logitBias') if tool_parameters.get('logitBias') != 'variable' else None
             logprobs = tool_parameters.get('logprobs') if tool_parameters.get('logprobs') != 'variable' else None
             topLogprobs = tool_parameters.get('topLogprobs') if tool_parameters.get('topLogprobs') != 'variable' else None
-            
-            logger.info(f'[OpenAI Chat] 开始对话，模型: {model}')
-            
-            # 构建 messages 数组
+
+            logger.info(f'[OpenAI Completions] 开始对话，模型: {model}')
+
             conversation_messages = []
-            
             if messages and isinstance(messages, list) and len(messages) > 0:
                 for msg in messages:
                     content = msg.get('content')
-                    
                     if content:
                         formatted_content = content
-                        
-                        # 处理不同格式的 content
                         if isinstance(content, str):
-                            # 字符串格式，直接使用
                             formatted_content = content
                         elif isinstance(content, list):
-                            # 数组格式，直接使用（多模态）
                             formatted_content = content
                         elif isinstance(content, dict):
-                            # 单个对象格式，转换为数组
-                            # 处理 { type: 'text', text: '...' } 或 { type: 'text', content: '...' }
                             text = content.get('text') or content.get('content')
                             if text:
                                 formatted_content = [{
@@ -151,12 +139,10 @@ class OpenAIChatTool(Tool):
                                     'text': text
                                 }]
                             else:
-                                # 如果对象没有 text/content 字段，转换为 JSON 字符串
                                 formatted_content = json.dumps(content)
                         else:
-                            # 其他类型，转换为字符串
                             formatted_content = str(content)
-                        
+
                         conversation_messages.append({
                             'role': msg.get('role', 'user'),
                             'content': formatted_content
@@ -168,14 +154,12 @@ class OpenAIChatTool(Tool):
                 })
             else:
                 raise Exception('必须提供 messages 或 prompt 参数')
-            
-            # 构建请求体
-            request_body = {
+
+            request_body: Dict[str, Any] = {
                 'model': model,
                 'messages': conversation_messages
             }
-            
-            # 添加可选参数
+
             if temperature is not None:
                 request_body['temperature'] = temperature
             if maxCompletionTokens is not None:
@@ -202,23 +186,21 @@ class OpenAIChatTool(Tool):
                 request_body['logprobs'] = logprobs
             if topLogprobs is not None:
                 request_body['top_logprobs'] = topLogprobs
-            
+
             request_body['stream'] = True
             request_body_string = json.dumps(request_body)
-            logger.info(f'[OpenAI Chat] 请求体: {request_body_string}')
-            
-            # 发送请求
+            logger.info(f'[OpenAI Completions] 请求体: {request_body_string}')
+
             api_url = f"{host}/v1/chat/completions"
             headers = {
                 'Content-Type': 'application/json',
                 'Authorization': f'Bearer {apiKey}'
             }
-            
+
             result = self._stream_chat_completion(api_url, headers, request_body)
             yield self.create_json_message(result)
-            
         except Exception as e:
-            logger.error(f'[OpenAI Chat] 异常: {str(e)}')
+            logger.error(f'[OpenAI Completions] 异常: {str(e)}')
             yield self.create_json_message({
                 'success': False,
                 'message': str(e) or '对话失败',

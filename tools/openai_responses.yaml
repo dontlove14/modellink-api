@@ -1,18 +1,18 @@
 identity:
-  name: "openai_chat"
+  name: "openai_responses"
   author: "modellink"
   label:
-    en_US: "OpenAI Chat"
-    zh_Hans: "OpenAI 对话"
-    pt_BR: "Chat OpenAI"
-    ja_JP: "OpenAI チャット"
+    en_US: "OpenAI Responses"
+    zh_Hans: "OpenAI 响应"
+    pt_BR: "OpenAI Responses"
+    ja_JP: "OpenAI レスポンス"
 description:
   human:
-    en_US: "OpenAI Chat Completions API wrapper, supporting standard OpenAI API format"
-    zh_Hans: "OpenAI Chat Completions API 封装，支持标准 OpenAI API 格式"
-    pt_BR: "Wrapper da API OpenAI Chat Completions, suportando o formato padrão da API OpenAI"
-    ja_JP: "OpenAI Chat Completions API ラッパー、標準 OpenAI API 形式をサポート"
-  llm: "OpenAI Chat Completions API"
+    en_US: "OpenAI Responses Create API wrapper, supporting standard OpenAI API format"
+    zh_Hans: "OpenAI Responses Create API 封装，支持标准 OpenAI API 格式"
+    pt_BR: "Wrapper da API OpenAI Responses Create, suportando o formato padrão da API OpenAI"
+    ja_JP: "OpenAI Responses Create API ラッパー、標準 OpenAI API 形式をサポート"
+  llm: "OpenAI Responses Create API"
 parameters:
   - name: apiKey
     type: secret-input
@@ -41,7 +41,7 @@ parameters:
     form: llm
   - name: messages
     type: array
-    required: true
+    required: false
     label:
       en_US: Messages
       zh_Hans: 对话消息
@@ -127,21 +127,21 @@ parameters:
       pt_BR: Prompt
       ja_JP: プロンプト
     human_description:
-      en_US: "User prompt (alternative to messages)"
-      zh_Hans: "用户提示词（messages 的替代方案）"
-      pt_BR: "Prompt do usuário (alternativa a messages)"
-      ja_JP: "ユーザープロンプト（messages の代替）"
-    llm_description: "User prompt (alternative to messages)"
+      en_US: "User prompt"
+      zh_Hans: "用户提示词"
+      pt_BR: "Prompt do usuário"
+      ja_JP: "ユーザープロンプト"
+    llm_description: "User prompt"
     placeholder:
       en_US: "Hello, how are you?"
       zh_Hans: "你好，你怎么样？"
       pt_BR: "Olá, como você está?"
       ja_JP: "こんにちは、お元気ですか？"
     help:
-      en_US: "User prompt (alternative to messages)"
-      zh_Hans: "用户提示词（messages 的替代方案）"
-      pt_BR: "Prompt do usuário (alternativa a messages)"
-      ja_JP: "ユーザープロンプト（messages の代替）"
+      en_US: "User prompt"
+      zh_Hans: "用户提示词"
+      pt_BR: "Prompt do usuário"
+      ja_JP: "ユーザープロンプト"
     form: llm
   - name: model
     type: string
@@ -188,10 +188,10 @@ parameters:
       pt_BR: "0.7"
       ja_JP: "0.7"
     help:
-      en_US: "Controls randomness: lower values make output more deterministic, higher values more random (0-2)"
-      zh_Hans: "控制随机性：值越低输出越确定，值越高越随机（0-2）"
-      pt_BR: "Controla a aleatoriedade: valores mais baixos tornam a saída mais determinística, valores mais altos mais aleatória (0-2)"
-      ja_JP: "ランダム性を制御します：値が低いほど出力は決定的になり、値が高いほどランダムになります（0-2）"
+      en_US: "Controls randomness (0-2)"
+      zh_Hans: "控制随机性（0-2）"
+      pt_BR: "Controla a aleatoriedade (0-2)"
+      ja_JP: "ランダム性の制御（0-2）"
     form: llm
     minimum: 0
     maximum: 2
@@ -200,26 +200,21 @@ parameters:
     type: number
     required: false
     label:
-      en_US: Max Completion Tokens
-      zh_Hans: 最大完成 tokens
-      pt_BR: Máximo de Tokens de Conclusão
-      ja_JP: 最大完了トークン
+      en_US: Max Output Tokens
+      zh_Hans: 最大输出 tokens
+      pt_BR: Máximo de Tokens de Saída
+      ja_JP: 最大出力トークン
     human_description:
-      en_US: "Maximum completion tokens"
-      zh_Hans: "最大完成 tokens"
-      pt_BR: "Número máximo de tokens de conclusão"
-      ja_JP: "最大完了トークン数"
-    llm_description: "Maximum completion tokens"
+      en_US: "Maximum output tokens"
+      zh_Hans: "最大输出 tokens"
+      pt_BR: "Número máximo de tokens de saída"
+      ja_JP: "出力トークンの最大数"
+    llm_description: "Maximum output tokens"
     placeholder:
       en_US: "4096"
       zh_Hans: "4096"
       pt_BR: "4096"
       ja_JP: "4096"
-    help:
-      en_US: "The maximum number of tokens to generate in the completion"
-      zh_Hans: "生成的完成内容的最大 tokens 数"
-      pt_BR: "O número máximo de tokens a serem gerados na conclusão"
-      ja_JP: "完了で生成されるトークンの最大数"
     form: llm
     minimum: 1
   - name: topP
@@ -241,11 +236,6 @@ parameters:
       zh_Hans: "1.0"
       pt_BR: "1.0"
       ja_JP: "1.0"
-    help:
-      en_US: "Nucleus sampling: only consider tokens with cumulative probability <= this value (0-1)"
-      zh_Hans: "核采样：只考虑累积概率 <= 此值的 tokens（0-1）"
-      pt_BR: "Amostragem de núcleo: considere apenas tokens com probabilidade cumulativa <= este valor (0-1)"
-      ja_JP: "ヌクレウスサンプリング：累積確率がこの値以下のトークンのみを考慮します（0-1）"
     form: llm
     minimum: 0
     maximum: 1
@@ -269,11 +259,6 @@ parameters:
       zh_Hans: "0.0"
       pt_BR: "0.0"
       ja_JP: "0.0"
-    help:
-      en_US: "Decreases the likelihood of repeating the same line of text (-2 to 2)"
-      zh_Hans: "降低重复相同文本行的可能性（-2 到 2）"
-      pt_BR: "Diminui a probabilidade de repetir a mesma linha de texto (-2 a 2)"
-      ja_JP: "同じテキスト行を繰り返す可能性を減少させます（-2 から 2）"
     form: llm
     minimum: -2
     maximum: 2
@@ -297,11 +282,6 @@ parameters:
       zh_Hans: "0.0"
       pt_BR: "0.0"
       ja_JP: "0.0"
-    help:
-      en_US: "Increases the likelihood of introducing new topics (-2 to 2)"
-      zh_Hans: "增加引入新主题的可能性（-2 到 2）"
-      pt_BR: "Aumenta a probabilidade de introduzir novos tópicos (-2 a 2)"
-      ja_JP: "新しいトピックを導入する可能性を高めます（-2 から 2）"
     form: llm
     minimum: -2
     maximum: 2
@@ -315,21 +295,16 @@ parameters:
       pt_BR: N
       ja_JP: N
     human_description:
-      en_US: "Number of completions (1 to 128)"
-      zh_Hans: "完成数量（1 到 128）"
-      pt_BR: "Número de conclusões (1 a 128)"
-      ja_JP: "完了数（1 から 128）"
-    llm_description: "Number of completions (1 to 128)"
+      en_US: "Number of outputs (1 to 128)"
+      zh_Hans: "输出数量（1 到 128）"
+      pt_BR: "Número de saídas (1 a 128)"
+      ja_JP: "出力数（1 から 128）"
+    llm_description: "Number of outputs (1 to 128)"
     placeholder:
       en_US: "1"
       zh_Hans: "1"
       pt_BR: "1"
       ja_JP: "1"
-    help:
-      en_US: "Number of chat completion choices to generate for each input message"
-      zh_Hans: "为每条输入消息生成的聊天完成选项数量"
-      pt_BR: "Número de opções de conclusão de chat a serem geradas para cada mensagem de entrada"
-      ja_JP: "各入力メッセージに対して生成するチャット完了オプションの数"
     form: llm
     minimum: 1
     maximum: 128
@@ -352,11 +327,6 @@ parameters:
       zh_Hans: '["\n", "用户："]'
       pt_BR: '["\n", "Usuário:"]'
       ja_JP: '["\n", "ユーザー："]'
-    help:
-      en_US: "Array of strings where the model will stop generating further tokens"
-      zh_Hans: "模型停止生成更多 tokens 的字符串数组"
-      pt_BR: "Array de strings onde o modelo irá parar de gerar mais tokens"
-      ja_JP: "モデルがこれ以上トークンを生成するのを停止する文字列の配列"
     form: llm
     items:
       type: string
@@ -379,11 +349,6 @@ parameters:
       zh_Hans: '{"type": "json_object"}'
       pt_BR: '{"type": "json_object"}'
       ja_JP: '{"type": "json_object"}'
-    help:
-      en_US: "Specifies the format of the response, either 'text' or 'json_object'"
-      zh_Hans: "指定响应的格式，可选 'text' 或 'json_object'"
-      pt_BR: "Especifica o formato da resposta, 'text' ou 'json_object'"
-      ja_JP: "レスポンスの形式を指定します。'text' または 'json_object' のいずれか"
     form: llm
     properties:
       type:
@@ -410,11 +375,6 @@ parameters:
       zh_Hans: "medium"
       pt_BR: "medium"
       ja_JP: "medium"
-    help:
-      en_US: "Specifies the level of reasoning effort, affecting response quality and speed"
-      zh_Hans: "指定推理努力程度，影响响应质量和速度"
-      pt_BR: "Especifica o nível de esforço de raciocínio, afetando a qualidade e velocidade da resposta"
-      ja_JP: "推論の努力レベルを指定します。応答の品質と速度に影響します"
     form: llm
     options:
       - value: low
@@ -454,11 +414,6 @@ parameters:
       zh_Hans: "12345"
       pt_BR: "12345"
       ja_JP: "12345"
-    help:
-      en_US: "If specified, the system will make a best effort to produce the same result for the same seed and parameters"
-      zh_Hans: "如果指定，系统将尽力为相同的种子和参数产生相同的结果"
-      pt_BR: "Se especificado, o sistema fará o máximo esforço para produzir o mesmo resultado para a mesma semente e parâmetros"
-      ja_JP: "指定された場合、システムは同じシードとパラメーターに対して同じ結果を生成するよう努めます"
     form: llm
   - name: logitBias
     type: object
@@ -479,11 +434,6 @@ parameters:
       zh_Hans: '{"1000": -100}'
       pt_BR: '{"1000": -100}'
       ja_JP: '{"1000": -100}'
-    help:
-      en_US: "Modify the likelihood of specified tokens appearing in the completion. Maps token IDs to bias values (-100 to 100)"
-      zh_Hans: "修改指定 tokens 在完成中出现的可能性。将 token IDs 映射到偏差值（-100 到 100）"
-      pt_BR: "Modifique a probabilidade de tokens específicos aparecerem na conclusão. Mapeia IDs de tokens para valores de viés (-100 a 100)"
-      ja_JP: "完成に特定のトークンが出現する可能性を変更します。トークン ID をバイアス値（-100 から 100）にマッピングします"
     form: llm
   - name: logprobs
     type: boolean
@@ -504,11 +454,6 @@ parameters:
       zh_Hans: "false"
       pt_BR: "false"
       ja_JP: "false"
-    help:
-      en_US: "Whether to return logprobs"
-      zh_Hans: "是否返回 logprobs"
-      pt_BR: "Se deve retornar logprobs"
-      ja_JP: "logprobs を返すかどうか"
     form: llm
   - name: topLogprobs
     type: number
@@ -529,14 +474,10 @@ parameters:
       zh_Hans: "0"
       pt_BR: "0"
       ja_JP: "0"
-    help:
-      en_US: "An integer between 0 and 20 specifying the number of most likely tokens to return at each token position"
-      zh_Hans: "介于 0 和 20 之间的整数，指定在每个 token 位置返回的最可能 token 数量"
-      pt_BR: "Um inteiro entre 0 e 20 especificando o número de tokens mais prováveis a serem retornados em cada posição de token"
-      ja_JP: "各トークン位置で返される最も可能性の高いトークンの数を指定する、0 から 20 までの整数"
     form: llm
     minimum: 0
     maximum: 20
 extra:
   python:
-    source: tools/openai_chat.py
+    source: tools/openai_responses.py
+
