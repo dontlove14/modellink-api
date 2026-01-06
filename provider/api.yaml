@@ -69,6 +69,8 @@ tools:
   - tools/klingus_text2video_query.yaml
   - tools/klingus_image2video_query.yaml
   - tools/klingus_multi_image2video_query.yaml
+  - tools/veo_video.yaml
+  - tools/veo_video_query.yaml
 extra:
   python:
     source: provider/api.py

@@ -20,6 +20,11 @@ logger.setLevel(logging.INFO)
 logger.addHandler(plugin_logger_handler)
 
 class BananaGenTool(Tool):
+    def _normalize_param(self, value: Any) -> Any:
+        """将字符串'variable'规范化为None"""
+        if isinstance(value, str) and value.strip().lower() == 'variable':
+            return None
+        return value
     def _download_image_as_base64(self, url: str) -> Dict[str, str]:
         """从 URL 下载图片并转换为 base64"""
         try:
@@ -55,12 +60,17 @@ class BananaGenTool(Tool):
         try:
             # 使用固定的 API host
             host = "https://api.modellink.online"
-            api_key = tool_parameters.get('api_key')
-            model = tool_parameters.get('model')
-            prompt = tool_parameters.get('prompt')
-            reference_image_urls = tool_parameters.get('reference_image_urls', '')
-            ratio = tool_parameters.get('ratio')
-            size = tool_parameters.get('size')
+            api_key = self._normalize_param(tool_parameters.get('api_key'))
+            model = self._normalize_param(tool_parameters.get('model'))
+            prompt = self._normalize_param(tool_parameters.get('prompt'))
+            reference_image_urls = self._normalize_param(tool_parameters.get('reference_image_urls', ''))
+            ratio = self._normalize_param(tool_parameters.get('ratio'))
+            size = self._normalize_param(tool_parameters.get('size'))
+
+            if not api_key:
+                raise Exception('缺少 API Key')
+            if not model:
+                raise Exception('缺少模型名称')
             
             # 使用插件内置的日志记录
             logger.info(f'[BananaGen] 开始生成图像，模型: {model}, 提示词: {prompt}')
@@ -159,7 +169,8 @@ class BananaGenTool(Tool):
             # 发送 API 请求
             headers = {
                 'Content-Type': 'application/json',
-                'x-goog-api-key': api_key
+                'x-goog-api-key': api_key,
+                'Connection': 'close'
             }
             
             # 使用 Session 和重试机制来处理网络不稳定的情况
@@ -167,23 +178,39 @@ class BananaGenTool(Tool):
             from urllib3.util.retry import Retry
 
             session = requests.Session()
+            session.trust_env = False
             retry_strategy = Retry(
-                total=3,  # 最多重试3次
-                backoff_factor=1,  # 重试间隔：1s, 2s, 4s
-                status_forcelist=[500, 502, 503, 504],  # 这些状态码会触发重试
+                total=5,
+                connect=5,
+                read=5,
+                status=5,
+                backoff_factor=1,
+                status_forcelist=[500, 502, 503, 504],
+                allowed_methods=frozenset(["POST"]),
+                respect_retry_after_header=True
             )
-            adapter = HTTPAdapter(max_retries=retry_strategy)
+            adapter = HTTPAdapter(max_retries=retry_strategy, pool_connections=20, pool_maxsize=20)
             session.mount("https://", adapter)
             session.mount("http://", adapter)
 
             # 使用流式读取来处理大响应（图片 base64 数据很大）
-            response = session.post(
-                endpoint,
-                headers=headers,
-                json=request_body,
-                timeout=(30, 600),  # (连接超时, 读取超时)
-                stream=True  # 启用流式读取
-            )
+            try:
+                response = session.post(
+                    endpoint,
+                    headers=headers,
+                    json=request_body,
+                    timeout=(30, 1200),
+                    stream=True
+                )
+            except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
+                logger.warning(f'[BananaGen] 请求连接超时或中断，进行一次重试: {str(e)}')
+                response = session.post(
+                    endpoint,
+                    headers=headers,
+                    json=request_body,
+                    timeout=(30, 1500),
+                    stream=True
+                )
 
             if not response.ok:
                 error_message = f'HTTP {response.status_code}: {response.reason}'
@@ -206,7 +233,7 @@ class BananaGenTool(Tool):
             # 流式分块读取响应内容，避免 IncompleteRead 错误
             chunks = []
             try:
-                for chunk in response.iter_content(chunk_size=8192):
+                for chunk in response.iter_content(chunk_size=65536):
                     if chunk:
                         chunks.append(chunk)
                 response_content = b''.join(chunks)

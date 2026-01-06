@@ -1,0 +1,207 @@
+identity:
+  name: "veo_video"
+  author: "modellink"
+  label:
+    en_US: "Veo Video Generation"
+    zh_Hans: "Veo 视频生成"
+    pt_BR: "Geração de Vídeo Veo"
+    ja_JP: "Veo ビデオ生成"
+description:
+  human:
+    en_US: "Generate videos using Veo API"
+    zh_Hans: "使用 Veo API 生成视频"
+    pt_BR: "Gerar vídeos usando a API Veo"
+    ja_JP: "Veo API を使用してビデオを生成します"
+  llm: "Veo Video Generation API"
+parameters:
+  - name: apiKey
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+      zh_Hans: API 密钥
+      pt_BR: Chave da API
+      ja_JP: API キー
+    human_description:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    llm_description: "API key for authentication"
+    placeholder:
+      en_US: "sk-..."
+      zh_Hans: "sk-..."
+      pt_BR: "sk-..."
+      ja_JP: "sk-..."
+    help:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    form: llm
+  - name: model
+    type: select
+    required: true
+    label:
+      en_US: Model
+      zh_Hans: 模型
+      pt_BR: Modelo
+      ja_JP: モデル
+    human_description:
+      en_US: "Model name"
+      zh_Hans: "模型名称"
+      pt_BR: "Nome do modelo"
+      ja_JP: "モデル名"
+    llm_description: "Model name"
+    placeholder:
+      en_US: "veo3.1"
+      zh_Hans: "veo3.1"
+      pt_BR: "veo3.1"
+      ja_JP: "veo3.1"
+    help:
+      en_US: "Model name"
+      zh_Hans: "模型名称"
+      pt_BR: "Nome do modelo"
+      ja_JP: "モデル名"
+    form: llm
+    options:
+      - value: veo3.1
+        label:
+          en_US: veo3.1
+          zh_Hans: veo3.1
+          pt_BR: veo3.1
+          ja_JP: veo3.1
+      - value: veo3.1-pro
+        label:
+          en_US: veo3.1-pro
+          zh_Hans: veo3.1-pro
+          pt_BR: veo3.1-pro
+          ja_JP: veo3.1-pro
+      - value: veo3.1-fast
+        label:
+          en_US: veo3.1-fast
+          zh_Hans: veo3.1-fast
+          pt_BR: veo3.1-fast
+          ja_JP: veo3.1-fast
+  - name: prompt
+    type: string
+    required: true
+    label:
+      en_US: Prompt
+      zh_Hans: 提示词
+      pt_BR: Prompt
+      ja_JP: プロンプト
+    human_description:
+      en_US: "Video generation prompt"
+      zh_Hans: "视频生成提示词"
+      pt_BR: "Prompt para geração de vídeo"
+      ja_JP: "ビデオ生成プロンプト"
+    llm_description: "Video generation prompt"
+    placeholder:
+      en_US: "A running horse"
+      zh_Hans: "牛马起飞"
+      pt_BR: "Um cavalo correndo"
+      ja_JP: "走る馬"
+    help:
+      en_US: "Prompt for video generation"
+      zh_Hans: "用于视频生成的提示词"
+      pt_BR: "Prompt para geração de vídeo"
+      ja_JP: "ビデオ生成のプロンプト"
+    form: llm
+  - name: seconds
+    type: string
+    required: false
+    label:
+      en_US: Duration (seconds)
+      zh_Hans: 时长（秒）
+      pt_BR: Duração (segundos)
+      ja_JP: 時間（秒）
+    human_description:
+      en_US: "Video duration in seconds"
+      zh_Hans: "视频时长（秒）"
+      pt_BR: "Duração do vídeo em segundos"
+      ja_JP: "ビデオの長さ（秒）"
+    llm_description: "Video duration in seconds"
+    placeholder:
+      en_US: "8"
+      zh_Hans: "8"
+      pt_BR: "8"
+      ja_JP: "8"
+    help:
+      en_US: "Default 8 seconds"
+      zh_Hans: "默认 8 秒"
+      pt_BR: "Padrão 8 segundos"
+      ja_JP: "デフォルト 8 秒"
+    form: llm
+  - name: input_reference
+    type: string
+    required: false
+    label:
+      en_US: Input Reference
+      zh_Hans: 参考图列表
+      pt_BR: Referência de Entrada
+      ja_JP: 参照画像一覧
+    human_description:
+      en_US: "Image URLs for first/last/reference frames; supports list[string] or CSV string"
+      zh_Hans: "用于首帧/首尾帧/参考帧的图片 URL；支持工作流传入 list[string] 或表单 CSV 字符串"
+      pt_BR: "URLs de imagens para quadros inicial/final/referência; suporta list[string] ou CSV"
+      ja_JP: "先頭/末尾/参照フレームの画像URL。list[string] または CSV 文字列をサポート"
+    llm_description: "Image URLs list"
+    placeholder:
+      en_US: "https://a.png,https://b.png"
+      zh_Hans: "https://a.png,https://b.png"
+      pt_BR: "https://a.png,https://b.png"
+      ja_JP: "https://a.png,https://b.png"
+    help:
+      en_US: "Form: separate by comma; Workflow: pass list[string]"
+      zh_Hans: "表单：用英文逗号分隔；工作流：可直接传 list[string]"
+      pt_BR: "Formulário: separe por vírgulas; Fluxo: envie list[string]"
+      ja_JP: "フォーム: カンマ区切り／ワークフロー: list[string] を渡す"
+    form: llm
+  - name: size
+    type: select
+    required: false
+    label:
+      en_US: Size
+      zh_Hans: 比例
+      pt_BR: Proporção
+      ja_JP: 比率
+    human_description:
+      en_US: "Aspect ratio"
+      zh_Hans: "视频比例"
+      pt_BR: "Proporção do vídeo"
+      ja_JP: "ビデオ比率"
+    llm_description: "Aspect ratio"
+    placeholder:
+      en_US: "16x9"
+      zh_Hans: "16x9"
+      pt_BR: "16x9"
+      ja_JP: "16x9"
+    help:
+      en_US: "Common ratios: 16x9, 9x16, 1x1"
+      zh_Hans: "常用比例：16x9、9x16、1x1"
+      pt_BR: "Proporções comuns: 16x9, 9x16, 1x1"
+      ja_JP: "一般的な比率：16x9、9x16、1x1"
+    form: llm
+    options:
+      - value: 16x9
+        label:
+          en_US: 16x9
+          zh_Hans: 16x9
+          pt_BR: 16x9
+          ja_JP: 16x9
+      - value: 9x16
+        label:
+          en_US: 9x16
+          zh_Hans: 9x16
+          pt_BR: 9x16
+          ja_JP: 9x16
+      - value: 1x1
+        label:
+          en_US: 1x1
+          zh_Hans: 1x1
+          pt_BR: 1x1
+          ja_JP: 1x1
+extra:
+  python:
+    source: tools/veo_video.py
