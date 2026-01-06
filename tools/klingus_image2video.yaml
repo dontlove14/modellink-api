@@ -179,7 +179,7 @@ parameters:
     format: uri
   - name: image_tail
     type: string
-    required: true
+    required: false
     label:
       en_US: "End Image URL"
       zh_Hans: "尾帧图 URL"

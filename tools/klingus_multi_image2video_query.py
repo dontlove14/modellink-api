@@ -42,7 +42,7 @@ class KlingusMultiImage2VideoQueryTool(Tool):
             }
             
             # 发送请求
-            response = requests.get(api_url, headers=headers, timeout=60)
+            response = requests.get(api_url, headers=headers, timeout=120)
             
             logger.info(f'[Klingus MultiImage2Video Query] 响应状态: {response.status_code}')
             

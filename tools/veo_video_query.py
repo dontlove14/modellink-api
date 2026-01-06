@@ -30,7 +30,7 @@ class VeoVideoQueryTool(Tool):
 
             api_url = f"{host}/v1/videos/{video_id}"
             headers = {"Authorization": f"Bearer {apiKey}", "Content-Type": "application/json"}
-            response = requests.get(api_url, headers=headers, timeout=60)
+            response = requests.get(api_url, headers=headers, timeout=120)
 
             logger.info(f"[Veo Video Query] 响应状态: {response.status_code}")
 

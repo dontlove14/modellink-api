@@ -51,15 +51,15 @@ class SoraVideoTool(Tool):
             logger.info(f'[Sora Video] 开始生成视频，模型: {model}')
             
             # 模型参数兼容性检查
-            # sora-2 支持的尺寸：720x1280, 1280x720
+            # sora-2 支持的尺寸比例：9x16, 16x9
             # sora-2 支持的时长：10, 15
             # sora-2-pro 支持所有尺寸和时长
             if model == 'sora-2':
                 # 验证size参数
-                if size and size not in ['720x1280', '1280x720']:
-                    # 如果尺寸不支持，使用默认值1280x720
-                    logger.warning(f'[Sora Video] sora-2 模型不支持尺寸 {size}，已自动调整为 1280x720')
-                    size = '1280x720'
+                if size and size not in ['9x16', '16x9']:
+                    # 如果尺寸不支持，使用默认值16x9
+                    logger.warning(f'[Sora Video] sora-2 模型不支持尺寸 {size}，已自动调整为 16x9')
+                    size = '16x9'
                 
                 # 验证seconds参数
                 if seconds and seconds not in ['10', '15']:
@@ -101,7 +101,7 @@ class SoraVideoTool(Tool):
             # 对于multipart/form-data，使用files参数发送
             # 将request_data转换为files格式，每个字段作为一个元组
             files = {k: (None, v) for k, v in request_data.items()}
-            response = requests.post(api_url, headers=headers, files=files, timeout=60)
+            response = requests.post(api_url, headers=headers, files=files, timeout=120)
             
             logger.info(f'[Sora Video] 响应状态: {response.status_code}')
             

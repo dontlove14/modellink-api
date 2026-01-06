@@ -82,7 +82,7 @@ class KlingusText2VideoTool(Tool):
                 'Authorization': f'Bearer {api_key}'
             }
             
-            response = requests.post(api_url, headers=headers, json=request_data, timeout=60)
+            response = requests.post(api_url, headers=headers, json=request_data, timeout=120)
             
             logger.info(f'[Klingus Text2Video] 响应状态: {response.status_code}')
             

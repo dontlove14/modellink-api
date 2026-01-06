@@ -71,7 +71,7 @@ class VeoVideoTool(Tool):
             files = [(k, (None, v)) for k, v in request_data.items()]
             for url in input_refs:
                 files.append(("input_reference", (None, url)))
-            response = requests.post(api_url, headers=headers, files=files, timeout=60)
+            response = requests.post(api_url, headers=headers, files=files, timeout=120)
 
             logger.info(f"[Veo Video] 响应状态: {response.status_code}")
 

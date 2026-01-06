@@ -32,7 +32,7 @@ class SoraVideoQueryTool(Tool):
                 'Content-Type': 'application/json'
             }
             
-            response = requests.get(api_url, headers=headers, timeout=60)
+            response = requests.get(api_url, headers=headers, timeout=120)
             
             logger.info(f'[Sora Video Query] 响应状态: {response.status_code}')
             

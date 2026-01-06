@@ -181,47 +181,35 @@ parameters:
       pt_BR: Tamanho
       ja_JP: サイズ
     human_description:
-      en_US: "Video size (sora-2 supports 720x1280, 1280x720; sora-2-pro supports all sizes)"
-      zh_Hans: "视频尺寸（sora-2支持720x1280、1280x720；sora-2-pro支持所有尺寸）"
-      pt_BR: "Tamanho do vídeo (sora-2 suporta 720x1280, 1280x720; sora-2-pro suporta todos os tamanhos)"
-      ja_JP: "ビデオサイズ（sora-2は720x1280、1280x720をサポート；sora-2-proはすべてのサイズをサポート）"
+      en_US: "Video size ratio (sora-2 supports 9x16, 16x9; sora-2-pro supports all sizes)"
+      zh_Hans: "视频尺寸比例（sora-2支持9x16、16x9；sora-2-pro支持所有尺寸）"
+      pt_BR: "Proporção de tamanho do vídeo (sora-2 suporta 9x16, 16x9; sora-2-pro suporta todos os tamanhos)"
+      ja_JP: "ビデオサイズ比（sora-2は9x16、16x9をサポート；sora-2-proはすべてのサイズをサポート）"
     llm_description: "Video size"
     placeholder:
-      en_US: "1024x1792"
-      zh_Hans: "1024x1792"
-      pt_BR: "1024x1792"
-      ja_JP: "1024x1792"
+      en_US: "9x16"
+      zh_Hans: "9x16"
+      pt_BR: "9x16"
+      ja_JP: "9x16"
     help:
-      en_US: "Video size (width x height). sora-2 supports 720x1280, 1280x720; sora-2-pro supports all sizes"
-      zh_Hans: "视频尺寸（宽 x 高）。sora-2支持720x1280、1280x720；sora-2-pro支持所有尺寸"
-      pt_BR: "Tamanho do vídeo (largura x altura). sora-2 suporta 720x1280, 1280x720; sora-2-pro suporta todos os tamanhos"
-      ja_JP: "ビデオサイズ（幅 x 高さ）。sora-2は720x1280、1280x720をサポート；sora-2-proはすべてのサイズをサポート"
+      en_US: "Video size ratio. sora-2 supports 9x16, 16x9; sora-2-pro supports all sizes"
+      zh_Hans: "视频尺寸比例。sora-2支持9x16、16x9；sora-2-pro支持所有尺寸"
+      pt_BR: "Proporção do tamanho do vídeo. sora-2 suporta 9x16, 16x9; sora-2-pro suporta todos os tamanhos"
+      ja_JP: "ビデオサイズ比。sora-2は9x16、16x9をサポート；sora-2-proはすべてのサイズをサポート"
     form: llm
     options:
-      - value: 1024x1792
+      - value: 9x16
         label:
-          en_US: 1024x1792
-          zh_Hans: 1024x1792
-          pt_BR: 1024x1792
-          ja_JP: 1024x1792
-      - value: 1792x1024
+          en_US: 9x16
+          zh_Hans: 9x16
+          pt_BR: 9x16
+          ja_JP: 9x16
+      - value: 16x9
         label:
-          en_US: 1792x1024
-          zh_Hans: 1792x1024
-          pt_BR: 1792x1024
-          ja_JP: 1792x1024
-      - value: 720x1280
-        label:
-          en_US: 720x1280
-          zh_Hans: 720x1280
-          pt_BR: 720x1280
-          ja_JP: 720x1280
-      - value: 1280x720
-        label:
-          en_US: 1280x720
-          zh_Hans: 1280x720
-          pt_BR: 1280x720
-          ja_JP: 1280x720
+          en_US: 16x9
+          zh_Hans: 16x9
+          pt_BR: 16x9
+          ja_JP: 16x9
   - name: watermark
     type: boolean
     required: false
