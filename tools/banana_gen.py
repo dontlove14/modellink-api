@@ -56,7 +56,17 @@ class BananaGenTool(Tool):
         return mime_map.get(mime_type, 'png')
     
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
-        """调用 Nano Banana 图生生成 API"""
+        """调用 Nano Banana 图生生成 API
+
+        参数:
+            tool_parameters: 包含 api_key、model、prompt、reference_image_urls 等参数
+
+        行为:
+            - 使用 https://api.modellink.online 的 Gemini 图像生成接口
+
+        异常:
+            - 网络错误、HTTP 非 2xx、解析失败等直接抛出异常
+        """
         try:
             # 使用固定的 API host
             host = "https://api.modellink.online"
@@ -290,9 +300,9 @@ class BananaGenTool(Tool):
             # 如果需要，也可以返回一个总结 JSON 消息
             logger.info(f'[BananaGen] 图片处理完成，共返回 {len(images)} 张图片')
             
+        except requests.exceptions.RequestException as e:
+            logger.error(f'[BananaGen] 网络异常: {str(e)}')
+            raise Exception(str(e))
         except Exception as e:
             logger.error(f'[BananaGen] 生成图像失败: {str(e)}')
-            yield self.create_json_message({
-                'success': False,
-                'error': str(e)
-            })
+            raise

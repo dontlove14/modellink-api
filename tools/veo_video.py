@@ -12,7 +12,17 @@ logger.addHandler(plugin_logger_handler)
 
 class VeoVideoTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
-        """Veo Video Generation API 封装"""
+        """Veo 视频生成工具
+
+        参数:
+            tool_parameters: 包含 apiKey、model、prompt 等参数
+
+        行为:
+            - 使用 https://api.modellink.online 提交生成任务
+
+        异常:
+            - 网络错误、HTTP 非 2xx 直接抛出异常
+        """
         try:
             host = "https://api.modellink.online"
             apiKey = tool_parameters.get("apiKey")
@@ -78,7 +88,7 @@ class VeoVideoTool(Tool):
             if not response.ok:
                 error_text = response.text
                 logger.error(f"[Veo Video] 错误响应: {error_text}")
-                raise Exception(f"API 请求失败: {response.status_code} - {error_text}")
+                response.raise_for_status()
 
             result = response.json()
             logger.info(f"[Veo Video] 请求成功，任务 ID: {result.get('id')}")
@@ -98,10 +108,9 @@ class VeoVideoTool(Tool):
 
             yield self.create_json_message(response_result)
 
+        except requests.exceptions.RequestException as e:
+            logger.error(f"[Veo Video] 网络异常: {str(e)}")
+            raise Exception(str(e))
         except Exception as e:
             logger.error(f"[Veo Video] 异常: {str(e)}")
-            yield self.create_json_message({
-                "success": False,
-                "message": str(e) or "视频生成失败",
-                "error": str(e),
-            })
+            raise

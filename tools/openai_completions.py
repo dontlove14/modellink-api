@@ -97,7 +97,17 @@ class OpenAICompletionsTool(Tool):
 
 
     def _invoke(self, tool_parameters: Dict[str, Any]) -> Generator[ToolInvokeMessage, None, None]:
-        """调用 Chat Completions 接口，支持标准 OpenAI API 格式与流式聚合"""
+        """调用 Chat Completions 接口
+
+        参数:
+            tool_parameters: 包含 apiKey、messages/prompt、model 等参数
+
+        行为:
+            - 使用 https://api.modellink.online 进行流式对话
+
+        异常:
+            - 网络错误、HTTP 非 2xx、参数缺失直接抛出异常
+        """
         try:
             host = "https://api.modellink.online"
             apiKey = tool_parameters.get('apiKey')
@@ -199,10 +209,9 @@ class OpenAICompletionsTool(Tool):
 
             result = self._stream_chat_completion(api_url, headers, request_body)
             yield self.create_json_message(result)
+        except requests.exceptions.RequestException as e:
+            logger.error(f'[OpenAI Completions] 网络异常: {str(e)}')
+            raise Exception(str(e))
         except Exception as e:
             logger.error(f'[OpenAI Completions] 异常: {str(e)}')
-            yield self.create_json_message({
-                'success': False,
-                'message': str(e) or '对话失败',
-                'error': str(e)
-            })
+            raise

@@ -367,10 +367,9 @@ class OpenAIResponsesTool(Tool):
 
             result = self._stream_responses(api_url, headers, request_body)
             yield self.create_json_message(result)
+        except requests.exceptions.RequestException as e:
+            logger.error(f'[OpenAI Responses] 网络异常: {str(e)}')
+            raise Exception(str(e))
         except Exception as e:
             logger.error(f'[OpenAI Responses] 异常: {str(e)}')
-            yield self.create_json_message({
-                'success': False,
-                'message': str(e) or '对话失败',
-                'error': str(e)
-            })
+            raise

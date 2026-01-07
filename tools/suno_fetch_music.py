@@ -12,7 +12,17 @@ logger.addHandler(plugin_logger_handler)
 
 class SunoFetchMusicTool(Tool):
     def _invoke(self, tool_parameters: Dict[str, Any]) -> Generator[ToolInvokeMessage]:
-        """查询 Suno 音乐生成结果，返回任务状态与生成内容"""
+        """查询 Suno 音乐生成结果
+
+        参数:
+            tool_parameters: 包含 apiKey 与 task_id 的参数字典
+
+        行为:
+            - 使用 https://api.modellink.online 查询任务状态
+
+        异常:
+            - 网络错误、HTTP 非 2xx、参数缺失直接抛出异常
+        """
         try:
             host = "https://api.modellink.online"
             apiKey = tool_parameters.get('apiKey')
@@ -31,8 +41,7 @@ class SunoFetchMusicTool(Tool):
             if not resp.ok:
                 err = resp.text
                 logger.error(f'[Suno Fetch] 错误响应: {err}')
-                yield self.create_json_message({'success': False, 'message': err, 'error': err})
-                return
+                resp.raise_for_status()
 
             try:
                 data = resp.json()
@@ -40,7 +49,9 @@ class SunoFetchMusicTool(Tool):
                 data = {'raw': resp.text}
 
             yield self.create_json_message({'success': True, 'message': '查询成功', 'data': data})
+        except requests.exceptions.RequestException as e:
+            logger.error(f'[Suno Fetch] 网络异常: {str(e)}')
+            raise Exception(str(e))
         except Exception as e:
             logger.error(f'[Suno Fetch] 异常: {str(e)}')
-            yield self.create_json_message({'success': False, 'message': str(e) or '查询失败', 'error': str(e)})
-
+            raise

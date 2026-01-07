@@ -12,7 +12,17 @@ logger.addHandler(plugin_logger_handler)
 
 class VeoVideoQueryTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
-        """Veo Video Query API 封装"""
+        """Veo 视频查询工具
+
+        参数:
+            tool_parameters: 包含 apiKey 与 id 的参数字典
+
+        行为:
+            - 向固定主机 https://api.modellink.online 查询视频信息
+
+        异常:
+            - 网络错误（超时、DNS 失败等）、非 2xx 响应直接抛出异常
+        """
         try:
             host = "https://api.modellink.online"
             apiKey = tool_parameters.get("apiKey")
@@ -37,7 +47,7 @@ class VeoVideoQueryTool(Tool):
             if not response.ok:
                 error_text = response.text
                 logger.error(f"[Veo Video Query] 错误响应: {error_text}")
-                raise Exception(f"API 请求失败: {response.status_code} - {error_text}")
+                response.raise_for_status()
 
             result = response.json()
             logger.info(f"[Veo Video Query] 请求成功，视频状态: {result.get('status')}")
@@ -62,11 +72,9 @@ class VeoVideoQueryTool(Tool):
 
             yield self.create_json_message(response_result)
 
+        except requests.exceptions.RequestException as e:
+            logger.error(f"[Veo Video Query] 网络异常: {str(e)}")
+            raise Exception(str(e))
         except Exception as e:
             logger.error(f"[Veo Video Query] 异常: {str(e)}")
-            yield self.create_json_message({
-                "success": False,
-                "message": str(e) or "视频查询失败",
-                "error": str(e),
-            })
-
+            raise

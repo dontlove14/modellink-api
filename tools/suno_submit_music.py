@@ -13,7 +13,17 @@ logger.addHandler(plugin_logger_handler)
 
 class SunoSubmitMusicTool(Tool):
     def _invoke(self, tool_parameters: Dict[str, Any]) -> Generator[ToolInvokeMessage]:
-        """提交 Suno 音乐生成任务，支持新歌与扩展模式。非流式返回结果，统一错误处理并规整空参数。"""
+        """提交 Suno 音乐生成任务
+
+        参数:
+            tool_parameters: 包含 apiKey、prompt、mv、title 等参数
+
+        行为:
+            - 使用 https://api.modellink.online 提交任务
+
+        异常:
+            - 网络错误、HTTP 非 2xx、参数缺失直接抛出异常
+        """
         try:
             host = "https://api.modellink.online"
             apiKey = tool_parameters.get('apiKey')
@@ -55,20 +65,14 @@ class SunoSubmitMusicTool(Tool):
                 'Content-Type': 'application/json',
                 'Authorization': f'Bearer {apiKey}'
             }
-            try:
-                resp = requests.post(url, headers=headers, json=body, timeout=120)
-            except requests.exceptions.RequestException as e:
-                logger.error(f'[Suno Submit] 网络异常: {str(e)}')
-                yield self.create_json_message({'success': False, 'message': '网络异常，无法连接到 Model Link API', 'error': str(e)})
-                return
+            resp = requests.post(url, headers=headers, json=body, timeout=120)
 
             logger.info(f'[Suno Submit] 响应状态: {resp.status_code}')
 
             if not resp.ok:
                 err = resp.text
                 logger.error(f'[Suno Submit] 错误响应: {err}')
-                yield self.create_json_message({'success': False, 'message': err, 'error': err})
-                return
+                resp.raise_for_status()
 
             try:
                 data = resp.json()
@@ -76,6 +80,9 @@ class SunoSubmitMusicTool(Tool):
                 data = {'raw': resp.text}
 
             yield self.create_json_message({'success': True, 'message': '任务提交成功', 'data': data})
+        except requests.exceptions.RequestException as e:
+            logger.error(f'[Suno Submit] 网络异常: {str(e)}')
+            raise Exception(str(e))
         except Exception as e:
             logger.error(f'[Suno Submit] 异常: {str(e)}')
-            yield self.create_json_message({'success': False, 'message': str(e) or '任务提交失败', 'error': str(e)})
+            raise

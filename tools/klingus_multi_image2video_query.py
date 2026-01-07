@@ -15,7 +15,17 @@ logger.addHandler(plugin_logger_handler)
 
 class KlingusMultiImage2VideoQueryTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
-        """Klingus Multi Image to Video Query API 封装"""
+        """Klingus 多图生视频查询工具
+
+        参数:
+            tool_parameters: 包含 api_key 与 task_id 的参数字典
+
+        行为:
+            - 调用 https://api.modellink.online 的查询接口
+
+        异常:
+            - 网络错误、JSON 解析失败、非 2xx 响应直接抛出异常
+        """
         try:
             # 提取参数
             # 使用固定的 API host
@@ -52,7 +62,7 @@ class KlingusMultiImage2VideoQueryTool(Tool):
             
             if not response.ok:
                 logger.error(f'[Klingus MultiImage2Video Query] 错误响应: {response_content}')
-                raise Exception(f'API 请求失败: {response.status_code} - {response_content}')
+                response.raise_for_status()
             
             try:
                 result = response.json()
@@ -70,10 +80,9 @@ class KlingusMultiImage2VideoQueryTool(Tool):
             
             yield self.create_json_message(response_result)
             
+        except requests.exceptions.RequestException as e:
+            logger.error(f'[Klingus MultiImage2Video Query] 网络异常: {str(e)}')
+            raise Exception(str(e))
         except Exception as e:
             logger.error(f'[Klingus MultiImage2Video Query] 异常: {str(e)}')
-            yield self.create_json_message({
-                'success': False,
-                'message': str(e) or '任务查询失败',
-                'error': str(e)
-            })
+            raise

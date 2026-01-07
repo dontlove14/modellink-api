@@ -15,7 +15,17 @@ logger.addHandler(plugin_logger_handler)
 
 class KlingusImage2VideoTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
-        """Klingus Image to Video Generation API 封装"""
+        """Klingus 图生视频生成工具
+
+        参数:
+            tool_parameters: 包含 api_key、model_name、prompt 等参数
+
+        行为:
+            - 使用 https://api.modellink.online 提交生成任务
+
+        异常:
+            - 网络错误、HTTP 非 2xx 直接抛出异常
+        """
         try:
             # 提取参数
             # 使用固定的 API host
@@ -95,7 +105,7 @@ class KlingusImage2VideoTool(Tool):
             if not response.ok:
                 error_text = response.text
                 logger.error(f'[Klingus Image2Video] 错误响应: {error_text}')
-                raise Exception(f'API 请求失败: {response.status_code} - {error_text}')
+                response.raise_for_status()
             
             result = response.json()
             logger.info(f'[Klingus Image2Video] 请求成功，任务 ID: {result.get("data", {}).get("task_id")}')
@@ -109,10 +119,9 @@ class KlingusImage2VideoTool(Tool):
             
             yield self.create_json_message(response_result)
             
+        except requests.exceptions.RequestException as e:
+            logger.error(f'[Klingus Image2Video] 网络异常: {str(e)}')
+            raise Exception(str(e))
         except Exception as e:
             logger.error(f'[Klingus Image2Video] 异常: {str(e)}')
-            yield self.create_json_message({
-                'success': False,
-                'message': str(e) or '视频生成任务提交失败',
-                'error': str(e)
-            })
+            raise
