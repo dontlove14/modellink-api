@@ -4,6 +4,7 @@ import base64
 import json
 import logging
 import os
+import time
 from datetime import datetime
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
@@ -26,21 +27,86 @@ class BananaGenTool(Tool):
             return None
         return value
     def _download_image_as_base64(self, url: str) -> Dict[str, str]:
-        """从 URL 下载图片并转换为 base64"""
+        """从 URL 断点续传下载图片并转换为 base64
+
+        说明:
+            - 优先使用 HTTP Range 请求进行断点续传
+            - 若源站不支持 Range，则自动回退为普通下载
+            - 在网络中断/超时场景下，会基于已下载字节数继续请求剩余部分
+        """
         try:
-            response = requests.get(url, timeout=30)
-            response.raise_for_status()
-            
-            # 确定 MIME 类型
-            content_type = response.headers.get('content-type', 'image/png')
-            
-            # 转换为 base64
-            base64_data = base64.b64encode(response.content).decode('utf-8')
-            
-            return {
-                'data': base64_data,
-                'mimeType': content_type
-            }
+            session = requests.Session()
+            session.trust_env = False
+
+            downloaded = bytearray()
+            downloaded_size = 0
+            total_size = None
+            content_type = 'image/png'
+
+            max_attempts = 5
+            attempt = 0
+            chunk_size = 256 * 1024
+
+            while True:
+                headers: Dict[str, str] = {}
+                if downloaded_size > 0:
+                    headers['Range'] = f'bytes={downloaded_size}-'
+
+                try:
+                    response = session.get(url, headers=headers, timeout=(10, 30), stream=True)
+                except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as e:
+                    attempt += 1
+                    if attempt >= max_attempts:
+                        raise Exception(f'下载中断且重试次数已达上限: {str(e)}')
+                    time.sleep(min(8, 2 ** attempt))
+                    continue
+
+                try:
+                    if response.status_code not in (200, 206):
+                        response.raise_for_status()
+
+                    response_content_type = response.headers.get('content-type')
+                    if response_content_type:
+                        content_type = response_content_type.split(';', 1)[0].strip() or content_type
+
+                    if response.status_code == 200 and downloaded_size > 0:
+                        downloaded = bytearray()
+                        downloaded_size = 0
+                        total_size = None
+
+                    if total_size is None:
+                        if response.status_code == 206:
+                            content_range = response.headers.get('Content-Range') or response.headers.get('content-range')
+                            if content_range and '/' in content_range:
+                                total_part = content_range.split('/', 1)[1].strip()
+                                if total_part.isdigit():
+                                    total_size = int(total_part)
+                        else:
+                            content_length = response.headers.get('Content-Length') or response.headers.get('content-length')
+                            if content_length and str(content_length).isdigit():
+                                total_size = int(content_length)
+
+                    for chunk in response.iter_content(chunk_size=chunk_size):
+                        if not chunk:
+                            continue
+                        downloaded.extend(chunk)
+                        downloaded_size += len(chunk)
+
+                    if total_size is not None:
+                        if downloaded_size >= total_size:
+                            break
+                        attempt += 1
+                        if attempt >= max_attempts:
+                            raise Exception('下载未完成且重试次数已达上限')
+                        time.sleep(min(8, 2 ** attempt))
+                        continue
+
+                    break
+                finally:
+                    response.close()
+
+            base64_data = base64.b64encode(bytes(downloaded)).decode('utf-8')
+            return {'data': base64_data, 'mimeType': content_type}
         except Exception as e:
             raise Exception(f'下载参考图片失败: {str(e)}')
     

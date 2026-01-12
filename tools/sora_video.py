@@ -14,6 +14,33 @@ logger.setLevel(logging.INFO)
 logger.addHandler(plugin_logger_handler)
 
 class SoraVideoTool(Tool):
+    def _create_retry_session(self) -> requests.Session:
+        """创建带重试策略的 HTTP Session
+
+        说明:
+            - 用于应对网络抖动、连接重置、服务端临时 5xx 等问题
+            - multipart/form-data 的“断点续传上传”需要服务端协议支持，客户端侧仅做安全重试
+        """
+        from requests.adapters import HTTPAdapter
+        from urllib3.util.retry import Retry
+
+        session = requests.Session()
+        session.trust_env = False
+        retry_strategy = Retry(
+            total=3,
+            connect=3,
+            read=3,
+            status=3,
+            backoff_factor=1,
+            status_forcelist=[500, 502, 503, 504],
+            allowed_methods=frozenset(["POST"]),
+            respect_retry_after_header=True,
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy, pool_connections=10, pool_maxsize=10)
+        session.mount("https://", adapter)
+        session.mount("http://", adapter)
+        return session
+
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
         """Sora 视频生成工具
 
@@ -112,7 +139,8 @@ class SoraVideoTool(Tool):
             # 对于multipart/form-data，使用files参数发送
             # 将request_data转换为files格式，每个字段作为一个元组
             files = {k: (None, v) for k, v in request_data.items()}
-            response = requests.post(api_url, headers=headers, files=files, timeout=120)
+            session = self._create_retry_session()
+            response = session.post(api_url, headers=headers, files=files, timeout=(10, 120))
             
             logger.info(f'[Sora Video] 响应状态: {response.status_code}')
             
