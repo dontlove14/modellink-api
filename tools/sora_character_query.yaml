@@ -1,0 +1,69 @@
+identity:
+  name: "sora_character_query"
+  author: "modellink"
+  label:
+    en_US: "Sora Character Query"
+    zh_Hans: "Sora 角色结果查询"
+    pt_BR: "Consulta de Personagem Sora"
+    ja_JP: "Sora キャラクター結果クエリ"
+description:
+  human:
+    en_US: "Query the result of Sora character creation by ID"
+    zh_Hans: "根据视频 ID 查询 Sora 角色创建结果"
+    pt_BR: "Consultar o resultado de criação de personagem Sora pelo ID"
+    ja_JP: "IDで Sora キャラクター作成結果を照会します"
+  llm: "Sora Character Query API"
+parameters:
+  - name: apiKey
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+      zh_Hans: API 密钥
+      pt_BR: Chave da API
+      ja_JP: API キー
+    human_description:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    llm_description: "API key for authentication"
+    placeholder:
+      en_US: "sk-..."
+      zh_Hans: "sk-..."
+      pt_BR: "sk-..."
+      ja_JP: "sk-..."
+    help:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    form: llm
+  - name: id
+    type: string
+    required: true
+    label:
+      en_US: role ID
+      zh_Hans: 角色 ID
+      pt_BR: ID do Personagem
+      ja_JP: キャラクターID
+    human_description:
+      en_US: "ID of the character creation task"
+      zh_Hans: "角色创建任务的角色 ID（例如 char_xxx）"
+      pt_BR: "ID da tarefa de criação de personagem (ex: char_xxx)"
+      ja_JP: "キャラクター作成タスクのキャラクターID（例: char_xxx）"
+    llm_description: "ID of the character creation task"
+    placeholder:
+      en_US: "char_5b0b4b67-6172-46a6-a48c-84eaf7a6ba1b"
+      zh_Hans: "char_5b0b4b67-6172-46a6-a48c-84eaf7a6ba1b"
+      pt_BR: "char_5b0b4b67-6172-46a6-a48c-84eaf7a6ba1b"
+      ja_JP: "char_5b0b4b67-6172-46a6-a48c-84eaf7a6ba1b"
+    help:
+      en_US: "The video_id path parameter used by the API"
+      zh_Hans: "API 使用的路径参数 video_id"
+      pt_BR: "Parâmetro de caminho video_id usado pela API"
+      ja_JP: "API で使用されるパスパラメータ video_id"
+    form: llm
+extra:
+  python:
+    source: tools/sora_character_query.py

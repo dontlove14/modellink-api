@@ -1,0 +1,94 @@
+identity:
+  name: "sora_character_create"
+  author: "modellink"
+  label:
+    en_US: "Sora Character Create"
+    zh_Hans: "Sora 角色创建（任务提交）"
+    pt_BR: "Criar Personagem Sora"
+    ja_JP: "Sora キャラクター作成"
+description:
+  human:
+    en_US: "Create a Sora character from an existing video task"
+    zh_Hans: "基于已有视频任务与指定片段创建 Sora 角色（可创建真人角色）"
+    pt_BR: "Criar um personagem Sora a partir de uma tarefa de vídeo existente"
+    ja_JP: "既存の動画タスクと指定区間から Sora キャラクターを作成します"
+  llm: "Sora Character Create API"
+parameters:
+  - name: apiKey
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+      zh_Hans: API 密钥
+      pt_BR: Chave da API
+      ja_JP: API キー
+    human_description:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    llm_description: "API key for authentication"
+    placeholder:
+      en_US: "sk-..."
+      zh_Hans: "sk-..."
+      pt_BR: "sk-..."
+      ja_JP: "sk-..."
+    help:
+      en_US: "API key for authentication"
+      zh_Hans: "用于认证的 API 密钥"
+      pt_BR: "Chave de API para autenticação"
+      ja_JP: "認証用のAPIキー"
+    form: llm
+  - name: task_id
+    type: string
+    required: true
+    label:
+      en_US: Task ID
+      zh_Hans: 任务 ID
+      pt_BR: ID da Tarefa
+      ja_JP: タスクID
+    human_description:
+      en_US: "Video task ID used to create the character"
+      zh_Hans: "用于创建角色的视频任务 ID"
+      pt_BR: "ID da tarefa de vídeo usada para criar o personagem"
+      ja_JP: "キャラクター作成に使用する動画タスクID"
+    llm_description: "Video task ID used to create the character"
+    placeholder:
+      en_US: "video_f716d408-9f2a-4846-99d8-98****89fd02"
+      zh_Hans: "video_f716d408-9f2a-4846-99d8-98****89fd02"
+      pt_BR: "video_f716d408-9f2a-4846-99d8-98****89fd02"
+      ja_JP: "video_f716d408-9f2a-4846-99d8-98****89fd02"
+    help:
+      en_US: "The taskId from the video task you want to extract a character from"
+      zh_Hans: "从哪个视频任务中抽取角色（接口字段 taskId）"
+      pt_BR: "O taskId da tarefa de vídeo para extrair o personagem"
+      ja_JP: "キャラクター抽出元となる動画タスクの taskId"
+    form: llm
+  - name: timestamps
+    type: string
+    required: true
+    label:
+      en_US: Timestamps
+      zh_Hans: 时间范围
+      pt_BR: Intervalo de Tempo
+      ja_JP: タイムスタンプ範囲
+    human_description:
+      en_US: "Time range in seconds, format 'start,end', must be within 3 seconds"
+      zh_Hans: "时间范围（秒），格式 'start,end'，跨度不大于 3 秒"
+      pt_BR: "Intervalo em segundos, formato 'início,fim', deve ser dentro de 3 segundos"
+      ja_JP: "秒単位の範囲（形式 'start,end'）、差は 3 秒以内"
+    llm_description: "Time range in seconds, format 'start,end'"
+    placeholder:
+      en_US: "1,3"
+      zh_Hans: "1,3"
+      pt_BR: "1,3"
+      ja_JP: "1,3"
+    help:
+      en_US: "Example: 1,3"
+      zh_Hans: "示例：1,3（相隔时间不能大于 3 秒）"
+      pt_BR: "Exemplo: 1,3"
+      ja_JP: "例: 1,3"
+    form: llm
+extra:
+  python:
+    source: tools/sora_character_create.py
