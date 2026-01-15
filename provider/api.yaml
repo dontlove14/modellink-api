@@ -64,6 +64,7 @@ tools:
   - tools/sora_video.yaml
   - tools/sora_video_query.yaml
   - tools/sora_character_create.yaml
+  - tools/sora_character_create_by_url.yaml
   - tools/sora_character_query.yaml
   - tools/klingus_text2video.yaml
   - tools/klingus_image2video.yaml
