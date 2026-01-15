@@ -101,6 +101,8 @@ class SoraVideoTool(Tool):
                 if not isinstance(value, str):
                     return value
                 s = value.strip()
+                if not s:
+                    return None
                 if s in {'16x9', '9x16'}:
                     return s
                 match = re.match(r'^(\d+)\s*x\s*(\d+)$', s)
@@ -111,6 +113,33 @@ class SoraVideoTool(Tool):
                 if width >= height:
                     return '16x9'
                 return '9x16'
+
+            def map_size_for_model(model_name: str | None, value: str | None) -> str | None:
+                """根据模型将 size（比例）映射为接口所需的分辨率参数。"""
+                if not value:
+                    return None
+
+                size_value = value.strip()
+                if not size_value:
+                    return None
+
+                if model_name == 'sora-2':
+                    if size_value not in {'9x16', '16x9'}:
+                        logger.warning(f'[Sora Video] sora-2 模型仅支持 size=9x16/16x9，已自动调整为 16x9（原值: {size_value}）')
+                        size_value = '16x9'
+                    if size_value == '9x16':
+                        return '720x1280'
+                    return '1280x720'
+
+                if model_name == 'sora-2-pro':
+                    if size_value not in {'9x16', '16x9'}:
+                        logger.warning(f'[Sora Video] sora-2-pro 模型仅支持 size=9x16/16x9，已自动调整为 16x9（原值: {size_value}）')
+                        size_value = '16x9'
+                    if size_value == '9x16':
+                        return '1024x1792'
+                    return '1792x1024'
+
+                return size_value
 
             def normalize_input_reference(value: Any) -> str | None:
                 """归一化 input_reference，仅支持单个文件或单个链接。
@@ -176,17 +205,13 @@ class SoraVideoTool(Tool):
             # sora-2 支持的时长：10, 15
             # sora-2-pro 支持所有尺寸和时长
             if model == 'sora-2':
-                # 验证size参数
-                if size and size not in ['9x16', '16x9']:
-                    # 如果尺寸不支持，使用默认值16x9
-                    logger.warning(f'[Sora Video] sora-2 模型不支持尺寸 {size}，已自动调整为 16x9')
-                    size = '16x9'
-                
                 # 验证seconds参数
                 if seconds and seconds not in ['10', '15']:
                     # 如果时长不支持，使用默认值10
                     logger.warning(f'[Sora Video] sora-2 模型不支持时长 {seconds} 秒，已自动调整为 10 秒')
                     seconds = '10'
+
+            mapped_size = map_size_for_model(model, size)
             
             # 构建请求数据
             request_data = {
@@ -196,8 +221,8 @@ class SoraVideoTool(Tool):
             }
             
             # 添加可选参数
-            if size:
-                request_data['size'] = size
+            if mapped_size:
+                request_data['size'] = mapped_size
             if watermark is not None:
                 request_data['watermark'] = watermark
             if private is not None:
