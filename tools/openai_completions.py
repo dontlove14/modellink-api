@@ -27,7 +27,42 @@ class OpenAICompletionsTool(Tool):
         if not response.ok:
             error_text = response.text
             logger.error(f'[OpenAI Completions] 错误响应: {error_text}')
-            raise Exception(f'API 请求失败: {response.status_code} - {error_text}')
+
+            error_payload: Any = None
+            try:
+                error_payload = response.json()
+            except Exception:
+                error_payload = None
+
+            error_obj = None
+            if isinstance(error_payload, dict):
+                error_obj = error_payload.get('error')
+
+            stop_unsupported = False
+            if isinstance(error_obj, dict):
+                if error_obj.get('param') == 'stop' and error_obj.get('code') == 'unsupported_parameter':
+                    stop_unsupported = True
+                elif "Unsupported parameter" in str(error_obj.get('message', '')) and error_obj.get('param') == 'stop':
+                    stop_unsupported = True
+            if not stop_unsupported and "Unsupported parameter" in str(error_text) and "'stop'" in str(error_text):
+                stop_unsupported = True
+
+            if stop_unsupported and isinstance(request_body, dict) and request_body.get('stop') is not None:
+                logger.warning('[OpenAI Completions] 当前模型不支持 stop 参数，已自动移除 stop 并重试一次')
+                try:
+                    response.close()
+                except Exception:
+                    pass
+                retry_body = dict(request_body)
+                retry_body.pop('stop', None)
+                response = requests.post(api_url, headers=headers, json=retry_body, timeout=600, stream=True)
+                logger.info(f'[OpenAI Completions] 重试响应状态: {response.status_code}')
+                if not response.ok:
+                    retry_error_text = response.text
+                    logger.error(f'[OpenAI Completions] 重试错误响应: {retry_error_text}')
+                    raise Exception(f'API 请求失败: {response.status_code} - {retry_error_text}')
+            else:
+                raise Exception(f'API 请求失败: {response.status_code} - {error_text}')
 
         content_type = response.headers.get('Content-Type', '') or response.headers.get('content-type', '')
         charset = 'utf-8'
@@ -111,23 +146,33 @@ class OpenAICompletionsTool(Tool):
         try:
             host = "https://api.modellink.online"
             apiKey = tool_parameters.get('apiKey')
+            if not apiKey or not isinstance(apiKey, str) or not apiKey.strip():
+                raise ValueError('缺少有效的 API Key')
             messages = tool_parameters.get('messages', [])
             prompt = tool_parameters.get('prompt')
             model = tool_parameters.get('model', 'gpt-4o')
 
-            temperature = tool_parameters.get('temperature') if tool_parameters.get('temperature') != 'variable' else None
-            maxCompletionTokens = tool_parameters.get('maxCompletionTokens') if tool_parameters.get('maxCompletionTokens') != 'variable' else None
-            topP = tool_parameters.get('topP') if tool_parameters.get('topP') != 'variable' else None
-            frequencyPenalty = tool_parameters.get('frequencyPenalty') if tool_parameters.get('frequencyPenalty') != 'variable' else None
-            presencePenalty = tool_parameters.get('presencePenalty') if tool_parameters.get('presencePenalty') != 'variable' else None
-            n = tool_parameters.get('n') if tool_parameters.get('n') != 'variable' else None
-            stop = tool_parameters.get('stop') if tool_parameters.get('stop') != 'variable' else None
-            responseFormat = tool_parameters.get('responseFormat') if tool_parameters.get('responseFormat') != 'variable' else None
-            reasoningEffort = tool_parameters.get('reasoningEffort') if tool_parameters.get('reasoningEffort') != 'variable' else None
-            seed = tool_parameters.get('seed') if tool_parameters.get('seed') != 'variable' else None
-            logitBias = tool_parameters.get('logitBias') if tool_parameters.get('logitBias') != 'variable' else None
-            logprobs = tool_parameters.get('logprobs') if tool_parameters.get('logprobs') != 'variable' else None
-            topLogprobs = tool_parameters.get('topLogprobs') if tool_parameters.get('topLogprobs') != 'variable' else None
+            def get_param(key: str) -> Any:
+                val = tool_parameters.get(key)
+                if val is None or val == 'variable' or val == '':
+                    return None
+                if isinstance(val, (list, dict)) and len(val) == 0:
+                    return None
+                return val
+
+            temperature = get_param('temperature')
+            maxCompletionTokens = get_param('maxCompletionTokens')
+            topP = get_param('topP')
+            frequencyPenalty = get_param('frequencyPenalty')
+            presencePenalty = get_param('presencePenalty')
+            n = get_param('n')
+            stop = get_param('stop')
+            responseFormat = get_param('responseFormat')
+            reasoningEffort = get_param('reasoningEffort')
+            seed = get_param('seed')
+            logitBias = get_param('logitBias')
+            logprobs = get_param('logprobs')
+            topLogprobs = get_param('topLogprobs')
 
             logger.info(f'[OpenAI Completions] 开始对话，模型: {model}')
 

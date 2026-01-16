@@ -124,7 +124,42 @@ class OpenAIResponsesTool(Tool):
         if not response.ok:
             error_text = response.text
             logger.error(f'[OpenAI Responses] 错误响应: {error_text}')
-            raise Exception(f'API 请求失败: {response.status_code} - {error_text}')
+
+            error_payload: Any = None
+            try:
+                error_payload = response.json()
+            except Exception:
+                error_payload = None
+
+            error_obj = None
+            if isinstance(error_payload, dict):
+                error_obj = error_payload.get('error')
+
+            stop_unsupported = False
+            if isinstance(error_obj, dict):
+                if error_obj.get('param') == 'stop' and error_obj.get('code') == 'unsupported_parameter':
+                    stop_unsupported = True
+                elif "Unsupported parameter" in str(error_obj.get('message', '')) and error_obj.get('param') == 'stop':
+                    stop_unsupported = True
+            if not stop_unsupported and "Unsupported parameter" in str(error_text) and "'stop'" in str(error_text):
+                stop_unsupported = True
+
+            if stop_unsupported and isinstance(request_body, dict) and request_body.get('stop') is not None:
+                logger.warning('[OpenAI Responses] 当前模型不支持 stop 参数，已自动移除 stop 并重试一次')
+                try:
+                    response.close()
+                except Exception:
+                    pass
+                retry_body = dict(request_body)
+                retry_body.pop('stop', None)
+                response = requests.post(api_url, headers=headers, json=retry_body, timeout=600, stream=True)
+                logger.info(f'[OpenAI Responses] 重试响应状态: {response.status_code}')
+                if not response.ok:
+                    retry_error_text = response.text
+                    logger.error(f'[OpenAI Responses] 重试错误响应: {retry_error_text}')
+                    raise Exception(f'API 请求失败: {response.status_code} - {retry_error_text}')
+            else:
+                raise Exception(f'API 请求失败: {response.status_code} - {error_text}')
 
         content_type = response.headers.get('Content-Type', '') or response.headers.get('content-type', '')
         charset = 'utf-8'
@@ -270,6 +305,8 @@ class OpenAIResponsesTool(Tool):
             def get_param(key: str) -> Any:
                 val = tool_parameters.get(key)
                 if val is None or val == 'variable' or val == '':
+                    return None
+                if isinstance(val, (list, dict)) and len(val) == 0:
                     return None
                 return val
 
