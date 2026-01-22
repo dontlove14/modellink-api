@@ -1,0 +1,185 @@
+identity:
+  name: "funaudio_asr_submit"
+  author: "modellink"
+  label:
+    en_US: "FunAudio-ASR Submit Task"
+    zh_Hans: "FunAudio-ASR 提交任务"
+    pt_BR: "FunAudio-ASR Enviar Tarefa"
+    ja_JP: "FunAudio-ASR タスク送信"
+description:
+  human:
+    en_US: "Submit recording file recognition task to Bailian (FunAudio-ASR)."
+    zh_Hans: "提交百炼（FunAudio-ASR）录音文件识别任务。"
+    pt_BR: "Enviar tarefa de reconhecimento de gravação ao Bailian (FunAudio-ASR)."
+    ja_JP: "百煉（FunAudio-ASR）録音ファイル認識タスクを送信します。"
+  llm: "Submit FunAudio-ASR transcription task"
+parameters:
+  - name: apiKey
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+      zh_Hans: API 密钥
+      pt_BR: Chave da API
+      ja_JP: API キー
+    human_description:
+      en_US: "API key for authentication (use environment variables, not hard-coded)."
+      zh_Hans: "用于认证的 API 密钥（请通过环境变量配置，勿硬编码）。"
+      pt_BR: "Chave de API para autenticação (use variáveis de ambiente)."
+      ja_JP: "認証用 API キー（環境変数で設定し、ハードコードしないでください）。"
+    llm_description: "API key for authentication"
+    form: llm
+  - name: model
+    type: select
+    required: true
+    label:
+      en_US: Model
+      zh_Hans: 模型
+      pt_BR: Modelo
+      ja_JP: モデル
+    human_description:
+      en_US: "ASR model to use."
+      zh_Hans: "选择使用的语音识别模型。"
+      pt_BR: "Modelo de ASR a ser utilizado."
+      ja_JP: "使用する音声認識モデル。"
+    llm_description: "ASR model name"
+    form: llm
+    options:
+      - value: fun-asr
+        label:
+          en_US: fun-asr
+          zh_Hans: fun-asr
+          pt_BR: fun-asr
+          ja_JP: fun-asr
+      - value: fun-asr-2025-11-07
+        label:
+          en_US: fun-asr-2025-11-07
+          zh_Hans: fun-asr-2025-11-07
+          pt_BR: fun-asr-2025-11-07
+          ja_JP: fun-asr-2025-11-07
+      - value: fun-asr-2025-08-25
+        label:
+          en_US: fun-asr-2025-08-25
+          zh_Hans: fun-asr-2025-08-25
+          pt_BR: fun-asr-2025-08-25
+          ja_JP: fun-asr-2025-08-25
+      - value: fun-asr-mtl
+        label:
+          en_US: fun-asr-mtl
+          zh_Hans: fun-asr-mtl
+          pt_BR: fun-asr-mtl
+          ja_JP: fun-asr-mtl
+      - value: fun-asr-mtl-2025-08-25
+        label:
+          en_US: fun-asr-mtl-2025-08-25
+          zh_Hans: fun-asr-mtl-2025-08-25
+          pt_BR: fun-asr-mtl-2025-08-25
+          ja_JP: fun-asr-mtl-2025-08-25
+  - name: file_urls
+    type: string
+    required: true
+    label:
+      en_US: File URLs (CSV)
+      zh_Hans: 文件URL（CSV）
+      pt_BR: URLs de Arquivo (CSV)
+      ja_JP: ファイルURL（CSV）
+    human_description:
+      en_US: "Comma-separated HTTP/HTTPS or oss:// URLs; max 100; base64 not supported."
+      zh_Hans: "英文逗号分隔的 HTTP/HTTPS 或 oss:// URL；最多100个；不支持 base64。"
+      pt_BR: "URLs HTTP/HTTPS ou oss:// separadas por vírgula; máximo 100; base64 não suportado."
+      ja_JP: "HTTP/HTTPS または oss:// の URL をカンマ区切りで指定；最大100件；base64は非対応。"
+    llm_description: "Comma-separated URLs"
+    form: llm
+  - name: vocabulary_id
+    type: string
+    required: false
+    label:
+      en_US: Vocabulary ID
+      zh_Hans: 热词ID
+      pt_BR: ID de Vocabulário
+      ja_JP: ボキャブラリID
+    human_description:
+      en_US: "Hot words ID, optional."
+      zh_Hans: "热词ID（可选）。"
+      pt_BR: "ID de palavras-chave (opcional)."
+      ja_JP: "ホットワードID（任意）。"
+    llm_description: "Hot words ID"
+    form: llm
+  - name: channel_id
+    type: string
+    required: false
+    label:
+      en_US: Channel IDs (CSV)
+      zh_Hans: 音轨索引（CSV）
+      pt_BR: IDs de Canal (CSV)
+      ja_JP: チャンネルID（CSV）
+    human_description:
+      en_US: "Comma-separated channel indices, e.g., 0 or 0,1. Each channel billed separately."
+      zh_Hans: "英文逗号分隔的音轨索引，如 0 或 0,1。每个音轨将独立计费。"
+      pt_BR: "Índices de canal separados por vírgula, ex.: 0 ou 0,1. Cada canal é cobrado separadamente."
+      ja_JP: "カンマ区切りのチャンネル番号（例：0 または 0,1）。各チャンネルは個別に課金。"
+    llm_description: "Channel indices CSV"
+    form: llm
+  - name: special_word_filter
+    type: string
+    required: false
+    label:
+      en_US: Special Word Filter (JSON string)
+      zh_Hans: 敏感词过滤（JSON字符串）
+      pt_BR: Filtro de Palavras Sensíveis (JSON)
+      ja_JP: 敏感語フィルタ（JSON文字列）
+    human_description:
+      en_US: "JSON string config for sensitive words: filter_with_signed, filter_with_empty, system_reserved_filter."
+      zh_Hans: "敏感词处理的 JSON 字符串配置：filter_with_signed、filter_with_empty、system_reserved_filter。"
+      pt_BR: "Configuração em string JSON para palavras sensíveis: filter_with_signed, filter_with_empty, system_reserved_filter."
+      ja_JP: "敏感語処理のJSON文字列設定：filter_with_signed、filter_with_empty、system_reserved_filter。"
+    llm_description: "Sensitive word filter JSON string"
+    form: llm
+  - name: diarization_enabled
+    type: boolean
+    required: false
+    label:
+      en_US: Diarization Enabled
+      zh_Hans: 开启说话人分离
+      pt_BR: Separação de Falantes
+      ja_JP: 話者分離を有効化
+    human_description:
+      en_US: "Enable speaker diarization for mono audio."
+      zh_Hans: "仅单声道音频支持。开启后返回 speaker_id。"
+      pt_BR: "Ativar separação de falantes para áudio mono."
+      ja_JP: "モノラル音声で話者分離を有効化。"
+    llm_description: "Enable speaker diarization"
+    form: llm
+  - name: speaker_count
+    type: number
+    required: false
+    label:
+      en_US: Speaker Count (hint)
+      zh_Hans: 说话人人数参考
+      pt_BR: Número de Falantes (referência)
+      ja_JP: 話者数の参考値
+    human_description:
+      en_US: "Integer 2–100; hint only when diarization is enabled."
+      zh_Hans: "整数 2–100；仅在开启话者分离时提供参考。"
+      pt_BR: "Inteiro de 2 a 100; apenas como referência quando a separação está ativa."
+      ja_JP: "2〜100 の整数；話者分離有効時の参考。"
+    llm_description: "Speaker count hint"
+    form: llm
+  - name: language_hints
+    type: string
+    required: false
+    label:
+      en_US: Language Hints (CSV)
+      zh_Hans: 语言提示（CSV）
+      pt_BR: Dicas de Idioma (CSV)
+      ja_JP: 言語ヒント（CSV）
+    human_description:
+      en_US: "Comma-separated language codes like zh,en,ja. Leave empty to auto-detect."
+      zh_Hans: "英文逗号分隔的语种代码，如 zh,en,ja。留空自动识别。"
+      pt_BR: "Códigos de idioma separados por vírgula, ex.: zh,en,ja. Em branco para detecção automática."
+      ja_JP: "zh,en,ja などの言語コードをカンマ区切りで。未指定なら自動判定。"
+    llm_description: "Language code CSV"
+    form: llm
+extra:
+  python:
+    source: tools/funaudio_asr_submit.py

@@ -1,0 +1,49 @@
+identity:
+  name: "funaudio_asr_query"
+  author: "modellink"
+  label:
+    en_US: "FunAudio-ASR Query Task"
+    zh_Hans: "FunAudio-ASR 查询任务"
+    pt_BR: "FunAudio-ASR Consultar Tarefa"
+    ja_JP: "FunAudio-ASR タスク照会"
+description:
+  human:
+    en_US: "Query recording file recognition task status/result for Bailian (FunAudio-ASR)."
+    zh_Hans: "查询百炼（FunAudio-ASR）录音文件识别任务状态与结果。"
+    pt_BR: "Consultar status/resultado da tarefa de reconhecimento ao Bailian (FunAudio-ASR)."
+    ja_JP: "百煉（FunAudio-ASR）録音ファイル認識タスクの状態・結果を照会します。"
+  llm: "Query FunAudio-ASR transcription task"
+parameters:
+  - name: apiKey
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+      zh_Hans: API 密钥
+      pt_BR: Chave da API
+      ja_JP: API キー
+    human_description:
+      en_US: "API key for authentication (use environment variables, not hard-coded)."
+      zh_Hans: "用于认证的 API 密钥（请通过环境变量配置，勿硬编码）。"
+      pt_BR: "Chave de API para autenticação (use variáveis de ambiente)."
+      ja_JP: "認証用 API キー（環境変数で設定し、ハードコードしないでください）。"
+    llm_description: "API key for authentication"
+    form: llm
+  - name: task_id
+    type: string
+    required: true
+    label:
+      en_US: Task ID
+      zh_Hans: 任务ID
+      pt_BR: ID da Tarefa
+      ja_JP: タスクID
+    human_description:
+      en_US: "Task ID returned by submit API."
+      zh_Hans: "由提交任务接口返回的 task_id。"
+      pt_BR: "ID retornado pela API de envio."
+      ja_JP: "送信APIが返した task_id。"
+    llm_description: "Task ID"
+    form: llm
+extra:
+  python:
+    source: tools/funaudio_asr_query.py

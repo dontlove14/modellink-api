@@ -61,6 +61,8 @@ tools:
   - tools/openai_responses.yaml
   - tools/suno_submit_music.yaml
   - tools/suno_fetch_music.yaml
+  - tools/funaudio_asr_submit.yaml
+  - tools/funaudio_asr_query.yaml
   - tools/sora_video.yaml
   - tools/sora_video_query.yaml
   - tools/sora_character_create.yaml
