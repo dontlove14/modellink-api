@@ -1,0 +1,172 @@
+identity:
+  name: "seedream_image_edit"
+  author: "modellink"
+  label:
+    en_US: "Seedream Image-to-Image"
+    zh_Hans: "Seedream 图生图"
+    pt_BR: "Seedream Imagem para Imagem"
+    ja_JP: "Seedream 画像から画像"
+description:
+  human:
+    en_US: "Edit/transform images with Seedream (image-to-image)."
+    zh_Hans: "使用 Seedream 进行图生图/图片编辑。"
+    pt_BR: "Editar/transformar imagens com Seedream (imagem para imagem)."
+    ja_JP: "Seedream で画像を編集/変換します（画像から画像）。"
+  llm: "Seedream image-to-image editing."
+parameters:
+  - name: api_key
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+      zh_Hans: API 密钥
+      pt_BR: Chave da API
+      ja_JP: API キー
+    human_description:
+      en_US: "API key for authentication."
+      zh_Hans: "用于认证的 API 密钥。"
+      pt_BR: "Chave de API para autenticação."
+      ja_JP: "認証用の API キー。"
+    llm_description: "API key for authentication."
+    placeholder:
+      en_US: "Your API key"
+      zh_Hans: "请输入您的 API 密钥"
+      pt_BR: "Insira sua chave de API"
+      ja_JP: "API キーを入力してください"
+    help:
+      en_US: "API key for authentication."
+      zh_Hans: "用于认证的 API 密钥。"
+      pt_BR: "Chave de API para autenticação."
+      ja_JP: "認証用の API キー。"
+    form: llm
+  - name: image
+    type: string
+    required: true
+    label:
+      en_US: Image URL
+      zh_Hans: 参考图 URL
+      pt_BR: URL da Imagem
+      ja_JP: 画像URL
+    human_description:
+      en_US: "Reference image URL(s). Multiple URLs are supported, separated by English commas (max 14 images)."
+      zh_Hans: "参考图 URL（最多 14 张）。多张请用英文逗号分隔。"
+      pt_BR: "URL(s) da imagem de referência. Suporta múltiplas URLs separadas por vírgulas em inglês (máx. 14)."
+      ja_JP: "参照画像URL（最大14枚）。複数の場合は英語のカンマで区切ってください。"
+    llm_description: "Reference image URL(s), comma-separated, up to 14."
+    placeholder:
+      en_US: "https://example.com/a.jpg,https://example.com/b.jpg"
+      zh_Hans: "https://example.com/a.jpg,https://example.com/b.jpg"
+      pt_BR: "https://example.com/a.jpg,https://example.com/b.jpg"
+      ja_JP: "https://example.com/a.jpg,https://example.com/b.jpg"
+    help:
+      en_US: "Comma-separated image URLs, max 14."
+      zh_Hans: "参考图 URL，英文逗号分隔，最多 14 张。"
+      pt_BR: "URLs separadas por vírgula em inglês, máx. 14."
+      ja_JP: "英語のカンマ区切りで最大14枚。"
+    form: llm
+  - name: prompt
+    type: string
+    required: true
+    label:
+      en_US: Edit Prompt
+      zh_Hans: 编辑指令
+      pt_BR: Prompt de Edição
+      ja_JP: 編集指示
+    human_description:
+      en_US: "Edit instruction. Aspect ratio and resolution will be appended into the prompt if selected."
+      zh_Hans: "编辑指令。若选择宽高比/分辨率，会在工具内部拼接到提示词中。"
+      pt_BR: "Instrução de edição. A proporção e resolução serão anexadas ao prompt se selecionadas."
+      ja_JP: "編集指示。比率/解像度を選択した場合、プロンプトに追加されます。"
+    llm_description: "Edit instruction for image-to-image."
+    placeholder:
+      en_US: "Make it in watercolor style, detailed"
+      zh_Hans: "改成水彩风格，细节丰富"
+      pt_BR: "Transforme em estilo aquarela, detalhado"
+      ja_JP: "水彩風にして、詳細を増やす"
+    help:
+      en_US: "Edit instruction."
+      zh_Hans: "编辑指令。"
+      pt_BR: "Instrução de edição."
+      ja_JP: "編集指示。"
+    form: llm
+  - name: n
+    type: number
+    required: false
+    label:
+      en_US: Number of Images
+      zh_Hans: 生成数量
+      pt_BR: Número de Imagens
+      ja_JP: 生成枚数
+    human_description:
+      en_US: "How many images to generate."
+      zh_Hans: "生成图片的数量（n）。"
+      pt_BR: "Quantas imagens gerar."
+      ja_JP: "生成する画像の枚数（n）。"
+    llm_description: "Number of images to generate."
+    placeholder:
+      en_US: "1"
+      zh_Hans: "1"
+      pt_BR: "1"
+      ja_JP: "1"
+    help:
+      en_US: "Number of images to generate."
+      zh_Hans: "生成图片的数量（n）。"
+      pt_BR: "Número de imagens a gerar."
+      ja_JP: "生成する画像の枚数（n）。"
+    form: llm
+  - name: watermark
+    type: boolean
+    required: false
+    label:
+      en_US: Watermark
+      zh_Hans: 水印
+      pt_BR: Marca d'água
+      ja_JP: 透かし
+    human_description:
+      en_US: "Whether the generated image contains a watermark."
+      zh_Hans: "生成图片是否包含水印。"
+      pt_BR: "Se a imagem gerada contém marca d'água."
+      ja_JP: "生成画像に透かしを含めるかどうか。"
+    llm_description: "Whether the generated image contains a watermark."
+    placeholder:
+      en_US: "false"
+      zh_Hans: "false"
+      pt_BR: "false"
+      ja_JP: "false"
+    help:
+      en_US: "true: with watermark, false: without watermark."
+      zh_Hans: "true：带水印，false：不带水印。"
+      pt_BR: "true: com marca d'água, false: sem marca d'água."
+      ja_JP: "true: 透かしあり、false: 透かしなし。"
+    form: llm
+  - name: aspect_ratio
+    type: select
+    required: false
+    label:
+      en_US: Aspect Ratio
+      zh_Hans: 宽高比
+      pt_BR: Proporção
+      ja_JP: アスペクト比
+    human_description:
+      en_US: "Aspect ratio used to calculate the size parameter."
+      zh_Hans: "用于换算 size 参数的宽高比。"
+      pt_BR: "Proporção usada para calcular o parâmetro size."
+      ja_JP: "size パラメータ算出に使うアスペクト比。"
+    llm_description: "Aspect ratio used to calculate size."
+    options:
+      - value: "1:1"
+        label: { en_US: "1:1", zh_Hans: "1:1", pt_BR: "1:1", ja_JP: "1:1" }
+      - value: "3:4"
+        label: { en_US: "3:4", zh_Hans: "3:4", pt_BR: "3:4", ja_JP: "3:4" }
+      - value: "4:3"
+        label: { en_US: "4:3", zh_Hans: "4:3", pt_BR: "4:3", ja_JP: "4:3" }
+      - value: "16:9"
+        label: { en_US: "16:9", zh_Hans: "16:9", pt_BR: "16:9", ja_JP: "16:9" }
+      - value: "9:16"
+        label: { en_US: "9:16", zh_Hans: "9:16", pt_BR: "9:16", ja_JP: "9:16" }
+      - value: "21:9"
+        label: { en_US: "21:9", zh_Hans: "21:9", pt_BR: "21:9", ja_JP: "21:9" }
+    form: llm
+extra:
+  python:
+    source: tools/seedream_image_edit.py

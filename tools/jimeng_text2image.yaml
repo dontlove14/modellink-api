@@ -1,0 +1,119 @@
+identity:
+  name: "jimeng_text2image"
+  author: "modellink"
+  label:
+    en_US: "Jimeng Text-to-Image"
+    zh_Hans: "即梦 文生图"
+    pt_BR: "Jimeng Texto para Imagem"
+    ja_JP: "Jimeng テキストから画像"
+description:
+  human:
+    en_US: "Generate images with Jimeng (text-to-image)."
+    zh_Hans: "使用即梦进行文生图生成。"
+    pt_BR: "Gerar imagens com Jimeng (texto para imagem)."
+    ja_JP: "Jimeng でテキストから画像を生成します。"
+  llm: "Jimeng text-to-image generation."
+parameters:
+  - name: api_key
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+      zh_Hans: API 密钥
+      pt_BR: Chave da API
+      ja_JP: API キー
+    human_description:
+      en_US: "API key for authentication."
+      zh_Hans: "用于认证的 API 密钥。"
+      pt_BR: "Chave de API para autenticação."
+      ja_JP: "認証用の API キー。"
+    llm_description: "API key for authentication."
+    placeholder:
+      en_US: "Your API key"
+      zh_Hans: "请输入您的 API 密钥"
+      pt_BR: "Insira sua chave de API"
+      ja_JP: "API キーを入力してください"
+    help:
+      en_US: "API key for authentication."
+      zh_Hans: "用于认证的 API 密钥。"
+      pt_BR: "Chave de API para autenticação."
+      ja_JP: "認証用の API キー。"
+    form: llm
+  - name: prompt
+    type: string
+    required: true
+    label:
+      en_US: Prompt
+      zh_Hans: 提示词
+      pt_BR: Prompt
+      ja_JP: プロンプト
+    human_description:
+      en_US: "Text prompt for image generation. You can also add aspect ratio like \"16:9\" in the text."
+      zh_Hans: "用于生成图片的文本提示词，也可在文本中手动加比如 \"16:9\"。"
+      pt_BR: "Prompt de texto para geração de imagem. Você também pode adicionar a proporção como \"16:9\" no texto."
+      ja_JP: "画像生成用のテキストプロンプト。テキスト内に \"16:9\" のような比率を含めることもできます。"
+    llm_description: "Text prompt for image generation."
+    placeholder:
+      en_US: "A cute baby sea otter, detailed, 16:9, 2K"
+      zh_Hans: "一只可爱的小海獭，细节丰富 16:9 2K"
+      pt_BR: "Uma lontra-marinha bebê fofa, detalhada, 16:9, 2K"
+      ja_JP: "かわいい赤ちゃんラッコ、詳細、16:9、2K"
+    help:
+      en_US: "Text prompt for image generation."
+      zh_Hans: "用于生成图片的文本提示词。"
+      pt_BR: "Prompt de texto para geração de imagem."
+      ja_JP: "画像生成用のテキストプロンプト。"
+    form: llm
+  - name: aspect_ratio
+    type: select
+    required: false
+    label:
+      en_US: Aspect Ratio
+      zh_Hans: 宽高比
+      pt_BR: Proporção
+      ja_JP: アスペクト比
+    human_description:
+      en_US: "Aspect ratio to be appended into the prompt."
+      zh_Hans: "宽高比参数，会在工具内部拼接到提示词中。"
+      pt_BR: "Proporção a ser anexada ao prompt."
+      ja_JP: "プロンプトに追加されるアスペクト比。"
+    llm_description: "Aspect ratio appended into the prompt."
+    options:
+      - value: "1:1"
+        label: { en_US: "1:1", zh_Hans: "1:1", pt_BR: "1:1", ja_JP: "1:1" }
+      - value: "3:4"
+        label: { en_US: "3:4", zh_Hans: "3:4", pt_BR: "3:4", ja_JP: "3:4" }
+      - value: "4:3"
+        label: { en_US: "4:3", zh_Hans: "4:3", pt_BR: "4:3", ja_JP: "4:3" }
+      - value: "16:9"
+        label: { en_US: "16:9", zh_Hans: "16:9", pt_BR: "16:9", ja_JP: "16:9" }
+      - value: "9:16"
+        label: { en_US: "9:16", zh_Hans: "9:16", pt_BR: "9:16", ja_JP: "9:16" }
+      - value: "21:9"
+        label: { en_US: "21:9", zh_Hans: "21:9", pt_BR: "21:9", ja_JP: "21:9" }
+    form: llm
+  - name: resolution
+    type: select
+    required: false
+    label:
+      en_US: Resolution
+      zh_Hans: 分辨率
+      pt_BR: Resolução
+      ja_JP: 解像度
+    human_description:
+      en_US: "Resolution tag (1K/2K/4K) to be appended into the prompt."
+      zh_Hans: "分辨率参数（1K/2K/4K），会在工具内部拼接到提示词中。"
+      pt_BR: "Tag de resolução (1K/2K/4K) a ser anexada ao prompt."
+      ja_JP: "プロンプトに追加される解像度タグ（1K/2K/4K）。"
+    llm_description: "Resolution tag appended into the prompt."
+    options:
+      - value: "1K"
+        label: { en_US: "1K", zh_Hans: "1K", pt_BR: "1K", ja_JP: "1K" }
+      - value: "2K"
+        label: { en_US: "2K", zh_Hans: "2K", pt_BR: "2K", ja_JP: "2K" }
+      - value: "4K"
+        label: { en_US: "4K", zh_Hans: "4K", pt_BR: "4K", ja_JP: "4K" }
+    form: llm
+extra:
+  python:
+    source: tools/jimeng_text2image.py

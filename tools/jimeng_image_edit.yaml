@@ -1,0 +1,144 @@
+identity:
+  name: "jimeng_image_edit"
+  author: "modellink"
+  label:
+    en_US: "Jimeng Image-to-Image"
+    zh_Hans: "即梦 图生图"
+    pt_BR: "Jimeng Imagem para Imagem"
+    ja_JP: "Jimeng 画像から画像"
+description:
+  human:
+    en_US: "Edit/transform images with Jimeng (image-to-image)."
+    zh_Hans: "使用即梦进行图生图/图片编辑。"
+    pt_BR: "Editar/transformar imagens com Jimeng (imagem para imagem)."
+    ja_JP: "Jimeng で画像を編集/変換します（画像から画像）。"
+  llm: "Jimeng image-to-image editing."
+parameters:
+  - name: api_key
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+      zh_Hans: API 密钥
+      pt_BR: Chave da API
+      ja_JP: API キー
+    human_description:
+      en_US: "API key for authentication."
+      zh_Hans: "用于认证的 API 密钥。"
+      pt_BR: "Chave de API para autenticação."
+      ja_JP: "認証用の API キー。"
+    llm_description: "API key for authentication."
+    placeholder:
+      en_US: "Your API key"
+      zh_Hans: "请输入您的 API 密钥"
+      pt_BR: "Insira sua chave de API"
+      ja_JP: "API キーを入力してください"
+    help:
+      en_US: "API key for authentication."
+      zh_Hans: "用于认证的 API 密钥。"
+      pt_BR: "Chave de API para autenticação."
+      ja_JP: "認証用の API キー。"
+    form: llm
+  - name: image
+    type: string
+    required: true
+    label:
+      en_US: Image URL
+      zh_Hans: 参考图 URL
+      pt_BR: URL da Imagem
+      ja_JP: 画像URL
+    human_description:
+      en_US: "Reference image. Provide a URL."
+      zh_Hans: "参考图，传入图片 URL。"
+      pt_BR: "Imagem de referência. Forneça uma URL."
+      ja_JP: "参照画像。URL を指定してください。"
+    llm_description: "Reference image URL."
+    placeholder:
+      en_US: "https://example.com/image.jpg"
+      zh_Hans: "https://example.com/image.jpg"
+      pt_BR: "https://example.com/image.jpg"
+      ja_JP: "https://example.com/image.jpg"
+    help:
+      en_US: "Reference image URL."
+      zh_Hans: "参考图 URL。"
+      pt_BR: "URL da imagem de referência."
+      ja_JP: "参照画像の URL。"
+    form: llm
+  - name: prompt
+    type: string
+    required: true
+    label:
+      en_US: Edit Prompt
+      zh_Hans: 编辑指令
+      pt_BR: Prompt de Edição
+      ja_JP: 編集指示
+    human_description:
+      en_US: "Edit instruction. Aspect ratio and resolution will be appended into the prompt if selected."
+      zh_Hans: "编辑指令。若选择宽高比/分辨率，会在工具内部拼接到提示词中。"
+      pt_BR: "Instrução de edição. A proporção e resolução serão anexadas ao prompt se selecionadas."
+      ja_JP: "編集指示。比率/解像度を選択した場合、プロンプトに追加されます。"
+    llm_description: "Edit instruction for image-to-image."
+    placeholder:
+      en_US: "Make it in watercolor style, detailed"
+      zh_Hans: "改成水彩风格，细节丰富"
+      pt_BR: "Transforme em estilo aquarela, detalhado"
+      ja_JP: "水彩風にして、詳細を増やす"
+    help:
+      en_US: "Edit instruction."
+      zh_Hans: "编辑指令。"
+      pt_BR: "Instrução de edição."
+      ja_JP: "編集指示。"
+    form: llm
+  - name: aspect_ratio
+    type: select
+    required: false
+    label:
+      en_US: Aspect Ratio
+      zh_Hans: 宽高比
+      pt_BR: Proporção
+      ja_JP: アスペクト比
+    human_description:
+      en_US: "Aspect ratio to be appended into the prompt."
+      zh_Hans: "宽高比参数，会在工具内部拼接到提示词中。"
+      pt_BR: "Proporção a ser anexada ao prompt."
+      ja_JP: "プロンプトに追加されるアスペクト比。"
+    llm_description: "Aspect ratio appended into the prompt."
+    options:
+      - value: "1:1"
+        label: { en_US: "1:1", zh_Hans: "1:1", pt_BR: "1:1", ja_JP: "1:1" }
+      - value: "3:4"
+        label: { en_US: "3:4", zh_Hans: "3:4", pt_BR: "3:4", ja_JP: "3:4" }
+      - value: "4:3"
+        label: { en_US: "4:3", zh_Hans: "4:3", pt_BR: "4:3", ja_JP: "4:3" }
+      - value: "16:9"
+        label: { en_US: "16:9", zh_Hans: "16:9", pt_BR: "16:9", ja_JP: "16:9" }
+      - value: "9:16"
+        label: { en_US: "9:16", zh_Hans: "9:16", pt_BR: "9:16", ja_JP: "9:16" }
+      - value: "21:9"
+        label: { en_US: "21:9", zh_Hans: "21:9", pt_BR: "21:9", ja_JP: "21:9" }
+    form: llm
+  - name: resolution
+    type: select
+    required: false
+    label:
+      en_US: Resolution
+      zh_Hans: 分辨率
+      pt_BR: Resolução
+      ja_JP: 解像度
+    human_description:
+      en_US: "Resolution tag (1K/2K/4K) to be appended into the prompt."
+      zh_Hans: "分辨率参数（1K/2K/4K），会在工具内部拼接到提示词中。"
+      pt_BR: "Tag de resolução (1K/2K/4K) a ser anexada ao prompt."
+      ja_JP: "プロンプトに追加される解像度タグ（1K/2K/4K）。"
+    llm_description: "Resolution tag appended into the prompt."
+    options:
+      - value: "1K"
+        label: { en_US: "1K", zh_Hans: "1K", pt_BR: "1K", ja_JP: "1K" }
+      - value: "2K"
+        label: { en_US: "2K", zh_Hans: "2K", pt_BR: "2K", ja_JP: "2K" }
+      - value: "4K"
+        label: { en_US: "4K", zh_Hans: "4K", pt_BR: "4K", ja_JP: "4K" }
+    form: llm
+extra:
+  python:
+    source: tools/jimeng_image_edit.py
