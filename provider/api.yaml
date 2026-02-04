@@ -59,8 +59,7 @@ tools:
   - tools/banana_gen.yaml
   - tools/jimeng_text2image.yaml
   - tools/jimeng_image_edit.yaml
-  - tools/seedream_text2image.yaml
-  - tools/seedream_image_edit.yaml
+  - tools/seedream_image_generations.yaml
   - tools/openai_completions.yaml
   - tools/openai_responses.yaml
   - tools/suno_submit_music.yaml

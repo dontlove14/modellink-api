@@ -1,0 +1,291 @@
+identity:
+  name: "seedream_image_generations"
+  author: "modellink"
+  label:
+    en_US: "Seedream Image Generations"
+    zh_Hans: "Seedream 图片生成"
+    pt_BR: "Seedream Geração de Imagem"
+    ja_JP: "Seedream 画像生成"
+description:
+  human:
+    en_US: "Generate images with Seedream (official ImageGenerations params). Returns image files directly (response_format=url, stream=false)."
+    zh_Hans: "使用 Seedream 图片生成（官方 ImageGenerations 入参）。直接返回图片文件（response_format 固定 url，stream 固定 false）。"
+    pt_BR: "Gerar imagens com Seedream (parâmetros oficiais ImageGenerations). Retorna arquivos de imagem (response_format=url, stream=false)."
+    ja_JP: "Seedream で画像生成（公式 ImageGenerations パラメータ）。画像ファイルを直接返します（response_format=url、stream=false）。"
+  llm: "Seedream image generations with official ImageGenerations parameters."
+parameters:
+  - name: api_key
+    type: secret-input
+    required: true
+    label:
+      en_US: API Key
+      zh_Hans: API 密钥
+      pt_BR: Chave da API
+      ja_JP: API キー
+    human_description:
+      en_US: "Bearer token for authentication."
+      zh_Hans: "用于认证的 Bearer Token。"
+      pt_BR: "Token Bearer para autenticação."
+      ja_JP: "認証用の Bearer トークン。"
+    llm_description: "Bearer token for authentication."
+    placeholder:
+      en_US: "Your API key"
+      zh_Hans: "请输入您的 API 密钥"
+      pt_BR: "Insira sua chave de API"
+      ja_JP: "API キーを入力してください"
+    help:
+      en_US: "Used as Authorization: Bearer <api_key>."
+      zh_Hans: "将以 Authorization: Bearer <api_key> 发送。"
+      pt_BR: "Enviado como Authorization: Bearer <api_key>."
+      ja_JP: "Authorization: Bearer <api_key> として送信します。"
+    form: llm
+  - name: model
+    type: string
+    required: false
+    label:
+      en_US: Model
+      zh_Hans: 模型
+      pt_BR: Modelo
+      ja_JP: モデル
+    human_description:
+      en_US: "Model ID for image generation. Defaults to doubao-seedream-4-5-251128."
+      zh_Hans: "图片生成模型 ID。不填则默认使用 doubao-seedream-4-5-251128。"
+      pt_BR: "ID do modelo para geração de imagem. Padrão: doubao-seedream-4-5-251128."
+      ja_JP: "画像生成モデルID。未指定の場合は doubao-seedream-4-5-251128 を使用。"
+    llm_description: "Model ID for image generation."
+    placeholder:
+      en_US: "doubao-seedream-4-5-251128"
+      zh_Hans: "doubao-seedream-4-5-251128"
+      pt_BR: "doubao-seedream-4-5-251128"
+      ja_JP: "doubao-seedream-4-5-251128"
+    help:
+      en_US: "Leave empty to use the default model."
+      zh_Hans: "留空则使用默认模型。"
+      pt_BR: "Deixe em branco para usar o modelo padrão."
+      ja_JP: "未指定の場合はデフォルトモデルを使用します。"
+    form: llm
+  - name: prompt
+    type: string
+    required: true
+    label:
+      en_US: Prompt
+      zh_Hans: 提示词
+      pt_BR: Prompt
+      ja_JP: プロンプト
+    human_description:
+      en_US: "Text prompt for image generation."
+      zh_Hans: "用于生成图片的文本提示词。"
+      pt_BR: "Prompt de texto para geração de imagem."
+      ja_JP: "画像生成用のテキストプロンプト。"
+    llm_description: "Text prompt for image generation."
+    placeholder:
+      en_US: "A cute baby sea otter, detailed"
+      zh_Hans: "一只可爱的小海獭，细节丰富"
+      pt_BR: "Uma lontra-marinha bebê fofa, detalhada"
+      ja_JP: "かわいい赤ちゃんラッコ、詳細"
+    help:
+      en_US: "Required."
+      zh_Hans: "必填。"
+      pt_BR: "Obrigatório."
+      ja_JP: "必須。"
+    form: llm
+  - name: image
+    type: string
+    required: false
+    label:
+      en_US: Reference Image (Optional)
+      zh_Hans: 参考图（可选）
+      pt_BR: Imagem de Referência (Opcional)
+      ja_JP: 参照画像（任意）
+    human_description:
+      en_US: "Optional reference image(s) as URL or Base64. Multiple values can be separated by English commas."
+      zh_Hans: "可选参考图，支持 URL 或 Base64。多张可用英文逗号分隔（最多 14 张）。"
+      pt_BR: "Imagem(ns) de referência opcional(is) como URL ou Base64. Múltiplos valores separados por vírgula em inglês (máx. 14)."
+      ja_JP: "任意の参照画像（URL または Base64）。複数は英語のカンマ区切り（最大14枚）。"
+    llm_description: "Optional reference image(s), URL/Base64, comma-separated."
+    placeholder:
+      en_US: "https://example.com/a.jpg,https://example.com/b.jpg"
+      zh_Hans: "https://example.com/a.jpg,https://example.com/b.jpg"
+      pt_BR: "https://example.com/a.jpg,https://example.com/b.jpg"
+      ja_JP: "https://example.com/a.jpg,https://example.com/b.jpg"
+    help:
+      en_US: "Leave empty for text-to-image."
+      zh_Hans: "留空即为文生图；填写则为带参考图的生成。"
+      pt_BR: "Deixe em branco para texto-para-imagem."
+      ja_JP: "未指定でテキストから画像生成になります。"
+    form: llm
+  - name: watermark
+    type: boolean
+    required: false
+    label:
+      en_US: Watermark
+      zh_Hans: 水印
+      pt_BR: Marca d'água
+      ja_JP: 透かし
+    human_description:
+      en_US: "Whether the generated image contains a watermark."
+      zh_Hans: "生成图片是否包含水印。"
+      pt_BR: "Se a imagem gerada contém marca d'água."
+      ja_JP: "生成画像に透かしを含めるかどうか。"
+    llm_description: "watermark boolean."
+    placeholder:
+      en_US: "true"
+      zh_Hans: "true"
+      pt_BR: "true"
+      ja_JP: "true"
+    help:
+      en_US: "true: with watermark, false: without watermark."
+      zh_Hans: "true：带水印，false：不带水印。"
+      pt_BR: "true: com marca d'água, false: sem marca d'água."
+      ja_JP: "true: 透かしあり、false: 透かしなし。"
+    form: llm
+  - name: aspect_ratio
+    type: select
+    required: false
+    label:
+      en_US: Aspect Ratio
+      zh_Hans: 宽高比
+      pt_BR: Proporção
+      ja_JP: アスペクト比
+    human_description:
+      en_US: "Aspect ratio used to calculate the size parameter. If not provided, this parameter will not be sent."
+      zh_Hans: "用于换算 size 的宽高比。不填则不发送 size 参数，交给接口使用默认值。"
+      pt_BR: "Proporção usada para calcular size. Se não informado, não envia size."
+      ja_JP: "size を算出するためのアスペクト比。未指定の場合は size を送信しません。"
+    llm_description: "Aspect ratio used to calculate size."
+    options:
+      - value: "1:1"
+        label: { en_US: "1:1", zh_Hans: "1:1", pt_BR: "1:1", ja_JP: "1:1" }
+      - value: "3:4"
+        label: { en_US: "3:4", zh_Hans: "3:4", pt_BR: "3:4", ja_JP: "3:4" }
+      - value: "4:3"
+        label: { en_US: "4:3", zh_Hans: "4:3", pt_BR: "4:3", ja_JP: "4:3" }
+      - value: "16:9"
+        label: { en_US: "16:9", zh_Hans: "16:9", pt_BR: "16:9", ja_JP: "16:9" }
+      - value: "9:16"
+        label: { en_US: "9:16", zh_Hans: "9:16", pt_BR: "9:16", ja_JP: "9:16" }
+      - value: "3:2"
+        label: { en_US: "3:2", zh_Hans: "3:2", pt_BR: "3:2", ja_JP: "3:2" }
+      - value: "2:3"
+        label: { en_US: "2:3", zh_Hans: "2:3", pt_BR: "2:3", ja_JP: "2:3" }
+      - value: "21:9"
+        label: { en_US: "21:9", zh_Hans: "21:9", pt_BR: "21:9", ja_JP: "21:9" }
+    form: llm
+  - name: seed
+    type: number
+    required: false
+    label:
+      en_US: Seed
+      zh_Hans: 随机种子
+      pt_BR: Seed
+      ja_JP: シード
+    human_description:
+      en_US: "Random seed. Use -1 or leave empty to let the service pick a random seed."
+      zh_Hans: "随机数种子。填 -1 或留空表示使用随机种子。"
+      pt_BR: "Seed aleatória. Use -1 ou deixe em branco para o serviço escolher."
+      ja_JP: "乱数シード。-1 または未指定でランダムになります。"
+    llm_description: "seed integer."
+    placeholder:
+      en_US: "-1"
+      zh_Hans: "-1"
+      pt_BR: "-1"
+      ja_JP: "-1"
+    help:
+      en_US: "Integer in [-1, 2147483647]."
+      zh_Hans: "取值范围 [-1, 2147483647]。"
+      pt_BR: "Inteiro em [-1, 2147483647]."
+      ja_JP: "整数範囲 [-1, 2147483647]。"
+    form: llm
+  - name: sequential_image_generation
+    type: select
+    required: false
+    label:
+      en_US: Group Images
+      zh_Hans: 组图
+      pt_BR: Grupo de Imagens
+      ja_JP: 画像グループ
+    human_description:
+      en_US: "Enable/disable sequential image generation."
+      zh_Hans: "控制是否启用组图能力。"
+      pt_BR: "Ativar/desativar geração sequencial de imagens."
+      ja_JP: "連続画像生成の有効/無効。"
+    llm_description: "sequential_image_generation: auto or disabled."
+    options:
+      - value: "disabled"
+        label: { en_US: "disabled", zh_Hans: "disabled", pt_BR: "disabled", ja_JP: "disabled" }
+      - value: "auto"
+        label: { en_US: "auto", zh_Hans: "auto", pt_BR: "auto", ja_JP: "auto" }
+    form: llm
+  - name: sequential_image_generation_max_images
+    type: number
+    required: false
+    label:
+      en_US: Max Images
+      zh_Hans: 最多图片数
+      pt_BR: Máximo de Imagens
+      ja_JP: 最大枚数
+    human_description:
+      en_US: "Max images for group generation (works when sequential_image_generation=auto)."
+      zh_Hans: "组图最多生成图片数（仅在 sequential_image_generation=auto 时生效）。"
+      pt_BR: "Máximo de imagens para grupo (funciona quando sequential_image_generation=auto)."
+      ja_JP: "グループ生成の最大枚数（sequential_image_generation=auto の時のみ）。"
+    llm_description: "sequential_image_generation_options.max_images."
+    placeholder:
+      en_US: "15"
+      zh_Hans: "15"
+      pt_BR: "15"
+      ja_JP: "15"
+    help:
+      en_US: "Range: 1-15."
+      zh_Hans: "取值范围：1-15。"
+      pt_BR: "Intervalo: 1-15."
+      ja_JP: "範囲: 1-15。"
+    form: llm
+  - name: optimize_prompt_mode
+    type: select
+    required: false
+    label:
+      en_US: Prompt Optimize
+      zh_Hans: 提示词优化
+      pt_BR: Otimizar Prompt
+      ja_JP: プロンプト最適化
+    human_description:
+      en_US: "Prompt optimization mode."
+      zh_Hans: "提示词优化模式。"
+      pt_BR: "Modo de otimização do prompt."
+      ja_JP: "プロンプト最適化モード。"
+    llm_description: "optimize_prompt_options.mode."
+    options:
+      - value: "standard"
+        label: { en_US: "standard", zh_Hans: "standard", pt_BR: "standard", ja_JP: "standard" }
+      - value: "fast"
+        label: { en_US: "fast", zh_Hans: "fast", pt_BR: "fast", ja_JP: "fast" }
+    form: llm
+  - name: guidance_scale
+    type: number
+    required: false
+    label:
+      en_US: Guidance Scale
+      zh_Hans: 文本权重
+      pt_BR: Guidance Scale
+      ja_JP: ガイダンス
+    human_description:
+      en_US: "How strongly the output adheres to the prompt."
+      zh_Hans: "模型输出结果与提示词的一致程度。"
+      pt_BR: "Quão forte a saída segue o prompt."
+      ja_JP: "プロンプトへの追従度。"
+    llm_description: "guidance_scale float."
+    placeholder:
+      en_US: "5.0"
+      zh_Hans: "5.0"
+      pt_BR: "5.0"
+      ja_JP: "5.0"
+    help:
+      en_US: "Some models may ignore this parameter."
+      zh_Hans: "部分模型可能不支持该参数。"
+      pt_BR: "Alguns modelos podem ignorar este parâmetro."
+      ja_JP: "一部モデルでは無視される場合があります。"
+    form: llm
+extra:
+  python:
+    source: tools/seedream_image_generations.py
