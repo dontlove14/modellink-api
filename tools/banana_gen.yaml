@@ -64,12 +64,12 @@ parameters:
       pt_BR: "Nome do modelo a ser usado"
       ja_JP: "使用するモデル名"
     options:
-      - value: gemini-2.5-flash-image
+      - value: gemini-3.1-flash-image-preview
         label:
-          en_US: gemini-2.5-flash-image
-          zh_Hans: gemini-2.5-flash-image
-          pt_BR: gemini-2.5-flash-image
-          ja_JP: gemini-2.5-flash-image
+          en_US: gemini-3.1-flash-image-preview
+          zh_Hans: gemini-3.1-flash-image-preview
+          pt_BR: gemini-3.1-flash-image-preview
+          ja_JP: gemini-3.1-flash-image-preview
       - value: gemini-3-pro-image-preview
         label:
           en_US: gemini-3-pro-image-preview
@@ -222,22 +222,28 @@ parameters:
       pt_BR: Tamanho da Imagem
       ja_JP: 画像サイズ
     human_description:
-      en_US: "Image resolution (only supported by gemini-3-pro-image-preview)"
-      zh_Hans: "图像分辨率（仅 gemini-3-pro-image-preview 支持）"
-      pt_BR: "Resolução da imagem (apenas suportada por gemini-3-pro-image-preview)"
-      ja_JP: "画像解像度（gemini-3-pro-image-preview でのみサポート）"
-    llm_description: "Image resolution (only supported by gemini-3-pro-image-preview)"
+      en_US: "Image resolution (supported by gemini-3-pro-image-preview and gemini-3.1-flash-image-preview)"
+      zh_Hans: "图像分辨率（gemini-3-pro-image-preview 和 gemini-3.1-flash-image-preview 支持）"
+      pt_BR: "Resolução da imagem (suportada por gemini-3-pro-image-preview e gemini-3.1-flash-image-preview)"
+      ja_JP: "画像解像度（gemini-3-pro-image-preview と gemini-3.1-flash-image-preview でサポート）"
+    llm_description: "Image resolution (supported by gemini-3-pro-image-preview and gemini-3.1-flash-image-preview)"
     placeholder:
       en_US: "1K"
       zh_Hans: "1K"
       pt_BR: "1K"
       ja_JP: "1K"
     help:
-      en_US: "Image resolution (only supported by gemini-3-pro-image-preview)"
-      zh_Hans: "图像分辨率（仅 gemini-3-pro-image-preview 支持）"
-      pt_BR: "Resolução da imagem (apenas suportada por gemini-3-pro-image-preview)"
-      ja_JP: "画像解像度（gemini-3-pro-image-preview でのみサポート）"
+      en_US: "Image resolution (supported by gemini-3-pro-image-preview and gemini-3.1-flash-image-preview)"
+      zh_Hans: "图像分辨率（gemini-3-pro-image-preview 和 gemini-3.1-flash-image-preview 支持）"
+      pt_BR: "Resolução da imagem (suportada por gemini-3-pro-image-preview e gemini-3.1-flash-image-preview)"
+      ja_JP: "画像解像度（gemini-3-pro-image-preview と gemini-3.1-flash-image-preview でサポート）"
     options:
+      - value: "0.5K"
+        label:
+          en_US: "0.5K"
+          zh_Hans: "0.5K"
+          pt_BR: "0.5K"
+          ja_JP: "0.5K"
       - value: "1K"
         label:
           en_US: "1K"

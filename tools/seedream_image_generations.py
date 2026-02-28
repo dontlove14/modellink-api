@@ -219,7 +219,7 @@ class SeedreamImageGenerationsTool(Tool):
         """Seedream 图片生成（官方 ImageGenerations 入参）。"""
         host = "https://api.modellink.online"
         api_url = f"{host}/v1/images/generations"
-        default_model = "doubao-seedream-4-5-251128"
+        default_model = "doubao-seedream-5-0-260128"
 
         api_key = self._normalize_param(tool_parameters.get("api_key"))
         model = self._normalize_param(tool_parameters.get("model")) or default_model

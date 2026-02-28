@@ -147,6 +147,10 @@ class BananaGenTool(Tool):
                 raise Exception('缺少 API Key')
             if not model:
                 raise Exception('缺少模型名称')
+
+            allowed_models = {'gemini-3-pro-image-preview', 'gemini-3.1-flash-image-preview'}
+            if model not in allowed_models:
+                raise Exception(f'不支持的模型名称: {model}')
             
             # 使用插件内置的日志记录
             logger.info(f'[BananaGen] 开始生成图像，模型: {model}, 提示词: {prompt}')
@@ -224,9 +228,9 @@ class BananaGenTool(Tool):
             if ratio:
                 image_config['aspectRatio'] = ratio
             
-            # 只有 gemini-3-pro-image-preview 支持 imageSize 参数
-            if size and model == 'gemini-3-pro-image-preview':
-                image_config['imageSize'] = size  # 1K, 2K, 4K
+            # gemini-3-pro-image-preview / gemini-3.1-flash-image-preview 支持 imageSize 参数
+            if size and model in {'gemini-3-pro-image-preview', 'gemini-3.1-flash-image-preview'}:
+                image_config['imageSize'] = size  # 0.5K, 1K, 2K, 4K
             
             if image_config:
                 generation_config['imageConfig'] = image_config

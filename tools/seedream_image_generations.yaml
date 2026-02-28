@@ -40,7 +40,7 @@ parameters:
       ja_JP: "Authorization: Bearer <api_key> として送信します。"
     form: llm
   - name: model
-    type: string
+    type: select
     required: false
     label:
       en_US: Model
@@ -48,21 +48,40 @@ parameters:
       pt_BR: Modelo
       ja_JP: モデル
     human_description:
-      en_US: "Model ID for image generation. Defaults to doubao-seedream-4-5-251128."
-      zh_Hans: "图片生成模型 ID。不填则默认使用 doubao-seedream-4-5-251128。"
-      pt_BR: "ID do modelo para geração de imagem. Padrão: doubao-seedream-4-5-251128."
-      ja_JP: "画像生成モデルID。未指定の場合は doubao-seedream-4-5-251128 を使用。"
+      en_US: "Model ID for image generation. Defaults to doubao-seedream-5-0-260128."
+      zh_Hans: "图片生成模型 ID。不填则默认使用 doubao-seedream-5-0-260128。"
+      pt_BR: "ID do modelo para geração de imagem. Padrão: doubao-seedream-5-0-260128."
+      ja_JP: "画像生成モデルID。未指定の場合は doubao-seedream-5-0-260128 を使用。"
     llm_description: "Model ID for image generation."
     placeholder:
-      en_US: "doubao-seedream-4-5-251128"
-      zh_Hans: "doubao-seedream-4-5-251128"
-      pt_BR: "doubao-seedream-4-5-251128"
-      ja_JP: "doubao-seedream-4-5-251128"
+      en_US: "doubao-seedream-5-0-260128"
+      zh_Hans: "doubao-seedream-5-0-260128"
+      pt_BR: "doubao-seedream-5-0-260128"
+      ja_JP: "doubao-seedream-5-0-260128"
     help:
       en_US: "Leave empty to use the default model."
       zh_Hans: "留空则使用默认模型。"
       pt_BR: "Deixe em branco para usar o modelo padrão."
       ja_JP: "未指定の場合はデフォルトモデルを使用します。"
+    options:
+      - value: "doubao-seedream-5-0-260128"
+        label:
+          en_US: "doubao-seedream-5-0-260128"
+          zh_Hans: "doubao-seedream-5-0-260128"
+          pt_BR: "doubao-seedream-5-0-260128"
+          ja_JP: "doubao-seedream-5-0-260128"
+      - value: "doubao-seedream-5-0-lite-260128"
+        label:
+          en_US: "doubao-seedream-5-0-lite-260128"
+          zh_Hans: "doubao-seedream-5-0-lite-260128"
+          pt_BR: "doubao-seedream-5-0-lite-260128"
+          ja_JP: "doubao-seedream-5-0-lite-260128"
+      - value: "doubao-seedream-4-5-251128"
+        label:
+          en_US: "doubao-seedream-4-5-251128"
+          zh_Hans: "doubao-seedream-4-5-251128"
+          pt_BR: "doubao-seedream-4-5-251128"
+          ja_JP: "doubao-seedream-4-5-251128"
     form: llm
   - name: prompt
     type: string
