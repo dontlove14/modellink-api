@@ -71,12 +71,6 @@ parameters:
           zh_Hans: sora-2
           pt_BR: sora-2
           ja_JP: sora-2
-      - value: sora-2-pro
-        label:
-          en_US: sora-2-pro
-          zh_Hans: sora-2-pro
-          pt_BR: sora-2-pro
-          ja_JP: sora-2-pro
   - name: prompt
     type: string
     required: true
@@ -111,41 +105,41 @@ parameters:
       pt_BR: Duração (segundos)
       ja_JP: 時間（秒）
     human_description:
-      en_US: "Video duration in seconds (sora-2 supports 10, 15; sora-2-pro supports 10, 15, 25)"
-      zh_Hans: "视频时长（秒）（sora-2支持10、15；sora-2-pro支持10、15、25）"
-      pt_BR: "Duração do vídeo em segundos (sora-2 suporta 10, 15; sora-2-pro suporta 10, 15, 25)"
-      ja_JP: "ビデオの長さ（秒）（sora-2は10、15をサポート；sora-2-proは10、15、25をサポート）"
+      en_US: "Video duration in seconds (sora-2 supports 4, 8, 12)"
+      zh_Hans: "视频时长（秒）（sora-2 支持 4、8、12）"
+      pt_BR: "Duração do vídeo em segundos (sora-2 suporta 4, 8, 12)"
+      ja_JP: "ビデオの長さ（秒）（sora-2 は 4、8、12 をサポート）"
     llm_description: "Video duration in seconds"
     placeholder:
-      en_US: "10"
-      zh_Hans: "10"
-      pt_BR: "10"
-      ja_JP: "10"
+      en_US: "4"
+      zh_Hans: "4"
+      pt_BR: "4"
+      ja_JP: "4"
     help:
-      en_US: "Video duration in seconds (25 seconds only supported by sora-2-pro)"
-      zh_Hans: "视频时长（秒）（25秒仅sora-2-pro支持）"
-      pt_BR: "Duração do vídeo em segundos (25 segundos só suportado por sora-2-pro)"
-      ja_JP: "ビデオの長さ（秒）（25秒はsora-2-proのみサポート）"
+      en_US: "Video duration in seconds."
+      zh_Hans: "视频时长（秒）。"
+      pt_BR: "Duração do vídeo em segundos."
+      ja_JP: "ビデオの長さ（秒）。"
     form: llm
     options:
-      - value: '10'
+      - value: '4'
         label:
-          en_US: '10'
-          zh_Hans: '10'
-          pt_BR: '10'
-          ja_JP: '10'
-      - value: '15'
+          en_US: '4'
+          zh_Hans: '4'
+          pt_BR: '4'
+          ja_JP: '4'
+      - value: '8'
         label:
-          en_US: '15'
-          zh_Hans: '15'
-          pt_BR: '15'
-          ja_JP: '15'
-      - value: '25'
+          en_US: '8'
+          zh_Hans: '8'
+          pt_BR: '8'
+          ja_JP: '8'
+      - value: '12'
         label:
-          en_US: '25'
-          zh_Hans: '25'
-          pt_BR: '25'
-          ja_JP: '25'
+          en_US: '12'
+          zh_Hans: '12'
+          pt_BR: '12'
+          ja_JP: '12'
   - name: input_reference
     type: string
     required: false
@@ -181,10 +175,10 @@ parameters:
       pt_BR: Tamanho
       ja_JP: サイズ
     human_description:
-      en_US: "Video size ratio (sora-2 supports 9x16, 16x9; sora-2-pro supports all sizes)"
-      zh_Hans: "视频尺寸比例（sora-2支持9x16、16x9；sora-2-pro支持所有尺寸）"
-      pt_BR: "Proporção de tamanho do vídeo (sora-2 suporta 9x16, 16x9; sora-2-pro suporta todos os tamanhos)"
-      ja_JP: "ビデオサイズ比（sora-2は9x16、16x9をサポート；sora-2-proはすべてのサイズをサポート）"
+      en_US: "Video size ratio (sora-2 supports 9x16, 16x9)"
+      zh_Hans: "视频尺寸比例（sora-2 支持 9x16、16x9）"
+      pt_BR: "Proporção de tamanho do vídeo (sora-2 suporta 9x16, 16x9)"
+      ja_JP: "ビデオサイズ比（sora-2 は 9x16、16x9 をサポート）"
     llm_description: "Video size"
     placeholder:
       en_US: "9x16"
@@ -192,10 +186,10 @@ parameters:
       pt_BR: "9x16"
       ja_JP: "9x16"
     help:
-      en_US: "Video size ratio. sora-2 supports 9x16, 16x9; sora-2-pro supports all sizes"
-      zh_Hans: "视频尺寸比例。sora-2支持9x16、16x9；sora-2-pro支持所有尺寸"
-      pt_BR: "Proporção do tamanho do vídeo. sora-2 suporta 9x16, 16x9; sora-2-pro suporta todos os tamanhos"
-      ja_JP: "ビデオサイズ比。sora-2は9x16、16x9をサポート；sora-2-proはすべてのサイズをサポート"
+      en_US: "Video size ratio. sora-2 supports 9x16, 16x9."
+      zh_Hans: "视频尺寸比例。sora-2 支持 9x16、16x9。"
+      pt_BR: "Proporção do tamanho do vídeo. sora-2 suporta 9x16, 16x9."
+      ja_JP: "ビデオサイズ比。sora-2 は 9x16、16x9 をサポート。"
     form: llm
     options:
       - value: 9x16

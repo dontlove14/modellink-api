@@ -63,7 +63,7 @@ class SoraVideoTool(Tool):
             apiKey = tool_parameters.get('apiKey')
             model = tool_parameters.get('model', 'sora-2')
             prompt = tool_parameters.get('prompt')
-            seconds = tool_parameters.get('seconds', '10')
+            seconds = tool_parameters.get('seconds', '4')
             input_reference = tool_parameters.get('input_reference')
             size = tool_parameters.get('size')
             watermark = tool_parameters.get('watermark')
@@ -131,14 +131,6 @@ class SoraVideoTool(Tool):
                         return '720x1280'
                     return '1280x720'
 
-                if model_name == 'sora-2-pro':
-                    if size_value not in {'9x16', '16x9'}:
-                        logger.warning(f'[Sora Video] sora-2-pro 模型仅支持 size=9x16/16x9，已自动调整为 16x9（原值: {size_value}）')
-                        size_value = '16x9'
-                    if size_value == '9x16':
-                        return '1024x1792'
-                    return '1792x1024'
-
                 return size_value
 
             def normalize_input_reference(value: Any) -> str | None:
@@ -197,19 +189,22 @@ class SoraVideoTool(Tool):
                 raise ValueError('apiKey 为必填参数')
             if not prompt:
                 raise ValueError('prompt 为必填参数')
+
+            if not model:
+                model = 'sora-2'
+            if model != 'sora-2':
+                raise ValueError(f'不支持的模型: {model}')
             
             logger.info(f'[Sora Video] 开始生成视频，模型: {model}')
             
             # 模型参数兼容性检查
-            # sora-2 支持的尺寸比例：9x16, 16x9
-            # sora-2 支持的时长：10, 15
-            # sora-2-pro 支持所有尺寸和时长
-            if model == 'sora-2':
-                # 验证seconds参数
-                if seconds and seconds not in ['10', '15']:
-                    # 如果时长不支持，使用默认值10
-                    logger.warning(f'[Sora Video] sora-2 模型不支持时长 {seconds} 秒，已自动调整为 10 秒')
-                    seconds = '10'
+            if seconds:
+                seconds_str = str(seconds).strip()
+            else:
+                seconds_str = ''
+            if seconds_str not in {'4', '8', '12'}:
+                logger.warning(f'[Sora Video] sora-2 模型不支持时长 {seconds} 秒，已自动调整为 4 秒')
+                seconds = '4'
 
             mapped_size = map_size_for_model(model, size)
             
