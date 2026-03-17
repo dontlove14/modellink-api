@@ -66,7 +66,6 @@ class SoraVideoTool(Tool):
             seconds = tool_parameters.get('seconds', '4')
             input_reference = tool_parameters.get('input_reference')
             size = tool_parameters.get('size')
-            watermark = tool_parameters.get('watermark')
             private = tool_parameters.get('private')
             character_url = tool_parameters.get('character_url')
             character_timestamps = tool_parameters.get('character_timestamps')
@@ -93,7 +92,7 @@ class SoraVideoTool(Tool):
                 """归一化 size 参数，兼容比例与宽高两种写法。
 
                 说明:
-                    - 支持直接传入比例：16x9 / 9x16
+                    - 支持直接传入比例：16x9 / 9x16 / 16:9 / 9:16
                     - 若传入宽高（如 1024x1792），则按宽高关系归一为横屏 16x9 或竖屏 9x16
                 """
                 if value is None:
@@ -103,6 +102,8 @@ class SoraVideoTool(Tool):
                 s = value.strip()
                 if not s:
                     return None
+                if s in {'16:9', '9:16'}:
+                    return s.replace(':', 'x', 1)
                 if s in {'16x9', '9x16'}:
                     return s
                 match = re.match(r'^(\d+)\s*x\s*(\d+)$', s)
@@ -133,23 +134,29 @@ class SoraVideoTool(Tool):
 
                 return size_value
 
-            def normalize_input_reference(value: Any) -> str | None:
-                """归一化 input_reference，仅支持单个文件或单个链接。
+            def normalize_input_reference(value: Any) -> str | dict[str, Any] | None:
+                """归一化 input_reference，仅支持单个文件来源。
 
                 说明:
-                    - 支持传入 http/https 链接，作为 form-data 字段提交
+                    - 支持传入 http/https 链接（工具会先下载，再作为 form-data 文件上传）
                     - 支持传入本地文件路径或 file:// 路径，作为 form-data 文件上传
+                    - 支持传入文件对象（dict），从 url/remote_url 下载后上传
                     - 若传入列表/CSV/JSON 数组字符串，仅取第一个非空值（兼容历史用法）
                 """
                 if value is None:
                     return None
                 if isinstance(value, list):
                     for x in value:
+                        if isinstance(x, dict):
+                            logger.warning('[Sora Video] input_reference 仅支持单个值，已自动取第一个非空值')
+                            return x
                         s = str(x).strip()
                         if s:
                             logger.warning('[Sora Video] input_reference 仅支持单个值，已自动取第一个非空值')
                             return s
                     return None
+                if isinstance(value, dict):
+                    return value
                 if isinstance(value, str):
                     s = value.strip()
                     if not s:
@@ -160,6 +167,9 @@ class SoraVideoTool(Tool):
                             arr = json.loads(s)
                             if isinstance(arr, list):
                                 for x in arr:
+                                    if isinstance(x, dict):
+                                        logger.warning('[Sora Video] input_reference 仅支持单个值，已自动取数组第一个非空值')
+                                        return x
                                     t = str(x).strip()
                                     if t:
                                         logger.warning('[Sora Video] input_reference 仅支持单个值，已自动取数组第一个非空值')
@@ -173,6 +183,28 @@ class SoraVideoTool(Tool):
                             return first
                     return s
                 return str(value).strip() or None
+
+            def guess_image_mime_type(file_name: str) -> str:
+                """根据文件名猜测图片 MIME 类型。"""
+                ext = os.path.splitext(file_name.lower())[1]
+                if ext in {'.jpg', '.jpeg'}:
+                    return 'image/jpeg'
+                if ext == '.png':
+                    return 'image/png'
+                if ext == '.webp':
+                    return 'image/webp'
+                return 'application/octet-stream'
+
+            def download_input_reference(url: str) -> tuple[str, bytes, str]:
+                """下载 input_reference 并返回 (file_name, content, mime_type)。"""
+                session = requests.Session()
+                session.trust_env = False
+                response = session.get(url, timeout=(10, 120))
+                response.raise_for_status()
+                content_type = (response.headers.get('Content-Type') or '').split(';', 1)[0].strip()
+                file_name = os.path.basename(url.split('?', 1)[0].split('#', 1)[0]) or 'input_reference'
+                mime_type = content_type or guess_image_mime_type(file_name)
+                return file_name, response.content, mime_type
             
             apiKey = process_param(apiKey)
             model = process_param(model)
@@ -180,7 +212,6 @@ class SoraVideoTool(Tool):
             seconds = process_param(seconds)
             input_reference = normalize_input_reference(process_param(input_reference))
             size = normalize_size(process_param(size))
-            watermark = process_param(watermark)
             private = process_param(private)
             character_url = process_param(character_url)
             character_timestamps = process_param(character_timestamps)
@@ -218,8 +249,6 @@ class SoraVideoTool(Tool):
             # 添加可选参数
             if mapped_size:
                 request_data['size'] = mapped_size
-            if watermark is not None:
-                request_data['watermark'] = watermark
             if private is not None:
                 request_data['private'] = private
             if character_url:
@@ -246,8 +275,16 @@ class SoraVideoTool(Tool):
             opened_files: list[Any] = []
             if input_reference:
                 ref = input_reference
-                if ref.startswith('http://') or ref.startswith('https://'):
-                    files.append(('input_reference', (None, ref)))
+                if isinstance(ref, dict):
+                    ref_url = ref.get('url') or ref.get('remote_url')
+                    if not ref_url:
+                        raise ValueError('input_reference 文件对象缺少 url/remote_url')
+                    file_name = ref.get('file_name') or ref.get('name') or ''
+                    downloaded_name, content, mime_type = download_input_reference(str(ref_url))
+                    files.append(('input_reference', (file_name or downloaded_name, content, mime_type)))
+                elif ref.startswith('http://') or ref.startswith('https://'):
+                    file_name, content, mime_type = download_input_reference(ref)
+                    files.append(('input_reference', (file_name, content, mime_type)))
                 else:
                     path = ref
                     if ref.startswith('file://'):
@@ -256,9 +293,9 @@ class SoraVideoTool(Tool):
                         f = open(path, 'rb')
                         opened_files.append(f)
                         filename = os.path.basename(path) or 'input_reference'
-                        files.append(('input_reference', (filename, f, 'application/octet-stream')))
+                        files.append(('input_reference', (filename, f, guess_image_mime_type(filename))))
                     else:
-                        files.append(('input_reference', (None, ref)))
+                        raise ValueError('input_reference 需要为可访问的文件路径或可下载的 URL')
 
             session = self._create_retry_session()
             try:
@@ -273,9 +310,22 @@ class SoraVideoTool(Tool):
             logger.info(f'[Sora Video] 响应状态: {response.status_code}')
             
             if not response.ok:
-                error_text = response.text
-                logger.error(f'[Sora Video] 错误响应: {error_text}')
-                response.raise_for_status()
+                try:
+                    error_text = response.text or ''
+                except Exception:
+                    error_text = ''
+                error_preview = (error_text[:2000] if error_text else '')
+                logger.error(f'[Sora Video] 错误响应: {error_preview}')
+                error_message = error_preview or f'HTTP {response.status_code}: {response.reason}'
+                try:
+                    error_json = response.json()
+                    if isinstance(error_json, dict):
+                        message = error_json.get('message') or error_json.get('error') or error_json.get('detail')
+                        if isinstance(message, str) and message.strip():
+                            error_message = message.strip()
+                except Exception:
+                    pass
+                raise Exception(f'API 请求失败: {error_message}')
             
             result = response.json()
             logger.info(f'[Sora Video] 请求成功，任务 ID: {result.get("id")}')

@@ -149,23 +149,22 @@ parameters:
       pt_BR: Referência de Entrada
       ja_JP: 最初のフレーム画像
     human_description:
-      en_US: "First frame image URL"
-      zh_Hans: "首帧图 URL"
-      pt_BR: "URL da imagem do primeiro quadro"
-      ja_JP: "最初のフレーム画像のURL"
-    llm_description: "First frame image URL"
+      en_US: "First frame image (file or URL). The tool downloads URL and uploads as a file."
+      zh_Hans: "首帧图（文件或 URL）。若传入 URL，工具会先下载再以文件方式上传。"
+      pt_BR: "Imagem do primeiro quadro (arquivo ou URL). A ferramenta baixa a URL e envia como arquivo."
+      ja_JP: "最初のフレーム画像（ファイルまたはURL）。URL はダウンロードしてファイルとしてアップロードします。"
+    llm_description: "First frame image (file or URL)."
     placeholder:
       en_US: "https://example.com/image.png"
       zh_Hans: "https://example.com/image.png"
       pt_BR: "https://example.com/image.png"
       ja_JP: "https://example.com/image.png"
     help:
-      en_US: "URL of the first frame image"
-      zh_Hans: "首帧图的 URL"
-      pt_BR: "URL da imagem do primeiro quadro"
-      ja_JP: "最初のフレーム画像のURL"
+      en_US: "Provide an image URL or an uploaded file reference."
+      zh_Hans: "可填写图片 URL 或上传文件引用。"
+      pt_BR: "Forneça uma URL de imagem ou uma referência de arquivo enviado."
+      ja_JP: "画像URLまたはアップロード済みファイル参照を指定してください。"
     form: llm
-    format: uri
   - name: size
     type: select
     required: false
@@ -204,31 +203,6 @@ parameters:
           zh_Hans: 16x9
           pt_BR: 16x9
           ja_JP: 16x9
-  - name: watermark
-    type: boolean
-    required: false
-    label:
-      en_US: Watermark
-      zh_Hans: 水印
-      pt_BR: Marca d'água
-      ja_JP: ウォーターマーク
-    human_description:
-      en_US: "Whether to add watermark"
-      zh_Hans: "是否添加水印"
-      pt_BR: "Se adicionar marca d'água"
-      ja_JP: "ウォーターマークを追加するかどうか"
-    llm_description: "Whether to add watermark"
-    placeholder:
-      en_US: "false"
-      zh_Hans: "false"
-      pt_BR: "false"
-      ja_JP: "false"
-    help:
-      en_US: "Whether to add watermark to the video"
-      zh_Hans: "是否在视频上添加水印"
-      pt_BR: "Se adicionar marca d'água ao vídeo"
-      ja_JP: "ビデオにウォーターマークを追加するかどうか"
-    form: llm
   - name: private
     type: boolean
     required: false
