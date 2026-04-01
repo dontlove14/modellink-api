@@ -1,0 +1,573 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "默认模块",
+    "description": "通义万相视频生成 API 提供文生视频、图生视频、首尾帧生视频等功能。\n\n## 主要功能\n- **文生视频**: 根据文本提示词生成视频\n- **图生视频**: 基于首帧图像生成视频\n- **首尾帧生视频**: 根据首尾帧图像生成过渡视频\n\n## 异步处理说明\n所有视频生成任务都是异步处理：\n1. 创建任务，获取 task_id\n2. 使用 task_id 轮询查询结果，直到任务完成\n\n## 支持的模型\n### 文生视频模型\n- wan2.5-t2v-preview: 支持5秒/10秒，支持自动配音\n- wan2.2-t2v-flash: 5秒固定时长，极速版\n- wan2.2-t2v-plus: 5秒固定时长，专业版\n- wanx2.1-t2v-turbo: 5秒固定时长\n- wanx2.1-t2v-plus: 5秒固定时长\n\n### 图生视频模型\n- wan2.5-i2v-preview: 支持5秒/10秒，支持音频\n- wan2.2-i2v-flash: 5秒固定时长，极速版\n- wan2.2-i2v-plus: 5秒固定时长，专业版\n- wanx2.1-i2v-turbo: 支持3/4/5秒\n- wanx2.1-i2v-plus: 5秒固定时长\n\n### 首尾帧生视频模型\n- wan2.2-kf2v-flash: 5秒固定时长，支持480P/720P/1080P\n- wanx2.1-kf2v-plus: 5秒固定时长，仅支持720P\n",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Tasks"
+    }
+  ],
+  "paths": {
+    "/sd2/api/v1/doubao/create": {
+      "post": {
+        "summary": "创建 Seedance 视频生成任务",
+        "deprecated": false,
+        "description": "",
+        "operationId": "createSeedanceTask",
+        "tags": [
+          "Tasks"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "enum": [
+                      "doubao-seedance-2-0-260128"
+                    ],
+                    "title": "模型名称"
+                  },
+                  "content": {
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "text"
+                            },
+                            "text": {
+                              "type": "string",
+                              "title": "提示词"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "text"
+                          ],
+                          "title": "文本"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "image_url",
+                              "example": "image_url"
+                            },
+                            "image_url": {
+                              "type": "object",
+                              "properties": {
+                                "url": {
+                                  "type": "string",
+                                  "title": "参考图链接"
+                                }
+                              },
+                              "required": [
+                                "url"
+                              ]
+                            },
+                            "role": {
+                              "type": "string",
+                              "const": "reference_image",
+                              "example": "reference_image"
+                            }
+                          },
+                          "title": "参考图",
+                          "description": "- 支持 jpeg、png、webp、bmp、tiff，gif 格式图片\n- 图片宽高比：（0.4 / 2.5）\n- 大小：小于 30MB\n- 0～9 个 参考图",
+                          "required": [
+                            "type",
+                            "image_url",
+                            "role"
+                          ],
+                          "minProperties": 0,
+                          "maxProperties": 9
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "video_url",
+                              "example": "video_url"
+                            },
+                            "video_url": {
+                              "type": "object",
+                              "properties": {
+                                "url": {
+                                  "type": "string",
+                                  "title": "视频链接"
+                                }
+                              },
+                              "required": [
+                                "url"
+                              ]
+                            },
+                            "role": {
+                              "type": "string",
+                              "const": "reference_video",
+                              "example": "reference_video"
+                            }
+                          },
+                          "title": "参考视频",
+                          "description": "- 支持 mp4、mov 格式视频\n- 大小：不超过 50MB\n- 帧率限制：【24 \\ 60】\n- 0～3 个参考视频 ",
+                          "required": [
+                            "type",
+                            "video_url",
+                            "role"
+                          ],
+                          "minProperties": 0,
+                          "maxProperties": 3
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "audio_url",
+                              "example": "audio_url"
+                            },
+                            "audio_url": {
+                              "type": "object",
+                              "properties": {
+                                "url": {
+                                  "type": "string",
+                                  "title": "参考音频链接"
+                                }
+                              },
+                              "required": [
+                                "url"
+                              ]
+                            },
+                            "role": {
+                              "type": "string",
+                              "const": "reference_audio",
+                              "example": "reference_audio"
+                            }
+                          },
+                          "title": "参考音频",
+                          "description": "- 支持 mp3、wav\n- 15 ≤ 耽搁音频时长 ≥ 2 \n- 大小不超过：15MB\n- 0～3 个参考音频",
+                          "required": [
+                            "type",
+                            "audio_url",
+                            "role"
+                          ],
+                          "minProperties": 0,
+                          "maxProperties": 3
+                        }
+                      ]
+                    }
+                  },
+                  "generate_audio": {
+                    "type": "boolean",
+                    "title": "是否生成音频",
+                    "default": true
+                  },
+                  "ratio": {
+                    "type": "string",
+                    "title": "视频宽高比",
+                    "enum": [
+                      "1:1",
+                      "3:4",
+                      "4:3",
+                      "9:16",
+                      "16:9",
+                      "21:9",
+                      "adaptive"
+                    ],
+                    "default": "adaptive"
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "title": "视频时长",
+                    "minimum": 4,
+                    "maximum": 15,
+                    "default": 5
+                  },
+                  "resolution": {
+                    "type": "string",
+                    "title": "分辨率",
+                    "enum": [
+                      "480p",
+                      "720p"
+                    ],
+                    "default": "720p"
+                  },
+                  "watermark": {
+                    "type": "boolean",
+                    "default": false,
+                    "title": "是否生成水印"
+                  },
+                  "return_last_frame": {
+                    "type": "boolean",
+                    "title": "是否返回尾帧图像",
+                    "default": false
+                  }
+                },
+                "required": [
+                  "model",
+                  "content"
+                ]
+              },
+              "examples": {
+                "textOnly": {
+                  "value": {
+                    "model": "doubao-seedance-2-0-260128",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "生成一段电影感很强的城市夜景镜头，镜头缓慢推进，街道有雨后反光"
+                      }
+                    ],
+                    "generate_audio": true,
+                    "ratio": "16:9",
+                    "resolution": "720p",
+                    "duration": 5
+                  },
+                  "summary": "纯文本生成示例"
+                },
+                "imageReference": {
+                  "value": {
+                    "model": "doubao-seedance-2-0-260128",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "镜头围绕产品缓慢旋转，背景极简、打光高级、广告片质感"
+                      },
+                      {
+                        "type": "image_url",
+                        "image_url": {
+                          "url": "https://cdn.example.com/reference-product.png"
+                        },
+                        "role": "reference_image"
+                      }
+                    ],
+                    "generate_audio": true,
+                    "ratio": "1:1",
+                    "resolution": "720p",
+                    "duration": 5
+                  },
+                  "summary": "文本 + 参考图示例"
+                },
+                "multimodal": {
+                  "value": {
+                    "model": "doubao-seedance-2-0-260128",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "保留人物主体特征，生成一段海边慢动作行走镜头，风声和海浪声自然同步"
+                      },
+                      {
+                        "type": "image_url",
+                        "image_url": {
+                          "url": "https://cdn.example.com/model.jpg"
+                        },
+                        "role": "reference_image"
+                      },
+                      {
+                        "type": "audio_url",
+                        "audio_url": {
+                          "url": "https://cdn.example.com/waves.mp3"
+                        },
+                        "role": "reference_audio"
+                      }
+                    ],
+                    "generate_audio": true,
+                    "ratio": "9:16",
+                    "resolution": "720p",
+                    "duration": 5
+                  },
+                  "summary": "多模态示例"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "任务创建成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "example": {
+                  "id": "task_abcdefg1234567"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/sd2/api/v1/doubao/get_result": {
+      "post": {
+        "summary": "查询 Seedance 视频任务结果",
+        "deprecated": false,
+        "description": "",
+        "operationId": "getSeedanceTaskResult",
+        "tags": [
+          "Tasks"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "title": "ID 编号"
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              },
+              "example": {
+                "id": "task_abcdefg1234567"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "查询成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "title": "任务 Id"
+                    },
+                    "model": {
+                      "type": "string",
+                      "title": "模型名称"
+                    },
+                    "status": {
+                      "type": "string",
+                      "title": "任务状态",
+                      "enum": [
+                        "processing",
+                        "failed",
+                        "error",
+                        "cancelled",
+                        "expired",
+                        "succeeded"
+                      ]
+                    },
+                    "error": {
+                      "type": "string",
+                      "title": "失败原因"
+                    },
+                    "content": {
+                      "type": "object",
+                      "properties": {
+                        "video_url": {
+                          "type": "string",
+                          "title": "生成的视频链接"
+                        },
+                        "last_frame_url": {
+                          "type": "string",
+                          "title": "尾帧图链接"
+                        },
+                        "file_url": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "video_url"
+                      ]
+                    },
+                    "usage": {
+                      "type": "object",
+                      "properties": {
+                        "completion_tokens": {
+                          "type": "number",
+                          "title": "消费 token 数"
+                        }
+                      },
+                      "required": [
+                        "completion_tokens"
+                      ]
+                    },
+                    "framespersecond": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "number"
+                    },
+                    "updated_at": {
+                      "type": "number"
+                    },
+                    "seed": {
+                      "type": "string"
+                    },
+                    "revised_prompt": {
+                      "type": "string"
+                    },
+                    "service_tier": {
+                      "type": "string"
+                    },
+                    "execution_expires_after": {
+                      "type": "number"
+                    },
+                    "generate_audio": {
+                      "type": "boolean"
+                    },
+                    "duration": {
+                      "type": "integer"
+                    },
+                    "ratio": {
+                      "type": "string"
+                    },
+                    "resolution": {
+                      "type": "string"
+                    },
+                    "draft": {
+                      "type": "boolean"
+                    },
+                    "draft_task_id": {
+                      "type": "string"
+                    },
+                    "_request_id": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "model",
+                    "status"
+                  ]
+                },
+                "examples": {
+                  "succeeded": {
+                    "summary": "任务完成示例",
+                    "value": {
+                      "id": "task_abcdefg1234567",
+                      "model": "doubao-seedance-2-0-260128",
+                      "status": "succeeded",
+                      "error": null,
+                      "content": {
+                        "video_url": "https://download.example.com/result.mp4",
+                        "last_frame_url": null,
+                        "file_url": null
+                      },
+                      "usage": {
+                        "completion_tokens": 108900
+                      },
+                      "framespersecond": 24,
+                      "created_at": 1774105394,
+                      "updated_at": 1774105570,
+                      "seed": 52050,
+                      "revised_prompt": null,
+                      "service_tier": "default",
+                      "execution_expires_after": 172800,
+                      "generate_audio": true,
+                      "duration": 5,
+                      "ratio": "16:9",
+                      "resolution": "720p",
+                      "draft": false,
+                      "draft_task_id": null,
+                      "_request_id": ""
+                    }
+                  },
+                  "processing": {
+                    "summary": "任务处理中示例",
+                    "value": {
+                      "id": "task_abcdefg1234567",
+                      "model": "doubao-seedance-2-0-260128",
+                      "status": "processing",
+                      "error": null
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "responses": {
+      "记录不存在": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ]
+            }
+          }
+        }
+      },
+      "参数不正确": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用Bearer Token进行认证,格式为 \"Bearer YOUR_API_KEY\""
+      }
+    }
+  },
+  "servers": [],
+  "security": []
+}

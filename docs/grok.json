@@ -1,0 +1,669 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "默认模块",
+    "description": "通义万相视频生成 API 提供文生视频、图生视频、首尾帧生视频等功能。\n\n## 主要功能\n- **文生视频**: 根据文本提示词生成视频\n- **图生视频**: 基于首帧图像生成视频\n- **首尾帧生视频**: 根据首尾帧图像生成过渡视频\n\n## 异步处理说明\n所有视频生成任务都是异步处理：\n1. 创建任务，获取 task_id\n2. 使用 task_id 轮询查询结果，直到任务完成\n\n## 支持的模型\n### 文生视频模型\n- wan2.5-t2v-preview: 支持5秒/10秒，支持自动配音\n- wan2.2-t2v-flash: 5秒固定时长，极速版\n- wan2.2-t2v-plus: 5秒固定时长，专业版\n- wanx2.1-t2v-turbo: 5秒固定时长\n- wanx2.1-t2v-plus: 5秒固定时长\n\n### 图生视频模型\n- wan2.5-i2v-preview: 支持5秒/10秒，支持音频\n- wan2.2-i2v-flash: 5秒固定时长，极速版\n- wan2.2-i2v-plus: 5秒固定时长，专业版\n- wanx2.1-i2v-turbo: 支持3/4/5秒\n- wanx2.1-i2v-plus: 5秒固定时长\n\n### 首尾帧生视频模型\n- wan2.2-kf2v-flash: 5秒固定时长，支持480P/720P/1080P\n- wanx2.1-kf2v-plus: 5秒固定时长，仅支持720P\n",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Video Generation"
+    },
+    {
+      "name": "Video Editing"
+    },
+    {
+      "name": "Video Extension"
+    },
+    {
+      "name": "Video Tasks"
+    }
+  ],
+  "paths": {
+    "/xai-video/v1/videos/generations": {
+      "post": {
+        "summary": "创建视频生成任务",
+        "deprecated": false,
+        "description": "统一的视频生成入口. 常见模式包括 text to video, image to video, reference images. 注意 image 与 reference_images 不应同时传入. 成功后返回 request_id, 需要继续轮询结果.",
+        "operationId": "createXaiVideoGenerationTask",
+        "tags": [
+          "Video Generation"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "model": {
+                        "type": "string",
+                        "title": "模型名称",
+                        "enum": [
+                          "grok-imagine-video"
+                        ]
+                      },
+                      "prompt": {
+                        "type": "string",
+                        "title": "提示词"
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "title": "视频时长",
+                        "minimum": 1,
+                        "maximum": 15
+                      },
+                      "aspect_ratio": {
+                        "type": "string",
+                        "title": "视频宽高比",
+                        "enum": [
+                          "1:1",
+                          "2:3",
+                          "3:2",
+                          "3:4",
+                          "4:3",
+                          "16:9",
+                          "9:16"
+                        ]
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "title": "分辨率",
+                        "enum": [
+                          "480p",
+                          "720p"
+                        ]
+                      }
+                    },
+                    "title": "文生视频",
+                    "required": [
+                      "model",
+                      "prompt",
+                      "duration",
+                      "aspect_ratio",
+                      "resolution"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "model": {
+                        "type": "string",
+                        "enum": [
+                          "grok-imagine-video"
+                        ],
+                        "title": "模型名称"
+                      },
+                      "prompt": {
+                        "type": "string",
+                        "title": "提示词"
+                      },
+                      "image": {
+                        "type": "object",
+                        "properties": {
+                          "url": {
+                            "type": "string",
+                            "title": "参考图链接"
+                          }
+                        },
+                        "required": [
+                          "url"
+                        ]
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "title": "视频时长",
+                        "minimum": 1,
+                        "maximum": 15
+                      },
+                      "aspect_ratio": {
+                        "type": "string",
+                        "title": "视频宽高比",
+                        "enum": [
+                          "1:1",
+                          "2:3",
+                          "3:2",
+                          "3:4",
+                          "4:3",
+                          "9:16",
+                          "16:9"
+                        ]
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "enum": [
+                          "720p",
+                          "480p"
+                        ]
+                      }
+                    },
+                    "title": "图生视频",
+                    "required": [
+                      "model",
+                      "prompt",
+                      "image",
+                      "duration",
+                      "aspect_ratio",
+                      "resolution"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "model": {
+                        "type": "string",
+                        "enum": [
+                          "grok-imagine-video"
+                        ],
+                        "title": "模型名称"
+                      },
+                      "prompt": {
+                        "type": "string",
+                        "title": "提示词"
+                      },
+                      "reference_images": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "url": {
+                              "type": "string",
+                              "title": "参考图链接"
+                            }
+                          },
+                          "required": [
+                            "url"
+                          ]
+                        },
+                        "maxItems": 7,
+                        "minItems": 1
+                      },
+                      "duration": {
+                        "type": "integer",
+                        "title": "视频时长",
+                        "minimum": 1,
+                        "maximum": 10
+                      },
+                      "aspect_ratio": {
+                        "type": "string",
+                        "title": "视频宽高比",
+                        "enum": [
+                          "1:1",
+                          "2:3",
+                          "3:2",
+                          "3:4",
+                          "4:3",
+                          "16:9",
+                          "9:16"
+                        ]
+                      },
+                      "resolution": {
+                        "type": "string",
+                        "title": "视频分辨率",
+                        "enum": [
+                          "480p",
+                          "720p"
+                        ]
+                      }
+                    },
+                    "title": "参考图生视频",
+                    "required": [
+                      "model",
+                      "prompt",
+                      "reference_images",
+                      "duration",
+                      "aspect_ratio",
+                      "resolution"
+                    ]
+                  }
+                ]
+              },
+              "examples": {
+                "textToVideo": {
+                  "value": {
+                    "model": "grok-imagine-video",
+                    "prompt": "A glowing crystal-powered rocket launching from the red dunes of Mars",
+                    "duration": 10,
+                    "aspect_ratio": "16:9",
+                    "resolution": "720p"
+                  },
+                  "summary": "文生视频"
+                },
+                "imageToVideo": {
+                  "value": {
+                    "model": "grok-imagine-video",
+                    "prompt": "The woman slowly turns her head and smiles",
+                    "image": {
+                      "url": "https://cdn.example.com/source-image.jpg"
+                    },
+                    "duration": 5,
+                    "aspect_ratio": "9:16",
+                    "resolution": "480p"
+                  },
+                  "summary": "图生视频"
+                },
+                "referenceImages": {
+                  "value": {
+                    "model": "grok-imagine-video",
+                    "prompt": "The model from IMAGE_1 walks on a runway wearing the shirt from IMAGE_2",
+                    "reference_images": [
+                      {
+                        "url": "https://cdn.example.com/model-reference.jpg"
+                      },
+                      {
+                        "url": "https://cdn.example.com/shirt-reference.jpg"
+                      }
+                    ],
+                    "duration": 10,
+                    "aspect_ratio": "16:9",
+                    "resolution": "720p"
+                  },
+                  "summary": "参考图生成"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "任务创建成功. 仅表示任务已入队.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "title": "任务 Id"
+                    }
+                  },
+                  "required": [
+                    "request_id"
+                  ]
+                },
+                "example": {
+                  "request_id": "e3a7ee32-9196-925e-ae76-53ad9be3cc71"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/xai-video/v1/videos/edits": {
+      "post": {
+        "summary": "创建视频编辑任务",
+        "deprecated": false,
+        "description": "对已有视频进行编辑. 适合改服装, 改背景, 改天气, 改局部内容. 成功后返回 request_id, 需继续轮询.",
+        "operationId": "createXaiVideoEditTask",
+        "tags": [
+          "Video Editing"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "enum": [
+                      "grok-imagine-video"
+                    ],
+                    "title": "模型名称"
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "title": "提示词"
+                  },
+                  "video": {
+                    "type": "object",
+                    "properties": {
+                      "url": {
+                        "type": "string",
+                        "title": "视频链接",
+                        "description": "- 输入视频必须有.mp4\n扩展并编码.mp4\n- 输入视频的最大长度为8.7秒\n支持的编解码器，如H.265/H.264/AV1等"
+                      }
+                    },
+                    "required": [
+                      "url"
+                    ]
+                  }
+                },
+                "required": [
+                  "model",
+                  "prompt",
+                  "video"
+                ]
+              },
+              "example": {
+                "model": "grok-imagine-video",
+                "prompt": "Change the sky to a dramatic orange sunset while keeping the person unchanged",
+                "video": {
+                  "url": "https://cdn.example.com/source-video.mp4"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "编辑任务创建成功.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "title": "任务 Id"
+                    }
+                  },
+                  "required": [
+                    "request_id"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/xai-video/v1/videos/extensions": {
+      "post": {
+        "summary": "创建视频续写任务",
+        "deprecated": false,
+        "description": "对已有视频进行续写. duration 表示续写段时长, 不是最终总时长.",
+        "operationId": "createXaiVideoExtensionTask",
+        "tags": [
+          "Video Extension"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "title": "模型名称",
+                    "enum": [
+                      "grok-imagine-video"
+                    ]
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "title": "提示词"
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "title": "续写时长",
+                    "minimum": 2,
+                    "maximum": 10,
+                    "default": 6
+                  },
+                  "video": {
+                    "type": "object",
+                    "properties": {
+                      "url": {
+                        "type": "string",
+                        "title": "续写视频时长",
+                        "description": "- 续写段时长, 不是最终总时长\n- 输入视频的持续时间必须在2到15秒之间"
+                      }
+                    },
+                    "required": [
+                      "url"
+                    ]
+                  }
+                },
+                "required": [
+                  "model",
+                  "prompt",
+                  "duration",
+                  "video"
+                ]
+              },
+              "example": {
+                "model": "grok-imagine-video",
+                "prompt": "The camera slowly pulls back and reveals a lake in the distance",
+                "duration": 5,
+                "video": {
+                  "url": "https://cdn.example.com/source-video.mp4"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "续写任务创建成功.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "request_id": {
+                      "type": "string",
+                      "title": "任务 Id"
+                    }
+                  },
+                  "required": [
+                    "request_id"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/xai-video/v1/videos/{request_id}": {
+      "get": {
+        "summary": "查询视频任务结果",
+        "deprecated": false,
+        "description": "根据 request_id 查询任务状态. 常见状态为 pending, done, failed, expired. 当 status 为 done 时可读取 video.url 与 usage.cost_in_usd_ticks.",
+        "operationId": "getXaiVideoTaskResult",
+        "tags": [
+          "Video Tasks"
+        ],
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "description": "创建任务时返回的 request_id. 必须传真实任务 ID.",
+            "required": true,
+            "example": "e3a7ee32-9196-925e-ae76-53ad9be3cc71",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "title": "任务状态",
+                      "enum": [
+                        "pending",
+                        "done",
+                        "failed",
+                        "expired"
+                      ]
+                    },
+                    "progress": {
+                      "type": "integer",
+                      "title": "生成进度"
+                    },
+                    "model": {
+                      "type": "string",
+                      "title": "模型名称"
+                    },
+                    "video": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string"
+                        },
+                        "duration": {
+                          "type": "integer"
+                        },
+                        "respect_moderation": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "duration",
+                        "url",
+                        "respect_moderation"
+                      ]
+                    },
+                    "usage": {
+                      "type": "object",
+                      "properties": {
+                        "cost_in_usd_ticks": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "cost_in_usd_ticks"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "model"
+                  ]
+                },
+                "examples": {
+                  "pending": {
+                    "summary": "处理中",
+                    "value": {
+                      "status": "pending",
+                      "progress": 40,
+                      "model": "grok-imagine-video"
+                    }
+                  },
+                  "done": {
+                    "summary": "已完成",
+                    "value": {
+                      "status": "done",
+                      "video": {
+                        "url": "https://download.example.com/video.mp4",
+                        "duration": 2,
+                        "respect_moderation": true
+                      },
+                      "model": "grok-imagine-video",
+                      "usage": {
+                        "cost_in_usd_ticks": 1400000000
+                      },
+                      "progress": 100
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "responses": {
+      "记录不存在": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ]
+            }
+          }
+        }
+      },
+      "参数不正确": {
+        "description": "",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "使用Bearer Token进行认证,格式为 \"Bearer YOUR_API_KEY\""
+      },
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "servers": [],
+  "security": []
+}

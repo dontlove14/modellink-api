@@ -1,0 +1,50 @@
+identity:
+  name: "grok_video_edit"
+  author: "modellink"
+  label:
+    en_US: "Grok Video Edit"
+    zh_Hans: "Grok 视频修改"
+    pt_BR: "Grok Edição de Vídeo"
+    ja_JP: "Grok 動画編集"
+description:
+  human:
+    en_US: "Submit Grok video edit tasks"
+    zh_Hans: "提交 Grok 视频编辑任务"
+    pt_BR: "Enviar tarefas de edição de vídeo Grok"
+    ja_JP: "Grok 動画編集タスクを送信します"
+  llm: "Submit Grok video edit tasks."
+parameters:
+  - name: apiKey
+    type: secret-input
+    required: true
+    label: { en_US: "API Key", zh_Hans: "API 密钥", pt_BR: "API Key", ja_JP: "API キー" }
+    human_description: { en_US: "API key", zh_Hans: "接口密钥", pt_BR: "API key", ja_JP: "APIキー" }
+    llm_description: "API key for authentication."
+    form: llm
+  - name: model
+    type: select
+    required: false
+    label: { en_US: "Model", zh_Hans: "模型", pt_BR: "Modelo", ja_JP: "モデル" }
+    human_description: { en_US: "Model name", zh_Hans: "模型名称", pt_BR: "Nome do modelo", ja_JP: "モデル名" }
+    llm_description: "Model name."
+    form: llm
+    options:
+      - value: "grok-imagine-video"
+        label: { en_US: "grok-imagine-video", zh_Hans: "grok-imagine-video", pt_BR: "grok-imagine-video", ja_JP: "grok-imagine-video" }
+  - name: prompt
+    type: string
+    required: true
+    label: { en_US: "Prompt", zh_Hans: "提示词", pt_BR: "Prompt", ja_JP: "プロンプト" }
+    human_description: { en_US: "Edit instructions", zh_Hans: "编辑提示词", pt_BR: "Instruções de edição", ja_JP: "編集指示" }
+    llm_description: "Edit prompt."
+    form: llm
+  - name: video_url
+    type: string
+    required: true
+    label: { en_US: "Video URL", zh_Hans: "视频 URL", pt_BR: "URL do Vídeo", ja_JP: "動画URL" }
+    human_description: { en_US: "Input mp4 URL", zh_Hans: "输入视频 mp4 URL", pt_BR: "URL do vídeo mp4", ja_JP: "入力mp4 URL" }
+    llm_description: "Input video URL."
+    form: llm
+extra:
+  python:
+    source: tools/grok_video_edit.py

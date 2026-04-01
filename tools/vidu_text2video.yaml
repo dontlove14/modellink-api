@@ -1,0 +1,187 @@
+identity:
+  name: "vidu_text2video"
+  author: "modellink"
+  label:
+    en_US: "Vidu Text to Video"
+    zh_Hans: "Vidu 文生视频"
+    pt_BR: "Vidu Texto para Vídeo"
+    ja_JP: "Vidu テキストから動画"
+description:
+  human:
+    en_US: "Submit Vidu text-to-video tasks"
+    zh_Hans: "提交 Vidu 文生视频任务"
+    pt_BR: "Enviar tarefas Vidu texto para vídeo"
+    ja_JP: "Vidu テキスト動画生成タスクを送信します"
+  llm: "Submit Vidu text-to-video tasks."
+parameters:
+  - name: apiKey
+    type: secret-input
+    required: true
+    label: { en_US: "API Key", zh_Hans: "API 密钥", pt_BR: "API Key", ja_JP: "API キー" }
+    human_description: { en_US: "API key", zh_Hans: "接口密钥", pt_BR: "API key", ja_JP: "APIキー" }
+    llm_description: "API key for authentication."
+    form: llm
+  - name: model
+    type: select
+    required: true
+    label: { en_US: "Model", zh_Hans: "模型", pt_BR: "Modelo", ja_JP: "モデル" }
+    human_description: { en_US: "Vidu model", zh_Hans: "Vidu 模型名称", pt_BR: "Modelo Vidu", ja_JP: "Vidu モデル" }
+    llm_description: "Vidu model name."
+    form: llm
+    options:
+      - value: "viduq3-turbo"
+        label: { en_US: "viduq3-turbo", zh_Hans: "viduq3-turbo", pt_BR: "viduq3-turbo", ja_JP: "viduq3-turbo" }
+      - value: "viduq3-pro"
+        label: { en_US: "viduq3-pro", zh_Hans: "viduq3-pro", pt_BR: "viduq3-pro", ja_JP: "viduq3-pro" }
+      - value: "viduq2"
+        label: { en_US: "viduq2", zh_Hans: "viduq2", pt_BR: "viduq2", ja_JP: "viduq2" }
+      - value: "viduq1"
+        label: { en_US: "viduq1", zh_Hans: "viduq1", pt_BR: "viduq1", ja_JP: "viduq1" }
+  - name: style
+    type: select
+    required: false
+    label: { en_US: "Style", zh_Hans: "风格", pt_BR: "Estilo", ja_JP: "スタイル" }
+    human_description: { en_US: "Style", zh_Hans: "风格", pt_BR: "Estilo", ja_JP: "スタイル" }
+    llm_description: "Style."
+    form: llm
+    options:
+      - value: "general"
+        label: { en_US: "general", zh_Hans: "通用", pt_BR: "general", ja_JP: "general" }
+      - value: "anime"
+        label: { en_US: "anime", zh_Hans: "动漫", pt_BR: "anime", ja_JP: "anime" }
+  - name: prompt
+    type: string
+    required: true
+    label: { en_US: "Prompt", zh_Hans: "提示词", pt_BR: "Prompt", ja_JP: "プロンプト" }
+    human_description: { en_US: "Prompt text", zh_Hans: "视频提示词", pt_BR: "Texto do prompt", ja_JP: "プロンプト" }
+    llm_description: "Prompt for generation."
+    form: llm
+  - name: duration
+    type: number
+    required: false
+    label: { en_US: "Duration", zh_Hans: "时长", pt_BR: "Duração", ja_JP: "長さ" }
+    human_description: { en_US: "Video duration", zh_Hans: "视频时长", pt_BR: "Duração do vídeo", ja_JP: "動画時間" }
+    llm_description: "Video duration in seconds."
+    form: llm
+  - name: seed
+    type: number
+    required: false
+    label: { en_US: "Seed", zh_Hans: "随机种子", pt_BR: "Seed", ja_JP: "シード" }
+    human_description: { en_US: "Random seed", zh_Hans: "随机种子", pt_BR: "Semente aleatória", ja_JP: "ランダムシード" }
+    llm_description: "Random seed."
+    form: llm
+  - name: aspect_ratio
+    type: select
+    required: false
+    label: { en_US: "Aspect Ratio", zh_Hans: "宽高比", pt_BR: "Proporção", ja_JP: "アスペクト比" }
+    human_description: { en_US: "Aspect ratio", zh_Hans: "视频宽高比", pt_BR: "Proporção", ja_JP: "アスペクト比" }
+    llm_description: "Aspect ratio."
+    form: llm
+    options:
+      - value: "16:9"
+        label: { en_US: "16:9", zh_Hans: "16:9", pt_BR: "16:9", ja_JP: "16:9" }
+      - value: "9:16"
+        label: { en_US: "9:16", zh_Hans: "9:16", pt_BR: "9:16", ja_JP: "9:16" }
+      - value: "3:4"
+        label: { en_US: "3:4", zh_Hans: "3:4", pt_BR: "3:4", ja_JP: "3:4" }
+      - value: "4:3"
+        label: { en_US: "4:3", zh_Hans: "4:3", pt_BR: "4:3", ja_JP: "4:3" }
+      - value: "1:1"
+        label: { en_US: "1:1", zh_Hans: "1:1", pt_BR: "1:1", ja_JP: "1:1" }
+  - name: resolution
+    type: select
+    required: false
+    label: { en_US: "Resolution", zh_Hans: "分辨率", pt_BR: "Resolução", ja_JP: "解像度" }
+    human_description: { en_US: "Video resolution", zh_Hans: "视频分辨率", pt_BR: "Resolução do vídeo", ja_JP: "動画解像度" }
+    llm_description: "Video resolution."
+    form: llm
+    options:
+      - value: "540p"
+        label: { en_US: "540p", zh_Hans: "540p", pt_BR: "540p", ja_JP: "540p" }
+      - value: "720p"
+        label: { en_US: "720p", zh_Hans: "720p", pt_BR: "720p", ja_JP: "720p" }
+      - value: "1080p"
+        label: { en_US: "1080p", zh_Hans: "1080p", pt_BR: "1080p", ja_JP: "1080p" }
+  - name: movement_amplitude
+    type: select
+    required: false
+    label: { en_US: "Movement", zh_Hans: "运动幅度", pt_BR: "Movimento", ja_JP: "動き幅" }
+    human_description: { en_US: "Movement amplitude", zh_Hans: "运动幅度", pt_BR: "Amplitude do movimento", ja_JP: "動き幅" }
+    llm_description: "Movement amplitude."
+    form: llm
+    options:
+      - value: "auto"
+        label: { en_US: "auto", zh_Hans: "自动", pt_BR: "auto", ja_JP: "auto" }
+      - value: "small"
+        label: { en_US: "small", zh_Hans: "小", pt_BR: "small", ja_JP: "small" }
+      - value: "medium"
+        label: { en_US: "medium", zh_Hans: "中", pt_BR: "medium", ja_JP: "medium" }
+      - value: "large"
+        label: { en_US: "large", zh_Hans: "大", pt_BR: "large", ja_JP: "large" }
+  - name: bgm
+    type: boolean
+    required: false
+    label: { en_US: "BGM", zh_Hans: "背景音乐", pt_BR: "BGM", ja_JP: "BGM" }
+    human_description: { en_US: "Add background music", zh_Hans: "是否添加背景音乐", pt_BR: "Adicionar música", ja_JP: "BGM を追加するか" }
+    llm_description: "Whether to add BGM."
+    form: llm
+  - name: audio
+    type: boolean
+    required: false
+    label: { en_US: "Audio", zh_Hans: "音频直出", pt_BR: "Áudio", ja_JP: "音声出力" }
+    human_description: { en_US: "Generate audio with video", zh_Hans: "是否输出带声音的视频", pt_BR: "Gerar áudio", ja_JP: "音声付き動画を生成するか" }
+    llm_description: "Whether to generate video with audio."
+    form: llm
+  - name: payload
+    type: string
+    required: false
+    label: { en_US: "Payload", zh_Hans: "透传参数", pt_BR: "Payload", ja_JP: "ペイロード" }
+    human_description: { en_US: "Passthrough field", zh_Hans: "透传参数", pt_BR: "Campo de passagem", ja_JP: "透過フィールド" }
+    llm_description: "Passthrough payload."
+    form: llm
+  - name: off_peak
+    type: boolean
+    required: false
+    label: { en_US: "Off Peak", zh_Hans: "错峰模式", pt_BR: "Off Peak", ja_JP: "オフピーク" }
+    human_description: { en_US: "Off-peak mode", zh_Hans: "是否使用错峰模式", pt_BR: "Modo off-peak", ja_JP: "オフピークモード" }
+    llm_description: "Whether to use off-peak mode."
+    form: llm
+  - name: watermark
+    type: boolean
+    required: false
+    label: { en_US: "Watermark", zh_Hans: "水印", pt_BR: "Marca d'água", ja_JP: "透かし" }
+    human_description: { en_US: "Add watermark", zh_Hans: "是否添加水印", pt_BR: "Adicionar marca d'água", ja_JP: "透かしを追加するか" }
+    llm_description: "Whether to add watermark."
+    form: llm
+  - name: wm_position
+    type: number
+    required: false
+    label: { en_US: "Watermark Position", zh_Hans: "水印位置", pt_BR: "Posição da Marca", ja_JP: "透かし位置" }
+    human_description: { en_US: "1-4", zh_Hans: "水印位置 1-4", pt_BR: "1-4", ja_JP: "1-4" }
+    llm_description: "Watermark position."
+    form: llm
+  - name: wm_url
+    type: string
+    required: false
+    label: { en_US: "Watermark URL", zh_Hans: "水印 URL", pt_BR: "URL da Marca", ja_JP: "透かしURL" }
+    human_description: { en_US: "Custom watermark URL", zh_Hans: "自定义水印图片 URL", pt_BR: "URL da marca", ja_JP: "カスタム透かしURL" }
+    llm_description: "Custom watermark image URL."
+    form: llm
+  - name: meta_data
+    type: string
+    required: false
+    label: { en_US: "Meta Data", zh_Hans: "元数据", pt_BR: "Metadados", ja_JP: "メタデータ" }
+    human_description: { en_US: "JSON string metadata", zh_Hans: "JSON 字符串元数据", pt_BR: "Metadados JSON", ja_JP: "JSON文字列メタデータ" }
+    llm_description: "Metadata JSON string."
+    form: llm
+  - name: callback_url
+    type: string
+    required: false
+    label: { en_US: "Callback URL", zh_Hans: "回调 URL", pt_BR: "URL de Callback", ja_JP: "コールバックURL" }
+    human_description: { en_US: "Callback URL", zh_Hans: "任务状态回调 URL", pt_BR: "URL de callback", ja_JP: "コールバックURL" }
+    llm_description: "Callback URL."
+    form: llm
+    format: uri
+extra:
+  python:
+    source: tools/vidu_text2video.py

@@ -1,0 +1,98 @@
+identity:
+  name: "grok_video_generate"
+  author: "modellink"
+  label:
+    en_US: "Grok Video Generate"
+    zh_Hans: "Grok 视频生成"
+    pt_BR: "Grok Geração de Vídeo"
+    ja_JP: "Grok 動画生成"
+description:
+  human:
+    en_US: "Submit Grok video generation tasks"
+    zh_Hans: "提交 Grok 视频生成任务"
+    pt_BR: "Enviar tarefas de geração de vídeo Grok"
+    ja_JP: "Grok 動画生成タスクを送信します"
+  llm: "Submit Grok video generation tasks."
+parameters:
+  - name: apiKey
+    type: secret-input
+    required: true
+    label: { en_US: "API Key", zh_Hans: "API 密钥", pt_BR: "API Key", ja_JP: "API キー" }
+    human_description: { en_US: "API key", zh_Hans: "接口密钥", pt_BR: "API key", ja_JP: "APIキー" }
+    llm_description: "API key for authentication."
+    form: llm
+  - name: model
+    type: select
+    required: false
+    label: { en_US: "Model", zh_Hans: "模型", pt_BR: "Modelo", ja_JP: "モデル" }
+    human_description: { en_US: "Model name", zh_Hans: "模型名称", pt_BR: "Nome do modelo", ja_JP: "モデル名" }
+    llm_description: "Model name."
+    form: llm
+    options:
+      - value: "grok-imagine-video"
+        label: { en_US: "grok-imagine-video", zh_Hans: "grok-imagine-video", pt_BR: "grok-imagine-video", ja_JP: "grok-imagine-video" }
+  - name: prompt
+    type: string
+    required: true
+    label: { en_US: "Prompt", zh_Hans: "提示词", pt_BR: "Prompt", ja_JP: "プロンプト" }
+    human_description: { en_US: "Prompt text", zh_Hans: "视频提示词", pt_BR: "Texto do prompt", ja_JP: "プロンプト" }
+    llm_description: "Prompt for video generation."
+    form: llm
+  - name: duration
+    type: number
+    required: true
+    label: { en_US: "Duration", zh_Hans: "时长", pt_BR: "Duração", ja_JP: "長さ" }
+    human_description: { en_US: "1-15 seconds", zh_Hans: "视频时长，1-15 秒", pt_BR: "1-15 segundos", ja_JP: "1-15秒" }
+    llm_description: "Video duration in seconds."
+    form: llm
+  - name: aspect_ratio
+    type: select
+    required: true
+    label: { en_US: "Aspect Ratio", zh_Hans: "宽高比", pt_BR: "Proporção", ja_JP: "アスペクト比" }
+    human_description: { en_US: "Aspect ratio", zh_Hans: "视频宽高比", pt_BR: "Proporção", ja_JP: "アスペクト比" }
+    llm_description: "Aspect ratio."
+    form: llm
+    options:
+      - value: "1:1"
+        label: { en_US: "1:1", zh_Hans: "1:1", pt_BR: "1:1", ja_JP: "1:1" }
+      - value: "2:3"
+        label: { en_US: "2:3", zh_Hans: "2:3", pt_BR: "2:3", ja_JP: "2:3" }
+      - value: "3:2"
+        label: { en_US: "3:2", zh_Hans: "3:2", pt_BR: "3:2", ja_JP: "3:2" }
+      - value: "3:4"
+        label: { en_US: "3:4", zh_Hans: "3:4", pt_BR: "3:4", ja_JP: "3:4" }
+      - value: "4:3"
+        label: { en_US: "4:3", zh_Hans: "4:3", pt_BR: "4:3", ja_JP: "4:3" }
+      - value: "16:9"
+        label: { en_US: "16:9", zh_Hans: "16:9", pt_BR: "16:9", ja_JP: "16:9" }
+      - value: "9:16"
+        label: { en_US: "9:16", zh_Hans: "9:16", pt_BR: "9:16", ja_JP: "9:16" }
+  - name: resolution
+    type: select
+    required: true
+    label: { en_US: "Resolution", zh_Hans: "分辨率", pt_BR: "Resolução", ja_JP: "解像度" }
+    human_description: { en_US: "Resolution", zh_Hans: "视频分辨率", pt_BR: "Resolução", ja_JP: "解像度" }
+    llm_description: "Video resolution."
+    form: llm
+    options:
+      - value: "480p"
+        label: { en_US: "480p", zh_Hans: "480p", pt_BR: "480p", ja_JP: "480p" }
+      - value: "720p"
+        label: { en_US: "720p", zh_Hans: "720p", pt_BR: "720p", ja_JP: "720p" }
+  - name: image_url
+    type: string
+    required: false
+    label: { en_US: "Image URL", zh_Hans: "首图 URL", pt_BR: "URL da Imagem", ja_JP: "画像URL" }
+    human_description: { en_US: "Single source image URL", zh_Hans: "单张参考图 URL", pt_BR: "URL de imagem", ja_JP: "単一画像URL" }
+    llm_description: "Single source image URL. Do not use with reference_images."
+    form: llm
+  - name: reference_images
+    type: string
+    required: false
+    label: { en_US: "Reference Images", zh_Hans: "参考图列表", pt_BR: "Imagens de Referência", ja_JP: "参照画像一覧" }
+    human_description: { en_US: "Image URLs, comma or newline separated", zh_Hans: "参考图 URL 列表，使用逗号或换行分隔", pt_BR: "URLs separadas por vírgula ou quebra de linha", ja_JP: "カンマまたは改行区切りの画像URL" }
+    llm_description: "Reference image URLs, comma or newline separated. Do not use with image_url."
+    form: llm
+extra:
+  python:
+    source: tools/grok_video_generate.py

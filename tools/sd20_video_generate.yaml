@@ -1,0 +1,126 @@
+identity:
+  name: "sd20_video_generate"
+  author: "modellink"
+  label:
+    en_US: "SD2.0 Video Generate"
+    zh_Hans: "SD2.0 视频生成"
+    pt_BR: "SD2.0 Geração de Vídeo"
+    ja_JP: "SD2.0 動画生成"
+description:
+  human:
+    en_US: "Submit Seedance 2.0 video tasks"
+    zh_Hans: "提交 SD2.0 视频生成任务"
+    pt_BR: "Enviar tarefas de vídeo Seedance 2.0"
+    ja_JP: "Seedance 2.0 動画タスクを送信します"
+  llm: "Submit Seedance 2.0 video tasks."
+parameters:
+  - name: apiKey
+    type: secret-input
+    required: true
+    label: { en_US: "API Key", zh_Hans: "API 密钥", pt_BR: "API Key", ja_JP: "API キー" }
+    human_description: { en_US: "API key", zh_Hans: "接口密钥", pt_BR: "API key", ja_JP: "APIキー" }
+    llm_description: "API key for authentication."
+    form: llm
+  - name: model
+    type: select
+    required: false
+    label: { en_US: "Model", zh_Hans: "模型", pt_BR: "Modelo", ja_JP: "モデル" }
+    human_description: { en_US: "Model name", zh_Hans: "模型名称", pt_BR: "Nome do modelo", ja_JP: "モデル名" }
+    llm_description: "Model name."
+    form: llm
+    options:
+      - value: "doubao-seedance-2-0-260128"
+        label: { en_US: "doubao-seedance-2-0-260128", zh_Hans: "doubao-seedance-2-0-260128", pt_BR: "doubao-seedance-2-0-260128", ja_JP: "doubao-seedance-2-0-260128" }
+  - name: prompt
+    type: string
+    required: false
+    label: { en_US: "Prompt", zh_Hans: "提示词", pt_BR: "Prompt", ja_JP: "プロンプト" }
+    human_description: { en_US: "Optional text prompt", zh_Hans: "可选文本提示词", pt_BR: "Prompt opcional", ja_JP: "任意のテキストプロンプト" }
+    llm_description: "Optional text prompt."
+    form: llm
+  - name: reference_images
+    type: string
+    required: false
+    label: { en_US: "Reference Images", zh_Hans: "参考图列表", pt_BR: "Imagens de Referência", ja_JP: "参照画像一覧" }
+    human_description: { en_US: "Image URLs, comma or newline separated", zh_Hans: "参考图 URL 列表，使用逗号或换行分隔", pt_BR: "URLs de imagem", ja_JP: "画像URL一覧" }
+    llm_description: "Reference image URLs."
+    form: llm
+  - name: reference_videos
+    type: string
+    required: false
+    label: { en_US: "Reference Videos", zh_Hans: "参考视频列表", pt_BR: "Vídeos de Referência", ja_JP: "参照動画一覧" }
+    human_description: { en_US: "Video URLs, comma or newline separated", zh_Hans: "参考视频 URL 列表，使用逗号或换行分隔", pt_BR: "URLs de vídeo", ja_JP: "動画URL一覧" }
+    llm_description: "Reference video URLs."
+    form: llm
+  - name: reference_audios
+    type: string
+    required: false
+    label: { en_US: "Reference Audios", zh_Hans: "参考音频列表", pt_BR: "Áudios de Referência", ja_JP: "参照音声一覧" }
+    human_description: { en_US: "Audio URLs, comma or newline separated", zh_Hans: "参考音频 URL 列表，使用逗号或换行分隔", pt_BR: "URLs de áudio", ja_JP: "音声URL一覧" }
+    llm_description: "Reference audio URLs."
+    form: llm
+  - name: generate_audio
+    type: boolean
+    required: false
+    label: { en_US: "Generate Audio", zh_Hans: "生成音频", pt_BR: "Gerar Áudio", ja_JP: "音声生成" }
+    human_description: { en_US: "Generate audio", zh_Hans: "是否生成音频", pt_BR: "Gerar áudio", ja_JP: "音声を生成するか" }
+    llm_description: "Whether to generate audio."
+    form: llm
+  - name: ratio
+    type: select
+    required: false
+    label: { en_US: "Ratio", zh_Hans: "宽高比", pt_BR: "Proporção", ja_JP: "比率" }
+    human_description: { en_US: "Video ratio", zh_Hans: "视频宽高比", pt_BR: "Proporção do vídeo", ja_JP: "動画比率" }
+    llm_description: "Video ratio."
+    form: llm
+    options:
+      - value: "1:1"
+        label: { en_US: "1:1", zh_Hans: "1:1", pt_BR: "1:1", ja_JP: "1:1" }
+      - value: "3:4"
+        label: { en_US: "3:4", zh_Hans: "3:4", pt_BR: "3:4", ja_JP: "3:4" }
+      - value: "4:3"
+        label: { en_US: "4:3", zh_Hans: "4:3", pt_BR: "4:3", ja_JP: "4:3" }
+      - value: "9:16"
+        label: { en_US: "9:16", zh_Hans: "9:16", pt_BR: "9:16", ja_JP: "9:16" }
+      - value: "16:9"
+        label: { en_US: "16:9", zh_Hans: "16:9", pt_BR: "16:9", ja_JP: "16:9" }
+      - value: "21:9"
+        label: { en_US: "21:9", zh_Hans: "21:9", pt_BR: "21:9", ja_JP: "21:9" }
+      - value: "adaptive"
+        label: { en_US: "adaptive", zh_Hans: "自适应", pt_BR: "adaptive", ja_JP: "adaptive" }
+  - name: duration
+    type: number
+    required: false
+    label: { en_US: "Duration", zh_Hans: "时长", pt_BR: "Duração", ja_JP: "長さ" }
+    human_description: { en_US: "4-15 seconds", zh_Hans: "视频时长，4-15 秒", pt_BR: "4-15 segundos", ja_JP: "4-15秒" }
+    llm_description: "Video duration in seconds."
+    form: llm
+  - name: resolution
+    type: select
+    required: false
+    label: { en_US: "Resolution", zh_Hans: "分辨率", pt_BR: "Resolução", ja_JP: "解像度" }
+    human_description: { en_US: "480p or 720p", zh_Hans: "视频分辨率", pt_BR: "Resolução", ja_JP: "解像度" }
+    llm_description: "Video resolution."
+    form: llm
+    options:
+      - value: "480p"
+        label: { en_US: "480p", zh_Hans: "480p", pt_BR: "480p", ja_JP: "480p" }
+      - value: "720p"
+        label: { en_US: "720p", zh_Hans: "720p", pt_BR: "720p", ja_JP: "720p" }
+  - name: watermark
+    type: boolean
+    required: false
+    label: { en_US: "Watermark", zh_Hans: "水印", pt_BR: "Marca d'água", ja_JP: "透かし" }
+    human_description: { en_US: "Add watermark", zh_Hans: "是否生成水印", pt_BR: "Adicionar marca d'água", ja_JP: "透かし生成" }
+    llm_description: "Whether to add watermark."
+    form: llm
+  - name: return_last_frame
+    type: boolean
+    required: false
+    label: { en_US: "Return Last Frame", zh_Hans: "返回尾帧", pt_BR: "Retornar Último Frame", ja_JP: "末尾フレームを返す" }
+    human_description: { en_US: "Return last frame URL", zh_Hans: "是否返回尾帧图像", pt_BR: "Retornar URL do último frame", ja_JP: "末尾フレーム画像を返す" }
+    llm_description: "Whether to return last frame."
+    form: llm
+extra:
+  python:
+    source: tools/sd20_video_generate.py

@@ -79,6 +79,20 @@ tools:
   - tools/klingus_multi_image2video_query.yaml
   - tools/veo_video.yaml
   - tools/veo_video_query.yaml
+  - tools/grok_video_generate.yaml
+  - tools/grok_video_extend.yaml
+  - tools/grok_video_edit.yaml
+  - tools/grok_video_query.yaml
+  - tools/sd15_video_query.yaml
+  - tools/sd15_text2video.yaml
+  - tools/sd15_frame2video.yaml
+  - tools/sd15_reference2video.yaml
+  - tools/sd20_video_generate.yaml
+  - tools/sd20_video_query.yaml
+  - tools/vidu_text2video.yaml
+  - tools/vidu_image2video.yaml
+  - tools/vidu_start_end2video.yaml
+  - tools/vidu_video_query.yaml
 extra:
   python:
     source: provider/api.py

@@ -1,0 +1,33 @@
+identity:
+  name: "sd15_video_query"
+  author: "modellink"
+  label:
+    en_US: "SD1.5 Video Query"
+    zh_Hans: "SD1.5 结果查询"
+    pt_BR: "SD1.5 Consulta"
+    ja_JP: "SD1.5 結果照会"
+description:
+  human:
+    en_US: "Query Seedance 1.5 task result"
+    zh_Hans: "查询 SD1.5 视频任务结果"
+    pt_BR: "Consultar resultado Seedance 1.5"
+    ja_JP: "Seedance 1.5 タスク結果を照会します"
+  llm: "Query Seedance 1.5 task result."
+parameters:
+  - name: apiKey
+    type: secret-input
+    required: true
+    label: { en_US: "API Key", zh_Hans: "API 密钥", pt_BR: "API Key", ja_JP: "API キー" }
+    human_description: { en_US: "API key", zh_Hans: "接口密钥", pt_BR: "API key", ja_JP: "APIキー" }
+    llm_description: "API key for authentication."
+    form: llm
+  - name: id
+    type: string
+    required: true
+    label: { en_US: "Task ID", zh_Hans: "任务 ID", pt_BR: "ID da Tarefa", ja_JP: "タスクID" }
+    human_description: { en_US: "Task id returned by submit API", zh_Hans: "提交接口返回的任务 id", pt_BR: "ID retornado", ja_JP: "送信APIが返すID" }
+    llm_description: "Task id returned by submit API."
+    form: llm
+extra:
+  python:
+    source: tools/sd15_video_query.py
