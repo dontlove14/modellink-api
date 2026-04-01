@@ -31,6 +31,13 @@ parameters:
     options:
       - value: "doubao-seedance-1-5-pro-251215"
         label: { en_US: "doubao-seedance-1-5-pro-251215", zh_Hans: "doubao-seedance-1-5-pro-251215", pt_BR: "doubao-seedance-1-5-pro-251215", ja_JP: "doubao-seedance-1-5-pro-251215" }
+  - name: prompt
+    type: string
+    required: false
+    label: { en_US: "Prompt", zh_Hans: "提示词", pt_BR: "Prompt", ja_JP: "プロンプト" }
+    human_description: { en_US: "Optional text prompt", zh_Hans: "可选文本提示词", pt_BR: "Prompt opcional", ja_JP: "任意のテキストプロンプト" }
+    llm_description: "Optional text prompt."
+    form: llm
   - name: reference_images
     type: string
     required: true

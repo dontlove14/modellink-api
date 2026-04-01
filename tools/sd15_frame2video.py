@@ -25,13 +25,15 @@ class Sd15Frame2VideoTool(Tool):
         """提交 SD1.5 首帧或首尾帧生视频任务。"""
         params = normalize_params(tool_parameters)
         api_key = require_param(params, "apiKey")
+        prompt = params.get("prompt")
         first_frame_url = require_param(params, "first_frame_url")
         last_frame_url = params.get("last_frame_url")
         model = params.get("model") or "doubao-seedance-1-5-pro-251215"
 
-        content: list[dict[str, Any]] = [
-            {"type": "image_url", "image_url": {"url": first_frame_url}, "role": "first_frame"}
-        ]
+        content: list[dict[str, Any]] = []
+        if prompt:
+            content.append({"type": "text", "text": prompt})
+        content.append({"type": "image_url", "image_url": {"url": first_frame_url}, "role": "first_frame"})
         if last_frame_url:
             content.append({"type": "image_url", "image_url": {"url": last_frame_url}, "role": "last_frame"})
 
@@ -62,6 +64,7 @@ class Sd15Frame2VideoTool(Tool):
                 {
                     "id": result.get("id"),
                     "model": model,
+                    "prompt": prompt,
                     "first_frame_url": first_frame_url,
                     "last_frame_url": last_frame_url,
                     "resolution": params.get("resolution"),

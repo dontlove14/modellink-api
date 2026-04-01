@@ -25,13 +25,16 @@ class Sd15Reference2VideoTool(Tool):
         """提交 SD1.5 参考图生视频任务。"""
         params = normalize_params(tool_parameters)
         api_key = require_param(params, "apiKey")
+        prompt = params.get("prompt")
         reference_images = parse_string_list(require_param(params, "reference_images"))
         model = params.get("model") or "doubao-seedance-1-5-pro-251215"
 
-        content: list[dict[str, Any]] = [
-            {"type": "image_url", "image_url": {"url": url}, "role": "reference_image"}
-            for url in reference_images
-        ]
+        content: list[dict[str, Any]] = []
+        if prompt:
+            content.append({"type": "text", "text": prompt})
+        content.extend(
+            {"type": "image_url", "image_url": {"url": url}, "role": "reference_image"} for url in reference_images
+        )
 
         payload: dict[str, Any] = {
             "model": model,
@@ -59,6 +62,7 @@ class Sd15Reference2VideoTool(Tool):
                 {
                     "id": result.get("id"),
                     "model": model,
+                    "prompt": prompt,
                     "reference_images": reference_images,
                     "resolution": params.get("resolution"),
                     "ratio": params.get("ratio"),
