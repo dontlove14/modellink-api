@@ -101,6 +101,12 @@ parameters:
           zh_Hans: "kling-v2-6"
           pt_BR: "kling-v2-6"
           ja_JP: "kling-v2-6"
+      - value: "kling-v3"
+        label:
+          en_US: "kling-v3"
+          zh_Hans: "kling-v3"
+          pt_BR: "kling-v3"
+          ja_JP: "kling-v3"
   - name: prompt
     type: string
     required: true
@@ -259,7 +265,7 @@ parameters:
           pt_BR: "16:9"
           ja_JP: "16:9"
   - name: duration
-    type: select
+    type: number
     required: false
     label:
       en_US: "Duration (seconds)"
@@ -267,35 +273,25 @@ parameters:
       pt_BR: "Duração (segundos)"
       ja_JP: "時間（秒）"
     human_description:
-      en_US: "Video duration in seconds"
-      zh_Hans: "视频时长（秒）"
-      pt_BR: "Duração do vídeo em segundos"
-      ja_JP: "ビデオの長さ（秒）"
-    llm_description: "Video duration in seconds"
+      en_US: "Video duration in seconds (kling-v3: 3-15; others: 5 or 10)"
+      zh_Hans: "视频时长（秒）（kling-v3：3-15；其他模型：5 或 10）"
+      pt_BR: "Duração do vídeo em segundos (kling-v3: 3-15; outros: 5 ou 10)"
+      ja_JP: "ビデオの長さ（秒）（kling-v3: 3-15、その他: 5 または 10）"
+    llm_description: "Video duration in seconds (kling-v3: 3-15; others: 5 or 10)"
     placeholder:
       en_US: 5
       zh_Hans: 5
       pt_BR: 5
       ja_JP: 5
     help:
-      en_US: "Duration of the generated video in seconds"
-      zh_Hans: "生成视频的时长（秒）"
-      pt_BR: "Duração do vídeo gerado em segundos"
-      ja_JP: "生成されたビデオの長さ（秒）"
+      en_US: "Duration of the generated video in seconds (kling-v3: 3-15; others: 5 or 10)"
+      zh_Hans: "生成视频的时长（秒）（kling-v3：3-15；其他模型：5 或 10）"
+      pt_BR: "Duração do vídeo gerado em segundos (kling-v3: 3-15; outros: 5 ou 10)"
+      ja_JP: "生成されたビデオの長さ（秒）（kling-v3: 3-15、その他: 5 または 10）"
     form: llm
-    options:
-      - value: 5
-        label:
-          en_US: "5"
-          zh_Hans: "5"
-          pt_BR: "5"
-          ja_JP: "5"
-      - value: 10
-        label:
-          en_US: "10"
-          zh_Hans: "10"
-          pt_BR: "10"
-          ja_JP: "10"
+    minimum: 3
+    maximum: 15
+    step: 1
   - name: callback_url
     type: string
     required: false

@@ -226,7 +226,7 @@ class SeedreamImageGenerationsTool(Tool):
         prompt = self._normalize_param(tool_parameters.get("prompt"))
         image = self._parse_image_input(tool_parameters.get("image"))
         aspect_ratio = self._normalize_param(tool_parameters.get("aspect_ratio"))
-        watermark = self._normalize_bool(tool_parameters.get("watermark"))
+        watermark = False
         seed = self._normalize_int(tool_parameters.get("seed"))
         guidance_scale = self._normalize_float(tool_parameters.get("guidance_scale"))
         optimize_prompt_mode = self._normalize_param(tool_parameters.get("optimize_prompt_mode"))

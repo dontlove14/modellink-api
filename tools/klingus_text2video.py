@@ -59,6 +59,23 @@ class KlingusText2VideoTool(Tool):
             callback_url = process_param(callback_url)
             external_task_id = process_param(external_task_id)
             enable_audio = process_param(enable_audio)
+
+            def normalize_duration(value: Any) -> int | None:
+                if value is None:
+                    return None
+                try:
+                    return int(value)
+                except (TypeError, ValueError) as e:
+                    raise ValueError("duration must be an integer") from e
+
+            duration = normalize_duration(duration)
+            if duration is not None and model_name is not None:
+                if model_name == "kling-v3":
+                    if not (3 <= duration <= 15):
+                        raise ValueError("duration must be between 3 and 15 for kling-v3")
+                else:
+                    if duration not in (5, 10):
+                        raise ValueError("duration must be 5 or 10 for this model")
             
             logger.info(f'[Klingus Text2Video] 开始生成视频，模型: {model_name}')
             
